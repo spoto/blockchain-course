@@ -1,0 +1,136 @@
+%% Stile Lucidi di Fausto Spoto
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{lucidiJb-2ed}[]
+\message{< Stile lucidi "Fausto Spoto" >}
+
+\usepackage[all]{xy}
+
+%% 
+%%  PACCHETTI UTILIZZATI
+%%
+\RequirePackage[english]{babel}
+
+%% THEOREMS
+{\theoremstyle{definition}\newtheorem*{general}{}}
+{\theoremstyle{definition}\newtheorem*{definizione}{}}
+{\theoremstyle{example}\newtheorem*{codice}{}}
+{\theoremstyle{example}\newtheorem*{esempio}{}}
+{\theoremstyle{example}\newtheorem*{algo}{}}
+{\theoremstyle{example}\newtheorem*{contratto}{Contratto}}
+{\theoremstyle{definition}\newtheorem*{sintassi}{}}
+{\theoremstyle{definition}\newtheorem*{metodi}{}}
+
+\DeclareMathOperator{\sep}{\mid\!\mid}
+
+
+%% ENVIRONMENTS
+
+%% BLOCCHI
+%% #1 - indentazione del blocco
+%% #2 - dimensione del blocco
+
+%% trasparente
+\newenvironment{minip}[2]{\par\hspace{#1}\begin{minipage}{#2}}{\end{minipage}\par\medskip}
+
+%% colorati come codice
+\newenvironment{blocco}[2]{ % blocco di codice #1-indentazione #2-larghezza 
+  \begin{minip}{#1}{#2}\begin{codice}}{\end{codice}\end{minip}\par\medskip}
+
+\newenvironment{blcodice}[2]{ % blocco di codice #1-indentazione #2-larghezza 
+  \begin{minip}{#1}{#2}\begin{codice}}{\end{codice}\end{minip}\par\medskip}
+
+
+%% BLOCCHI colorati
+\setbeamercolor{green head}{fg=white, bg=green!60!blue!150}
+\setbeamercolor{green body}{fg=black, bg=green!15}
+
+\newenvironment{greenbox}[1]{
+  \begin{beamerboxesrounded}[lower=green body, upper=green head,
+    shadow=true]{#1} %
+  } {\end{beamerboxesrounded} }
+
+
+\setbeamercolor{red head}{fg=white, bg=red}
+\setbeamercolor{red body}{fg=black, bg=red!70}
+\newenvironment{redbox}[1]{ 
+  \begin{beamerboxesrounded}[lower=red body, upper=red head,
+    shadow=true]{#1} %
+  } {\end{beamerboxesrounded} }
+
+
+\setbeamercolor{pink body}{fg=black, bg=red!15}
+\newenvironment{pinkbox}[1]{ 
+  \begin{beamerboxesrounded}[lower=pink body, upper=red head,
+    shadow=true]{#1} %
+  } {\end{beamerboxesrounded} }
+
+\newenvironment{esercizio}{\begin{pinkbox}{Esercizio}}{\end{pinkbox}}
+
+%% \boxtobox e \fboxtobox costruiscono due box in orizzontale collegati da un
+%% freccia. \boxtobox  introduce una pausa fra la visualizzazione del primo box e
+%% la visualizzazione del secondo \fboxtobox non introduce pause.
+
+%% #1 - indentazione
+%% #2 - dimensione primo box
+%% #3 - testo primo box
+%% #4 - dimensione secondo box
+%% #5 - testo secondo box
+\newcommand{\boxtobox}[5]{  %%con pausa
+  \par\hspace*{#1}\begin{tabular}{ccc}
+    \begin{minipage}{#2}
+      #3
+    \end{minipage}
+    &
+    \pause
+    \begin{minipage}[c]{2ex}
+      \includegraphics[scale=.28,clip=false]{../stile/redArrow}
+    \end{minipage}
+    &
+    \begin{minipage}{#4}
+      #5
+    \end{minipage}
+  \end{tabular}
+  \par
+  }
+
+\newcommand{\fboxtobox}[5]{  %%senza pausa
+  \par\hspace*{#1}\begin{tabular}{ccc}
+    \begin{minipage}{#2}
+      #3
+    \end{minipage}
+    &
+    \begin{minipage}[c]{2ex}
+      \includegraphics[scale=.28,clip=false]{../stile/redArrow}
+    \end{minipage}
+    &
+    \begin{minipage}{#4}
+      #5
+    \end{minipage}
+  \end{tabular}
+  \par
+  }
+
+%% PAUSE
+\newcommand{\SP}{\smallskip\pause}
+\newcommand{\MP}{\medskip\pause}
+\newcommand{\BP}{\bigskip\pause}
+
+%%% PER IMPORTARE LE IMMAGINI
+\RequirePackage{graphicx} 
+\newcommand{\fig}[1]{\includegraphics[clip=false]{#1}}
+\newcommand{\figscale}[2]{\includegraphics[scale=#2,clip=false]{images/#1}}
+
+%% FONT
+\newcommand{\tblue}{\color{blue}} % testo blue
+\newcommand{\tred}{\color{red}}  % testo red
+\newcommand{\nterm}[1]{\emph{\tblue #1}} % non terminale
+\newcommand{\lf}[1]{{\tt #1}} % language font
+\newcommand{\lfb}[1]{\tb{\tt #1}} % language font blue
+\newcommand{\lfr}[1]{\tr{\tt #1}} % language font red
+\newcommand{\tb}[1]{{\tblue #1}} % alert 2
+\newcommand{\tr}[1]{{\tred #1}} % alert 3
+
+\newcommand{\happy}{\ \includegraphics[scale=.1,clip=false]{images/happy2}\ }
+\newcommand{\sad}{\ \includegraphics[scale=.12,clip=false]{images/sad2}\ }
+\newcommand{\inter}[1]{[\![{#1}]\!]}
+\newcommand{\interlarge}[1]{\left[\!\!\left[{#1}\right]\!\!\right]}
