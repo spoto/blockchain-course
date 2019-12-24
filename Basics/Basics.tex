@@ -2,6 +2,9 @@
 %%\documentclass[11pt,handout]{beamer} %% versione stampa
 \usepackage{lucidiJb-2ed}
 
+\usepackage{relsize}
+
+
 \mode<article>
 {
   \usepackage{fullpage}
@@ -16,11 +19,15 @@
 }
 
 \subtitle{Learning Ethereum}
-\title{Introduction}
+\title{The Basics}
 \institute{Universit\`a di Verona, Italy}
 \date{January 2020}
 
 \setbeamercovered{invisible}
+
+\def\codesize{\smaller}
+\def\<#1>{\codeid{#1}}
+\newcommand{\codeid}[1]{\ifmmode{\mbox{\codesize\ttfamily{#1}}}\else{\codesize\ttfamily #1}\fi}
 
 \begin{document}
 
@@ -76,7 +83,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Ethereum (ETH) price over the years}
+\begin{frame}\frametitle{Ether (ETH) price over the years}
 
   \begin{center}
     \includegraphics[scale=0.29,clip=false]{pictures/ethereum.png}
@@ -84,10 +91,181 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Ethereum Classic (ETC) price over the years}
+\begin{frame}\frametitle{Ethereum Classic Ether (ETC) price over the years}
 
   \begin{center}
     \includegraphics[scale=0.29,clip=false]{pictures/ethereum-classic.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Ether denominations and unit names}
+
+  \begin{center}
+    \includegraphics[scale=0.2,clip=false]{pictures/ether-denominations.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Wallets}
+
+  \begin{greenbox}{}
+    A wallet is a
+    software application that helps you manage your Ethereum account(s),
+    by keeping your keys, creating and broadcasting transactions:
+    \begin{itemize}
+    \item mobile (Jaxx)
+    \item desktop (Jaxx, Emerald Wallet)
+    \item web-based (MetaMask, MyEtherWallet)
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{MetaMask: create account}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/metamask-account.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{MetaMask: connect to the faucet}
+
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/metamask-faucet.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{MetaMask: connect to the faucet}
+
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/metamask-faucet.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{MetaMask: transaction for getting 1 ETH}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/metamask-faucet-transaction.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{MetaMask: detail of the transaction}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/metamask-faucet-transaction-details.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{MetaMask: transactions of our account}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/metamask-faucet-transactions.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Externally owned accounts (EOA) and contracts}
+
+  \begin{greenbox}{}
+    EOAs have keys, contracts have code. Both have an address
+  \end{greenbox}
+  
+  \begin{center}
+    \includegraphics[scale=0.35,clip=false]{pictures/eoa-contract.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Remix: web IDE for Solidity}
+
+  \begin{greenbox}{}
+    \url{https://remix.ethereum.org}
+  \end{greenbox}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/faucet_sol.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Remix: deploy an instance of the contract}
+
+  \begin{greenbox}{}
+    Remix will create for us a transaction with the 0 address as destination
+  \end{greenbox}
+
+  \begin{center}
+    \includegraphics[scale=0.45,clip=false]{pictures/deploy-faucet.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Remix: an instance of \<Faucet> has been deployed}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/deployed-faucet.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Check the outcome on Etherscan}
+
+  \begin{greenbox}{}
+    \url{https://ropsten.etherscan.io}
+  \end{greenbox}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/faucet-etherscan.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Send one Ether to the \<Faucet> through MetaMask}
+
+  This corresponds to calling the default payable function
+  
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/faucet-etherscan2.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Run the \<withdraw> function of the \<Faucet> in Remix}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/faucet-withdraw.png}
+  \end{center}
+
+  \begin{center}
+    $17$ zero's
+  \end{center}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Check again on Etherscan}
+
+  The faucet worked properly!
+  
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/faucet-etherscan3.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The \<Faucet> has originated an internal transaction}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/faucet-etherscan-internal.png}
+  \end{center}
+
+  \begin{center}
+    \<msg.sender.transfer(withdraw\_amount)>
   \end{center}
 
 \end{frame}
