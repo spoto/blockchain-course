@@ -3,7 +3,13 @@
 \usepackage{lucidiJb-2ed}
 
 \usepackage{relsize}
-
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily,
+  showstringspaces=false,
+  commentstyle=\color{red},
+  keywordstyle=\color{blue}
+}
 
 \mode<article>
 {
@@ -266,6 +272,120 @@
 
   \begin{center}
     \<msg.sender.transfer(withdraw\_amount)>
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Ethereum clients}
+
+  \begin{greenbox}{}
+    An Ethereum client is a software application that implements
+    the Ethereum specification (the \emph{Yellow Paper}) and communicates
+    over the peer-to-peer network with other Ethereum clients.
+  \end{greenbox}
+
+  \medskip
+
+  \begin{itemize}
+  \item Parity (Rust)
+  \item Geth (Go)
+  \item \<cpp-ethereum> (C++)
+  \item \<pyethereum> (Python)
+  \item Mantis (Scala)
+  \item Harmony (Java)
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Client types}
+
+  \begin{greenbox}{Full nodes}
+    A full node stores the whole blockchain ($\sim$200GB) and
+    takes part in mining. Very slow to synchronize.
+    It can query the blockchain offline and
+    without letting a third party know the information that it's reading
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Remote clients}
+    A remote client does not store the blockchain but
+    depends on another full node for operation. They are wallets
+    that create and broadcast transactions (for instance, MetaMask)
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Networks}
+    The \emph{mainnet}, or a \emph{testnet}, or a local blockchain
+    (Ganache)
+  \end{greenbox}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Infura: a cloud service to a full node}
+
+  \url{https://infura.io}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/infura.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Infura: ask for client version}
+
+  \begin{greenbox}{}
+    Register to Infura and create a project. Use the provided
+    ID to build a query to Infura's JSON-RPC API:
+
+\begin{semiverbatim}
+$ \alert{curl https://mainnet.infura.io/v3/05....4
+  -X POST
+  -H "Content-Type: application/json"
+  -d '\{"jsonrpc":"2.0","method":"web3_clientVersion",
+  "params": [],"id":1\}'}
+{\color{blue}\{"jsonrpc":"2.0","id":1,
+ "result":"Geth/v1.9.9-omnibus-e320ae4c-20191206
+               /linux-amd64/go1.13.4"\}}
+\end{semiverbatim}
+
+\end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Infura: ask for gas price}
+
+  \begin{greenbox}{}
+    Use your Infura ID to build a query to Infura's JSON-RPC API:
+
+\begin{semiverbatim}
+$ \alert{curl https://mainnet.infura.io/v3/05....4
+  -X POST
+  -H "Content-Type: application/json"
+  -d '\{"jsonrpc":"2.0","method":"eth_gasPrice",
+       "params": [],"id":1\}'}
+{\color{blue}\{"jsonrpc":"2.0","id":1,"result":"0x3b9aca00"\}}
+$ \alert{echo $((0x3b9aca00))}
+{\color{blue}1000000000}
+\end{semiverbatim}
+
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Infura implements Ethereum JSON-RPC API}
+
+  \begin{center}
+    \includegraphics[scale=0.47,clip=false]{pictures/infura-json-rpc.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Mobile remote client: Jaxx}
+
+  \begin{center}
+    \includegraphics[scale=0.1,clip=false]{pictures/jaxx.png}
   \end{center}
 
 \end{frame}
