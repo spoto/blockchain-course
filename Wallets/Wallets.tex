@@ -224,4 +224,125 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
 
 \end{frame}
 
+\begin{frame}\frametitle{Nondeterministic wallets}
+
+  \begin{greenbox}{Just a Bunch of Keys -- JBOK}
+    They store one or more unrelated private keys, encrypted with a password,
+    inside a keystore, ie, a textual file.
+  \end{greenbox}
+
+  \medskip
+
+  \begin{greenbox}{Password stretching}
+    To make dictionary attacks harder, they apply a hash function
+    repeatedly to the password, using the hash result as actual encryption
+    password. This is a so-called \alert{key derivation algorithm}.
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/key-derivation-function.png}
+  \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Deterministic (seeded) wallets}
+
+  \begin{greenbox}{Streams of keys}
+    They store just a seed, from which streams of keys can be derived.
+    \begin{itemize}
+    \item the seed is the only information that must be stored and kept private
+    \item each stream can be allocated for different goals or to
+      distinct company departments
+    \end{itemize}
+  \end{greenbox}
+
+  \medskip
+
+  \begin{center}
+    \includegraphics[scale=0.85,clip=false]{pictures/hd-wallet.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Encoding the seed as mnemonic code words (BIP-39)}
+
+  \begin{center}
+    \includegraphics[scale=0.27,clip=false]{pictures/entropy-to-mnemonic.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Encoding the seed as mnemonic code words (BIP-39)}
+
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/mnemonic-to-seed.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Practical considerations}
+
+  \begin{itemize}
+  \item keep the mnemonic on paper, never in digital form
+  \item memorize the passphrase
+  \item let somebody else memorize the passphrase
+  \item hint towards a wrong passphrase, leading to a \emph{duress wallet}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}\frametitle{Parent to child key derivation (BIP-32)}
+
+  \begin{itemize}
+  \item there is an algorithm to derive private child keys from private parent keys
+  \item there is an algorithm to derive public child keys from public parent keys
+    \begin{itemize}
+    \item ideal for storing public keys only in a cloud server
+    \end{itemize}
+  \item the derivation can be \emph{hardened}, so that
+    the knowledge of a single private key does not allow to reconstruct
+    the other private keys
+  \end{itemize}
+
+  \begin{center}
+    \begin{tabular}{ll}
+      HD path & Key described \\\hline
+      \<m/0> & The first (\<0>) child private key of the master private key (\<m>) \\
+      \<m/0/0> & The first grandchild private key of the first child (\<m/0>) \\
+      \<m/0'/0> & The first normal grandchild of the first \emph{hardened} child (\<m/0'>) \\
+      \<m/1/0> & The first grandchild private key of the second child (\<m/1>) \\
+      \<M/23/17/0/0> & The first great-great-grandchild public key of the first \\
+                     & great-grandchild of the 18th grandchild of the 24th child
+    \end{tabular}
+  \end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Giving structure to the key hierarchy (BIP-44)}
+
+  \begin{center}
+    \<[m|M]/purpose'/coin\_type'/account'/change/address\_index>
+  \end{center}
+
+  \bigskip
+
+  \begin{greenbox}{}
+    The value of \<purpose> is fixed to \<44>.
+    For Ethereum, \<coin\_type> is fixed to \<60> and \<change> is fixed to \<0>:
+    \begin{center}
+      \<[m|M]/44'/60'/account'/0/address\_index>
+    \end{center}
+
+    \begin{center}
+      \begin{tabular}{ll}
+        HD path & Key described \\\hline
+        \<M/44'/60'/0'/0/2> & The third public key for the primary\\
+                            & Ethereum account\\
+        \<M/44'/0'/3'/1/14> & The 15th change-address public key\\
+                            & for the 4th Bitcoin account\\
+        \<m/44'/2'/0'/0/1>  & The second private key for the primary\\
+                            & Litecoin account
+      \end{tabular}
+    \end{center}
+  \end{greenbox}
+\end{frame}
+
 \end{document}
