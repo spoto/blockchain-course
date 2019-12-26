@@ -1,0 +1,30 @@
+\frametitle{Hex encoding with checksum in capitalization (EIP-55)}
+
+  \begin{greenbox}{A backward compatible checksum injection}
+    \begin{enumerate}
+    \item use Keccak-256 to compute 64 hex digits from the uncapitalized Ethereum address
+      (40 hex digits)
+    \item capitalize each alphabetic address character if the corresponding hex digit
+      of the hash is greater than or equal to \<0x8>
+    \end{enumerate}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Example}
+\begin{semiverbatim}
+Address:   001d3f1ef827552ae1114027bd3ecf1f086ba0f9
+Keccak256: 23a69c1653e4ebbb619b0b2cb8a9bad49892a8b9...
+Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\color{red}D}3{\color{red}ECF}1f086b{\color{red}A}0{\color{red}F}9
+\end{semiverbatim}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Checking procedure of an EIP-55 encoded address}
+    \begin{itemize}
+    \item apply the above capitalization procedure to it
+    \item the result must match the EIP-55 encoded address
+    \end{itemize}
+  \end{greenbox}
+
