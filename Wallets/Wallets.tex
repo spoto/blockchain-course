@@ -364,7 +364,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
     \item Gas limit: maximum willing to consume
     \item To: destination address
     \item Value: ether sent to destination
-    \item Data: generic payload
+    \item Data: generic payload (method name, parameters, contract code\ldots)
     \item v,r,s: ECDSA signature of the originating EOA
     \end{itemize}
   \end{greenbox}
@@ -398,7 +398,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
 
   \bigskip
 
-  \begin{greenbox}{Clients check nonces}
+  \begin{greenbox}{Nodes check nonces}
     They count the number $n$ of transactions originated
     by the originating EOA. If the nonce is smaller than $n+1$, the
     transaction is rejected. If the nonce is greater than $n+1$,
@@ -414,6 +414,32 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
   \begin{redbox}{}
     Keeping track of nonces is hard for concurrent accesses!
   \end{redbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Computing next nonce in Java using Infura}
+
+{\scriptsize\begin{verbatim}
+public class GetNonce {
+  // the address that we created with MetaMask
+  private final static String ME
+    = "0xb2B68C5E29C4267A24BB92daC5579D93f9A74812";
+  private final Web3j web3 = Web3j.build
+    (new HttpService("https://ropsten.infura.io/v3/05...4"));
+
+  public BigInteger transactionCount() throws ... {
+    EthGetTransactionCount ethGetTransactionCount
+      = web3.ethGetTransactionCount
+        (ME, DefaultBlockParameterName.LATEST).sendAsync().get();
+    return ethGetTransactionCount.getTransactionCount();
+  }
+
+  public static void main(String[] args) throws... {
+    GetNonce gn = new GetNonce();
+    System.out.println("Next nonce is: " + gn.transactionCount());
+  }
+}   
+\end{verbatim}}
 
 \end{frame}
 
@@ -456,6 +482,60 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
 
   Clients should check for correctness of addresses, for instance
   through EIP-55.
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Example: sending ETH from our account to the faucet}
+
+{\scriptsize\begin{verbatim}
+public class SendToFaucet {
+  private final static String ME
+    = "0xb2B68C5E29C4267A24BB92daC5579D93f9A74812";
+  private final static String ME_PRIVATE_KEY = "E2..."; // ask MetaMask for this
+  private final static String FAUCET
+    = "0x81b7E08F65Bdf5648606c89998A9CC8164397647"; // look in MetaMask
+  private final Web3j web3 = Web3j.build
+    (new HttpService("https://ropsten.infura.io/v3/05...4"));
+
+  public String sendToFaucet() throws ... {
+    RawTransaction raw  = RawTransaction.createEtherTransaction
+      (transactionCount(), // nonce, see previous example
+      BigInteger.valueOf(1L), // gas price
+      BigInteger.valueOf(21_000), // gas limit
+      FAUCET, // to
+      BigInteger.valueOf(50_000)); // value
+    Credentials credentials = Credentials.create(ME_PRIVATE_KEY);
+    byte[] signedMessage = TransactionEncoder.signMessage(raw, credentials);
+    String hexValue = Numeric.toHexString(signedMessage);
+    EthSendTransaction tr = web3.ethSendRawTransaction(hexValue).sendAsync().get();
+    // to check for errors: tr.hasError()
+    return tr.getTransactionHash();
+  }
+}
+\end{verbatim}}
+
+\end{frame}
+
+\begin{frame}\frametitle{Transactions with value (\emph{payments})}
+
+  \begin{itemize}
+  \item the recipient is an EOA (data won't be used)
+    \begin{itemize}
+    \item the EOA existed already: its balance gets increased by value
+    \item the EOA didn't exist before: its balance is set to value
+    \end{itemize}
+  \item the recipient is a contract
+    \begin{itemize}
+    \item there is data: the payable method specified by the data will be executed,
+      after increasing the contract's balance by value
+    \item there is no data
+      \begin{itemize}
+      \item there is a payable \emph{fallback} function: it will be executed after
+        increasing the contract's balance by value
+      \item there is no fallback function: the balance of the contract gets increased by value
+      \end{itemize}
+    \end{itemize}
+  \end{itemize}
+
 \end{frame}
 
 \end{document}
