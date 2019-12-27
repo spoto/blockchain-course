@@ -345,4 +345,117 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
   \end{greenbox}
 \end{frame}
 
+\begin{frame}\frametitle{Blocks and transactions}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/blocks-contain-transactions.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{An Ethereum transaction}
+
+  \begin{greenbox}{}
+    A transaction is a signed message originated by an EOA, transmitted
+    by the Ethereum network, and recorded on the Ethereum blockchain.
+    \begin{itemize}
+    \item Nonce: sequence number per each originating EOA
+    \item Gas price: maximum willing to pay
+    \item Gas limit: maximum willing to consume
+    \item To: destination address
+    \item Value: ether sent to destination
+    \item Data: generic payload
+    \item v,r,s: ECDSA signature of the originating EOA
+    \end{itemize}
+  \end{greenbox}
+
+  \begin{center}
+    The originating EOA is implied by v,r,s
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Transactions induce state transitions}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/state-transition.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The nonce}
+
+  \begin{greenbox}{The nonce of an EOA}
+    A scalar value equal to the number of transactions sent from the EOA.
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Wallets keep track of nonces}
+    They increase it and attach to each transaction they create per
+    originating EOA.
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Clients check nonces}
+    They count the number $n$ of transactions originated
+    by the originating EOA. If the nonce is smaller than $n+1$, the
+    transaction is rejected. If the nonce is greater than $n+1$,
+    the transaction is delayed and not yet executed:
+    \begin{itemize}
+    \item this guarantees transaction ordering
+    \item and avoids transaction replaying
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{redbox}{}
+    Keeping track of nonces is hard for concurrent accesses!
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Gas}
+
+  The price of gas fluctuates, for protection against ETH spikes.
+
+  \bigskip
+
+  \begin{greenbox}{\url{https://ethgasstation.info/}}
+    \begin{center}
+      \includegraphics[width=\textwidth,clip=false]{pictures/ethgasstation.png}
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  It is well possible that transaction with $0$ gas price will be eventually
+  processed.
+
+  \bigskip
+
+  The maximal gas cost of a transaction will be $\mathit{Gas\ price}\times\mathit{Gas\ limit}$.
+\end{frame}
+
+\begin{frame}\frametitle{To}
+
+  Any $20$ bytes recipient address can be specified (EOA or contract),
+  there is no control!
+
+  \bigskip
+
+  \begin{redbox}{Burning ETH}
+    Sending ether to a nonexistent address means \emph{burning} that ether,
+    since it's practically impossible to identify the private key
+    that controls that address.
+  \end{redbox}
+
+  \bigskip
+
+  Clients should check for correctness of addresses, for instance
+  through EIP-55.
+\end{frame}
+
 \end{document}
