@@ -1,0 +1,121 @@
+%% Tema beamer
+%%
+\mode<presentation>
+
+\newif\ifbeamer@secheader
+\beamer@secheaderfalse
+
+\DeclareOptionBeamer{secheader}{\beamer@secheadertrue}
+\ProcessOptionsBeamer
+
+\usecolortheme{whale}
+\usecolortheme{orchid}
+%%\usecolortheme{seagull}
+
+%% INNER THEME
+\useinnertheme[shadow]{rounded} %
+
+%% >> OUTERTHEME
+\mode<presentation>
+
+\setbeamertemplate{title page}{ %
+  \begin{centering}
+    \begin{tabular}{lc}
+      \begin{minipage}{31ex}
+        \includegraphics[scale=.45,clip=false]{pictures/smart-contract.jpg}
+      \end{minipage}&
+      \begin{minipage}{34ex}
+        \begin{flushright}
+          \sffamily
+          \large \insertsubtitle\\[-.5ex]
+          \hrulefill \\
+          \bfseries
+          \Large {\bf \inserttitle}\\
+        \end{flushright}
+      \end{minipage}
+    \end{tabular}
+
+    \medskip\medskip\medskip
+    \begin{center}
+    \begin{tabular}{ll}
+      \includegraphics[scale=.08,clip=false]{pictures/email.jpg} & \raisebox{1.2ex}{{\scriptsize\texttt{fausto.spoto@univr.it}}} \\
+      \includegraphics[scale=.059,clip=false]{pictures/gitlogo.jpg} & \raisebox{1.2ex}{{\scriptsize\url{https://bitbucket.org/spoto/learning-ethereum}}} \\
+    \end{tabular}
+    \end{center}
+  \end{centering}
+  }%
+
+
+\setbeamertemplate{navigation symbols}{}
+
+\setbeamercolor*{author in head/foot}{parent=palette tertiary}
+\setbeamercolor*{title in head/foot}{parent=palette secondary}
+\setbeamercolor*{date in head/foot}{parent=palette primary}
+
+\setbeamercolor*{section in head/foot}{parent=palette tertiary}
+\setbeamercolor*{subsection in head/foot}{parent=palette primary}
+
+\newcommand{\strcopyright}{Fausto Spoto}
+
+\defbeamertemplate*{footline}{infolines theme}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{author in head/foot}%
+    \usebeamerfont{author in head/foot}\strcopyright
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.666666\paperwidth,ht=2.25ex,dp=1ex,right]{author in head/foot}%
+    \usebeamerfont{title in head/foot}\insertinstitute~-~\insertpart{}\hspace*{1ex}
+    \insertframenumber{} / \inserttotalframenumber\hspace*{2ex} 
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\defbeamertemplate*{headline}{infolines theme}
+{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,right]{section in head/foot}%
+    \usebeamerfont{section in head/foot}\insertsectionhead\hspace*{2ex}
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.5\paperwidth,ht=2.25ex,dp=1ex,left]{subsection in head/foot}%
+    \usebeamerfont{subsection in head/foot}\hspace*{2ex}\insertsubsectionhead
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+
+\setbeamersize{text margin left=1em,text margin right=1em}
+
+\mode
+<all>
+
+%%<< OUTERTHEME
+
+\ifbeamer@secheader\else\setbeamertemplate{headline}[default]\fi
+
+\mode
+<all>
+
+
+\setbeamertemplate{theorem begin}{%
+  \begin{\inserttheoremblockenv} {%
+      \ifx\inserttheoremname\@empty\ifx\inserttheoremaddition\@empty\else\inserttheoremaddition\fi
+      \else\inserttheoremname\ifx\inserttheoremaddition\@empty\else:~\inserttheoremaddition\fi\fi
+    }%
+}%
+\setbeamertemplate{theorem end}{\end{\inserttheoremblockenv}}
+
+
+
+\def\ttr<#1>#2{ %
+  \temporal<#1>{{\color{black}#2}}{{\color{red}#2}}{{\color{black}#2}}
+}%
+
+\def\ttb<#1>{ %
+  \temporal<#1>{\color{black}}{\color{blue}}{\color{black}}
+}%
+
+\def\enf<#1>{ %
+  \temporal<#1>{\color{black!50}}{\color{black}}{\color{black!70}}
+}%
+

@@ -1,0 +1,37 @@
+\documentclass[11pt]{beamer}  %% versione proiettore
+%%\documentclass[11pt,handout]{beamer} %% versione stampa
+\usepackage{lucidiJb-2ed}
+
+\usepackage{relsize}
+
+\mode<article>
+{
+  \usepackage{fullpage}
+  \usepackage{hyperref}
+}
+
+\mode<presentation>
+{
+  \setbeamertemplate{background canvas}[vertical shading][bottom=red!10,top=blue!10]
+  \usetheme{Ethereum}
+  \usefonttheme[onlysmall]{structurebold}
+}
+
+\subtitle{Learning Ethereum}
+\title{Smart Contracts}
+\institute{Universit\`a di Verona, Italy}
+\date{January 2020}
+
+\setbeamercovered{invisible}
+
+\def\codesize{\smaller}
+\def\<#1>{\codeid{#1}}
+\newcommand{\codeid}[1]{\ifmmode{\mbox{\codesize\ttfamily{#1}}}\else{\codesize\ttfamily #1}\fi}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\end{document}
