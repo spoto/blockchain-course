@@ -417,29 +417,11 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{Computing next nonce in Java using Infura}
+\begin{frame}\frametitle{Computing next nonce in Java using Infura}
 
-{\scriptsize\begin{verbatim}
-public class GetNonce {
-  // the address that we created with MetaMask
-  private final static String ME
-    = "0xb2B68C5E29C4267A24BB92daC5579D93f9A74812";
-  private final Web3j web3 = Web3j.build
-    (new HttpService("https://ropsten.infura.io/v3/05...4"));
-
-  public BigInteger transactionCount() throws ... {
-    EthGetTransactionCount ethGetTransactionCount
-      = web3.ethGetTransactionCount
-        (ME, DefaultBlockParameterName.LATEST).sendAsync().get();
-    return ethGetTransactionCount.getTransactionCount();
-  }
-
-  public static void main(String[] args) throws... {
-    GetNonce gn = new GetNonce();
-    System.out.println("Next nonce is: " + gn.transactionCount());
-  }
-}   
-\end{verbatim}}
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/get-nonce-java.png}
+  \end{center}
 
 \end{frame}
 
@@ -475,7 +457,11 @@ public class GetNonce {
   \begin{redbox}{Burning ETH}
     Sending ether to a nonexistent address means \emph{burning} that ether,
     since it's practically impossible to identify the private key
-    that controls that address.
+    that controls that address. It is standard practice to burn ether
+    by sending it to the address
+    \begin{center}
+      \<0x000000000000000000000000000000000000dEaD>
+    \end{center}
   \end{redbox}
 
   \bigskip
@@ -484,33 +470,19 @@ public class GetNonce {
   through EIP-55.
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{Example: sending ETH from our account to the faucet}
+\begin{frame}\frametitle{Signing and sending a transaction in Java with Infura}
 
-{\scriptsize\begin{semiverbatim}
-public class SendToFaucet \{
-  ...
-  private final static String ME_PRIVATE_KEY = "E2..."; // ask MetaMask for this
-  private final static String FAUCET
-    = "0x81b7E08F65Bdf5648606c89998A9CC8164397647"; // look in MetaMask
-  private final Web3j web3 = Web3j.build
-    (new HttpService("https://ropsten.infura.io/v3/05...4"));
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/send-transaction-java.png}
+  \end{center}
 
-  public String sendToFaucet() throws ... \{
-    RawTransaction raw  = RawTransaction.{\color{red}createEtherTransaction}
-      (transactionCount(), // nonce, see previous example
-      BigInteger.valueOf(1L), // gas price
-      BigInteger.valueOf(21_000), // gas limit
-      FAUCET, // to
-      BigInteger.valueOf(50_000)); // value
-    Credentials credentials = Credentials.create(ME_PRIVATE_KEY);
-    byte[] signedMessage = TransactionEncoder.signMessage(raw, credentials);
-    String hexValue = Numeric.toHexString(signedMessage);
-    EthSendTransaction tr = web3.ethSendRawTransaction(hexValue).sendAsync().get();
-    // to check for errors: tr.hasError()
-    return tr.getTransactionHash();
-  \}
-\}
-\end{semiverbatim}}
+\end{frame}
+
+\begin{frame}\frametitle{Example: sending ETH from our account to the faucet}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/send-ether-transaction-java.png}
+  \end{center}
 
 \end{frame}
 
@@ -558,31 +530,127 @@ public class SendToFaucet \{
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{Example: call \<withdraw()> on contract installed with Remix}
+\begin{frame}\frametitle{Example: call \<withdraw()> on contract installed with Remix}
 
-{\scriptsize\begin{semiverbatim}
-public class CallWithdraw \{
-  ...
-  // the address where our contract has been deployed by Remix,
-  // not the address of the faucet provided by MetaMask for testing
-  private final static String FAUCET
-    = "0x78D632E695458B87ec7747234C2c9B306d3aa197"; // look in MetaMask
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/send-function-transaction-java.png}
+  \end{center}
 
-  public String withdrawFromFaucetContract() throws ... \{
-    Function sig = new Function("withdraw", // function name
-      Arrays.asList(new Uint256
-        (Convert.toWei("1", Unit.SZABO).toBigInteger())), // actuals
-      Collections.emptyList()); // returned values (none)
-    RawTransaction raw  = RawTransaction.{\color{red}createTransaction}
-      (transactionCount(), // nonce, see previous example
-      Convert.toWei("10", Unit.GWEI).toBigInteger(), // gas price
-      BigInteger.valueOf(50_000), // gas limit
-      FAUCET, // to
-      FunctionEncoder.encode(sig)); // data
-    ... same as before
-  \}
-\}
-\end{semiverbatim}}
+\end{frame}
+
+\begin{frame}\frametitle{Transactions creating a new instance of a contract}
+
+  \begin{itemize}
+  \item the signing key specifies the caller
+  \item the recipient is set to the zero address
+  \item the data component contains the compiled bytecode of the contract
+  \item the transaction receipt contains the address of the new contract
+  \end{itemize}
+
+  \bigskip
+
+  \begin{redbox}{}
+    If the same code is deployed more times, it is \underline{not}
+    shared among all instances of the contract. That is, there is no
+    notion of classpath in Ethereum.
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Example: create an instance of \<Faucet.sol> with Infura}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/send-contract-transaction-java.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Waiting for the receipt}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/wait-receipt-java.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Transaction signing (ECDSA)}
+
+  Transactions are digitally signed before being broadcast to Ethereum:
+
+{\small\begin{verbatim}
+Credentials credentials = Credentials.create(ME_PRIVATE_KEY);
+byte[] signedMessage = TransactionEncoder.signMessage
+  (transaction, credentials);
+\end{verbatim}}
+
+  The signature serves three goals:
+  \begin{enumerate}
+  \item it guarantees that the transaction was created by the sender (\alert{authenticity})
+  \item it guarantees that the sender cannot deny having sent the transaction (\alert{non-repudiation})
+  \item it guarantees that the transaction was not altered in transit (\alert{integrity})
+  \end{enumerate}
+
+  \bigskip
+
+  \begin{greenbox}{}
+    The public key of the signer can be recovered from the signed transaction.
+    A numerical chain identifier is added to the transaction before signing,
+    so that transactions cannot be replayed across networks
+    (mainnet, testnets\ldots).
+  \end{greenbox}
+\end{frame}
+
+\begin{frame}\frametitle{Offline signing}
+
+  \begin{greenbox}{}
+    For extreme security, transactions might be signed offline,
+    on an \emph{airgapped} computer, so that private keys are not
+    in memory of any connected computer.
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/offline_signing.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Transaction broadcasting}
+
+  \begin{greenbox}{}
+    Clients broadcast signed transactions to a set of nodes they are in contact with.
+    These verify signature and syntax of the transactions and further propagate the signed transactions
+    to their neighbors, in a pure P2P approach.
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/p2p.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Multi-signature transactions}
+
+  \begin{greenbox}{}
+    Differently from Bitcoin, Ethereum has no native support for multi-signature transactions,
+    that are only valid if signed by more EOAs. However,
+    multi-signature and other signature schemes can be programmed through smart contracts:
+
+    \begin{itemize}
+    \item extreme flexibility
+    \item risk of bugs
+    \end{itemize}
+      
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{center}
+    \includegraphics[scale=0.15,clip=false]{pictures/multi-signature.png}
+  \end{center}
 
 \end{frame}
 
