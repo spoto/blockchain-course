@@ -325,4 +325,16 @@ require(withdraw_amount <= 0.1 ether);
   
 \end{frame}
 
+\begin{frame}\frametitle{Casts do not fail in Solidity}
+
+  Contract parameter types are just casts:
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/cast-does-not-fail.png}
+  \end{center}
+
+  Calling \<d.callSetN(c, 42)>, where \<c> is a \<C>,
+  does not fail but calls \<C>'s
+  fallback function and transfers all sent value to \<c>!
+\end{frame}
+
 \end{document}
