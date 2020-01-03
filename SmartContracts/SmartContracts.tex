@@ -34,4 +34,163 @@
   \titlepage
 \end{frame}
 
+\begin{frame}\frametitle{A smart contract is\ldots}
+
+  \begin{itemize}
+  \item a computer program (not \emph{smart} nor \emph{a contract})
+  \item immutable
+  \item deterministic
+  \item operating on restricted data
+  \item running on a decentralized world computer
+  \end{itemize}
+
+  In Ethereum:
+  \begin{itemize}
+  \item compiled into EVM bytecode
+  \item installed by sending a special transaction to address \<0x0>
+  \item its code can be deleted if it contains a \<SELFDESTRUCT> bytecode
+  \item has no keys
+  \item who installs it gets no automatic privileges
+  \item runs after a transaction initiated by an EOA
+    \begin{itemize}
+    \item or a chain of transactions initiated by an EOA
+    \item no parallelism, no background processing
+    \end{itemize}
+  \item transactions are atomic
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Back to our first Solidity example}
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/faucet_sol.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{ABI -- from Remix or from \<solc>}
+
+{\scriptsize\begin{verbatim}
+[
+  {
+    "payable": true,
+    "stateMutability": "payable",
+    "type": "fallback"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "withdraw_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "withdraw",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
+\end{verbatim}}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Select a compiler version}
+
+  \begin{greenbox}{Add a pragma directive}
+    \verb!pragma solidity ^0.4.19! requires to compile with a compiler for version $0.4.x$ with $x\ge 19$.
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Basic Solidity types}
+  \begin{greenbox}{\<bool>}
+    with constants \<true> and \<false> and usual operators
+  \end{greenbox}
+  \bigskip
+  \begin{greenbox}{\<int>, \<unint>}
+    signed or unsigned, witgh usual operators, in increments of 8 bit size:
+    \<uint8>, \<uint16>, \<int24>\ldots. Without specification, they stand for
+    \<int256> and \<unint256>, respectively
+  \end{greenbox}
+  \bigskip
+  \begin{greenbox}{\<fixed>$M\times N$, \<ufixed>$M\times N$}
+    fixed point arithmetic, signed or unsigned, $M$ bits, $N$ decimals
+    after th epoint
+  \end{greenbox}
+  \bigskip
+  \begin{greenbox}{\<address>}
+    a 20-bytes Ethereum address, with members \<balance> and \<transfer>
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Basic Solidity types}
+
+  \begin{greenbox}{\<bytes>$N$}
+    fixed-size array of bytes, of length $N$
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{\<bytes> or \<string>}
+    variable-sized arrays of bytes
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Arrays}
+    \<uint32[][5]> is a fixed size array of five dynamic
+    arrays of $32$ bits unsigned integers
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Enum's}
+\begin{verbatim}
+enum NAME { A, B, ... }
+\end{verbatim}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Basic Solidity types}
+
+  \begin{greenbox}{Struct's}
+\begin{verbatim}
+struct pair {
+  int16 x;
+  unint8 y;
+}
+\end{verbatim}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Mappings}
+\begin{verbatim}
+mapping(address => unint256) balances;
+\end{verbatim}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Unit multipliers}
+
+  \begin{greenbox}{Time units: \<seconds>, \<minutes>, \<hours>, \<days>}
+\begin{verbatim}
+uint delay = 3 hours;
+\end{verbatim}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Ether units: \<wei>, \<finney>, \<szabo>, \<ether>}
+\begin{verbatim}
+require(withdraw_amount <= 0.1 ether);
+\end{verbatim}
+  \end{greenbox}
+
+\end{frame}
+
 \end{document}
