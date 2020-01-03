@@ -193,4 +193,136 @@ require(withdraw_amount <= 0.1 ether);
 
 \end{frame}
 
+\begin{frame}\frametitle{Transaction information}
+
+  \begin{greenbox}{Structures \<msg> and \<tx> are computed from the transaction request}
+    \begin{description}
+    \item[\<msg.sender>] the address that sent the transaction
+    \item[\<msg.value>] the ether sent along the transaction
+    \item[\<msg.gasleft>] what remains to consume of the gas limit
+    \item[\<msg.data>] the data payload of the transaction
+    \item[\<msg.sig>] the first four bytes of \<msg.data> (method selector)
+    \item[\<tx.gasprice>] the gas price used
+    \item[\<tx.origin>] the address of the \alert{originating} EOA
+    \end{description}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{\<msg.sender> vs \<tx.origin>}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/sender-origin.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Block information}
+
+  \begin{greenbox}{The structure \<block> is constructed by the miner}
+    \begin{description}
+    \item[\<block.coinbase>] the address of the miner
+    \item[\<block.difficulty>] the proof of work difficult
+    \item[\<block.gaslimit>] the maximum gas spent in the block
+    \item[\<block.number>] the current block height
+    \item[\<block.timestamp>] the mining time
+    \end{description}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Members of an address}
+
+  \begin{greenbox}{}
+    \begin{description}
+    \item[\<address.balance>] the balance of the address (EOA or contract),
+      such as \<address(this).balance>
+    \item[\<address.transfer(x)>] sends $x$ wei to the address; throws an exception in case of
+      failure
+    \item[\<address.send(x)>] as \<transfer>, but returns \<false> in case of failure
+    \item[\<address.call(p)>] sends a method transaction to the address, with the given
+      payload; returns \<false> in case of failure
+    \item[\<address.callcode(p)>] sends a method transaction to the address, with the given
+      payload; runs in the scope of the caller; returns \<false> in case of failure
+    \item[\<address.delegatecode(p)>] sends a method transaction to the address, with the given
+      payload, but keeps \<msg.sender> and \<msg.value> unchanged;
+      runs in the scope of the caller; returns \<false> in case of failure
+    \end{description}
+  \end{greenbox}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Example of function call}
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/normal-call.png}
+  \end{center}
+
+  Calling \<d.callSetN(e, 42)>:
+  \begin{itemize}
+  \item \<e.n> will become $42$
+  \item \<e.sender> will become \<d>
+  \item \<d.n> and \<d.sender> are not modified
+  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Example of low-level \<call>}
+
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/call.png}
+  \end{center}
+
+  Calling \<d.callSetN(e, 42)>:
+  \begin{itemize}
+  \item \<e.n> will become $42$
+  \item \<e.sender> will become \<d>
+  \item \<d.n> and \<d.sender> are not modified
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Example of a failing low-level \<call>}
+
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/call.png}
+  \end{center}
+
+  Calling \<d.callSetN(c, 42)> where \<c> has no \<setN(uint \_n)> function:
+  \begin{itemize}
+  \item the outer transaction will succeed
+  \item the inner \<\_e.call> transaction will fail and be reverted
+  \item function \<\_e.call> will return \<false>
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Example of low-level \<callcall>}
+
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/callcode.png}
+  \end{center}
+
+  Calling \<d.callSetN(e, 42)>:
+  \begin{itemize}
+  \item \<d.n> will become $42$
+  \item \<d.sender> will become \<d>
+  \item \<e.n> and \<e.sender> are not modified
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Example of low-level \<delegatecall>}
+
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/delegatecall.png}
+  \end{center}
+
+  Calling \<c.foo(d, e, 42)>:
+  \begin{itemize}
+  \item \<d.n> will become $42$
+  \item \<d.sender> will become \<c>
+  \item \<e.n> and \<e.sender> are not modified
+  \end{itemize}
+  
+\end{frame}
+
 \end{document}
