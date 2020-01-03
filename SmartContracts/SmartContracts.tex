@@ -295,7 +295,7 @@ require(withdraw_amount <= 0.1 ether);
   
 \end{frame}
 
-\begin{frame}\frametitle{Example of low-level \<callcall>}
+\begin{frame}\frametitle{Example of low-level \<callcode>}
 
   \begin{center}
     \includegraphics[scale=0.3,clip=false]{pictures/callcode.png}
@@ -327,14 +327,71 @@ require(withdraw_amount <= 0.1 ether);
 
 \begin{frame}\frametitle{Casts do not fail in Solidity}
 
-  Contract parameter types are just casts:
   \begin{center}
-    \includegraphics[scale=0.3,clip=false]{pictures/cast-does-not-fail.png}
+    \includegraphics[scale=0.45,clip=false]{pictures/cast-does-not-fail.png}
   \end{center}
 
-  Calling \<d.callSetN(c, 42)>, where \<c> is a \<C>,
+  Calling \<d.callFoo(c)>, where \<c> is a \<C>,
   does not fail but calls \<C>'s
-  fallback function and transfers all sent value to \<c>!
+  fallback function and transfers $100$ wei to \<c>!
+\end{frame}
+
+\begin{frame}\frametitle{Parameter contract types are just casts}
+
+  \begin{center}
+    \includegraphics[scale=0.45,clip=false]{pictures/cast-does-not-fail2.png}
+  \end{center}
+
+  Calling \<d.callFoo(c)>, where \<c> is a \<C>,
+  does not fail but calls \<C>'s
+  fallback function and transfers $100$ wei to \<c>!
+\end{frame}
+
+\begin{frame}\frametitle{Main types in Solidity}
+
+  \begin{description}
+  \item[\<contract>] somehow similar to an object in OO-programming. It has a balance
+  \item[\<interface>] functions have no code and must be implemented in subtypes
+  \item[\<library>] a contract meant to be deployed once and used by other contracts through \<delegatecall>. It has no variables and no balance. It does not receive ether
+    \begin{center}
+      \includegraphics[scale=0.45,clip=false]{pictures/library.png}
+    \end{center}
+  \end{description}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Visibility modifiers}
+  \begin{description}
+  \item[\<public>] can be called from everywhere
+  \item[\<external>] like \<public> but, if called from the same contract,
+    must be prefixed with \<this.>. They cost less gas than \<public>
+  \item[\<internal>] can only be called from the contract where they are defined
+    or from its subtypes
+  \item[\<private>] can only be called from the contract where they are defined
+  \end{description}
+
+  \bigskip
+
+  \begin{redbox}{Privacy?}
+    Data is always publicly readable in blockchain. These modifiers
+    only refer to who can call whom.
+  \end{redbox}
+\end{frame}
+
+\begin{frame}\frametitle{Side-effect modifiers}
+
+  \begin{description}
+  \item[\<view>] the function cannot modify the state
+    \begin{center}
+      \includegraphics[scale=0.45,clip=false]{pictures/not-view.png}
+    \end{center}
+  \item[\<pure>] the function cannot modify nor read the state
+    \begin{center}
+      \includegraphics[scale=0.45,clip=false]{pictures/not-pure.png}
+    \end{center}
+  \item[\<payable>] the function can receive incoming payments
+  \end{description}
+
 \end{frame}
 
 \end{document}

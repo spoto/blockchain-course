@@ -4,8 +4,8 @@ contract D {
     constructor () payable public {
     }
 
-    function callFoo(address e) public {
-        E(e).foo.value(100)();
+    function callFoo(E e) public {
+        e.foo.value(100)();
     }
 }
 
@@ -16,8 +16,6 @@ contract E {
 }
 
 contract C {
-    // accept any incoming amount
+    // Accept any incoming amount
     function () external payable {}
 }
-
-
