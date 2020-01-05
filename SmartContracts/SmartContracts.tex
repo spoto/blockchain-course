@@ -61,6 +61,22 @@
   
 \end{frame}
 
+\begin{frame}\frametitle{Solidity}
+
+  \begin{greenbox}{}
+    There are many programming languages for Ethereum smart contracts,
+    but Solidity is the de facto choice:
+    \begin{itemize}
+    \item imperative
+    \item vaguely object-oriented
+    \item in continuous evolution
+    \item \alert{non}-strongly-typed
+    \item unorthogonal features
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
 \begin{frame}\frametitle{Back to our first Solidity example}
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/faucet_sol.png}
@@ -230,7 +246,6 @@ require(withdraw_amount <= 0.1 ether);
   \end{greenbox}
 
 \end{frame}
-
 \begin{frame}\frametitle{Members of an address}
 
   \begin{greenbox}{}
@@ -250,101 +265,6 @@ require(withdraw_amount <= 0.1 ether);
     \end{description}
   \end{greenbox}
   
-\end{frame}
-
-\begin{frame}\frametitle{Example of function call}
-  \begin{center}
-    \includegraphics[scale=0.3,clip=false]{pictures/normal-call.png}
-  \end{center}
-
-  Calling \<d.callSetN(e, 42)>:
-  \begin{itemize}
-  \item \<e.n> will become $42$
-  \item \<e.sender> will become \<d>
-  \item \<d.n> and \<d.sender> are not modified
-  \end{itemize}
-\end{frame}
-
-\begin{frame}\frametitle{Example of low-level \<call>}
-
-  \begin{center}
-    \includegraphics[scale=0.3,clip=false]{pictures/call.png}
-  \end{center}
-
-  Calling \<d.callSetN(e, 42)>:
-  \begin{itemize}
-  \item \<e.n> will become $42$
-  \item \<e.sender> will become \<d>
-  \item \<d.n> and \<d.sender> are not modified
-  \end{itemize}
-  
-\end{frame}
-
-\begin{frame}\frametitle{Example of a failing low-level \<call>}
-
-  \begin{center}
-    \includegraphics[scale=0.3,clip=false]{pictures/call.png}
-  \end{center}
-
-  Calling \<d.callSetN(c, 42)> where \<c> has no \<setN(uint \_n)> function:
-  \begin{itemize}
-  \item the outer transaction will succeed
-  \item the inner \<\_e.call> transaction will fail and be reverted
-  \item function \<\_e.call> will return \<false>
-  \end{itemize}
-  
-\end{frame}
-
-\begin{frame}\frametitle{Example of low-level \<callcode>}
-
-  \begin{center}
-    \includegraphics[scale=0.3,clip=false]{pictures/callcode.png}
-  \end{center}
-
-  Calling \<d.callSetN(e, 42)>:
-  \begin{itemize}
-  \item \<d.n> will become $42$
-  \item \<d.sender> will become \<d>
-  \item \<e.n> and \<e.sender> are not modified
-  \end{itemize}
-  
-\end{frame}
-
-\begin{frame}\frametitle{Example of low-level \<delegatecall>}
-
-  \begin{center}
-    \includegraphics[scale=0.3,clip=false]{pictures/delegatecall.png}
-  \end{center}
-
-  Calling \<c.foo(d, e, 42)>:
-  \begin{itemize}
-  \item \<d.n> will become $42$
-  \item \<d.sender> will become \<c>
-  \item \<e.n> and \<e.sender> are not modified
-  \end{itemize}
-  
-\end{frame}
-
-\begin{frame}\frametitle{Casts do not fail in Solidity}
-
-  \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/cast-does-not-fail.png}
-  \end{center}
-
-  Calling \<d.callFoo(c)>, where \<c> is a \<C>,
-  does not fail but calls \<C>'s
-  fallback function and transfers $100$ wei to \<c>!
-\end{frame}
-
-\begin{frame}\frametitle{Parameter contract types are just casts}
-
-  \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/cast-does-not-fail2.png}
-  \end{center}
-
-  Calling \<d.callFoo(c)>, where \<c> is a \<C>,
-  does not fail but calls \<C>'s
-  fallback function and transfers $100$ wei to \<c>!
 \end{frame}
 
 \begin{frame}\frametitle{Main types in Solidity}
@@ -392,6 +312,352 @@ require(withdraw_amount <= 0.1 ether);
   \item[\<payable>] the function can receive incoming payments
   \end{description}
 
+\end{frame}
+
+\begin{frame}\frametitle{Constructors}
+  \begin{greenbox}{}
+    A contract \alert{can} have \alert{up to one} contructor, that gets called
+    only once as part of a transaction that deploys an instance
+    of the contract.
+  \end{greenbox}
+
+  \begin{center}
+    \includegraphics[scale=0.55,clip=false]{pictures/constructor.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Self destruction example}
+
+  Only needed to free state data in clients!
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/selfdestruct.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Self destruction example from 0.6.0}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/selfdestruct_6_0.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{\<address payable>}
+
+  \begin{greenbox}{Starting from 0.5.0, an \<address> can be \<payable>}
+    \begin{itemize}
+    \item required for calling \<send()>, \<transfer()> and \<call()>
+    \item all of \<msg.sender>, \<tx.origin> and \<block.coinbase> are
+      \<payable>
+    \item you can cast between \<address> and \<address payable> and such casts never fails
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Starting from 0.6.0, a contract can have at most
+      a \<receive> function}
+    \begin{itemize}
+    \item it must be \<external payable>
+    \item called for transactions without data
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Starting from 0.6.0, a contract can have at most
+      a \<fallback> function}
+    \begin{itemize}
+    \item it must be \<external>
+    \item called for transactions with data targetting no function in the
+      contract or for transactions without data if there is no \<receive>
+      function
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Modifiers}
+
+  \begin{greenbox}{They can be used to weave aspects into code}
+    \begin{center}
+      \includegraphics[scale=0.4,clip=false]{pictures/modifier.png}
+    \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Modifiers}
+
+  \begin{greenbox}{They can be used to do rather wierd things}
+    \begin{center}
+      \includegraphics[scale=0.6,clip=false]{pictures/twice.png}
+    \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Contract extension}
+
+  \begin{greenbox}{}
+    \begin{center}
+      \includegraphics[scale=0.38,clip=false]{pictures/subcontracts.png}
+    \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Constructor chaining}
+
+  \begin{greenbox}{}
+    \begin{center}
+      \includegraphics[width=\textwidth,clip=false]{pictures/constructor_chaining.png}
+    \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Assertions}
+  \begin{greenbox}{\<require(condition[,msg])>}
+    Evaluates the condition. If false, an exception is thrown and the
+    transaction is reverted. Typically used for checking function parameters.
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{\<assert(condition[,msg])>}
+    Evaluates the condition, \alert{that is expected to hold}.
+    If false, an exception is thrown and the
+    transaction is reverted. Typically used to verify runtime conditions
+    for debugging.
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{\<revert([msg])>}
+    Throws an exception and reverts the current transaction.
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{redbox}{}
+    There is no way to catch exceptions.
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Events}
+
+  \begin{greenbox}{}
+    \begin{center}
+      \includegraphics[width=\textwidth,clip=false]{pictures/events.png}
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  DApps can listen and react to events.
+\end{frame}
+
+\begin{frame}\frametitle{Specifying gas and value for inner transactions}
+
+  \begin{greenbox}{\<o.foo(pars)> can be decorated}
+    \begin{itemize}
+    \item \<o.foo.value(v)(pars)>
+    \item \<o.foo.gas(g)(pars)>
+    \item \<o.foo.gas(g).value(v)(pars)>
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{\<new C(pars)> can be decorated}
+    \begin{itemize}
+    \item \<(new C).value(v)(pars)>
+    \item \<(new C).gas(g)(pars)>
+    \item \<(new C).gas(g).value(v)(pars)>
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Contract creation and function calls}
+
+  \begin{greenbox}{}
+    \begin{center}
+      \includegraphics[scale=0.55,clip=false]{pictures/new-contract.png}
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  We know what gets called with \<faucet.destroy()>.
+\end{frame}
+
+\begin{frame}\frametitle{Contract creation with payable constructor}
+
+  \begin{greenbox}{If the constructor of \<Faucet> were made \<payable>}
+    \begin{center}
+      \includegraphics[scale=0.5,clip=false]{pictures/new-contract-payable.png}
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  We know what gets called with \<faucet.destroy()>.
+\end{frame}
+
+\begin{frame}\frametitle{Casts do not fail in Solidity}
+
+  \begin{center}
+    \includegraphics[scale=0.45,clip=false]{pictures/cast-does-not-fail.png}
+  \end{center}
+
+  Calling \<d.callFoo(c)>, where \<c> is a \<C>,
+  does not fail but calls \<C>'s
+  fallback function and transfers $100$ wei to \<c>!
+\end{frame}
+
+\begin{frame}\frametitle{Parameter contract types are just casts}
+
+  \begin{center}
+    \includegraphics[scale=0.45,clip=false]{pictures/cast-does-not-fail2.png}
+  \end{center}
+
+  Calling \<d.callFoo(c)>, where \<c> is a \<C>,
+  does not fail but calls \<C>'s
+  fallback function and transfers $100$ wei to \<c>!
+\end{frame}
+
+\begin{frame}\frametitle{Solidity is \alert{not} strongly-typed}
+
+  \begin{enumerate}
+  \item Casts are not checked
+  \item Parameter types are just Christmas decorations
+  \end{enumerate}
+
+  \bigskip
+
+  \begin{redbox}{}
+    Remember that a function declaring a formal parameter of type
+    \<address> or explicitly \<C> can actually receive any contract, of any
+    type, also completely unrelated to \<C>.
+    Callers can inject malicious code through such parameters!
+  \end{redbox}
+
+  \begin{center}
+    \includegraphics[scale=0.28,clip=false]{pictures/frightened-cat.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Members of an address for low-level calls}
+
+  \begin{greenbox}{}
+    \begin{description}
+    \item[\<address.call(p)>] sends a method transaction to the address, with the given
+      payload; returns \<false> in case of failure. This is actually used
+      by the compiler when we write normal function calls
+    \item[\<address.callcode(p)>] sends a method transaction to the address, with the given
+      payload; runs in the scope of the caller; returns \<false> in case of failure
+    \item[\<address.delegatecode(p)>] sends a method transaction to the address, with the given
+      payload, but keeps \<msg.sender> and \<msg.value> unchanged;
+      runs in the scope of the caller; returns \<false> in case of failure
+    \end{description}
+  \end{greenbox}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Example of function call}
+  \begin{center}
+    \includegraphics[scale=0.35,clip=false]{pictures/normal-call.png}
+  \end{center}
+
+  Calling \<d.callSetN(e, 42)>:
+  \begin{itemize}
+  \item \<e.n> will become $42$
+  \item \<e.sender> will become \<d>
+  \item \<d.n> and \<d.sender> are not modified
+  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{The previous example is actually compiled into this}
+
+  \begin{center}
+    \includegraphics[scale=0.35,clip=false]{pictures/call.png}
+  \end{center}
+
+  Calling \<d.callSetN(e, 42)>:
+  \begin{itemize}
+  \item \<e.n> will become $42$
+  \item \<e.sender> will become \<d>
+  \item \<d.n> and \<d.sender> are not modified
+  \end{itemize}
+  
+\end{frame}
+
+%\begin{frame}\frametitle{Example of a failing low-level \<call>}
+
+%  \begin{center}
+%    \includegraphics[scale=0.35,clip=false]{pictures/call.png}
+%  \end{center}
+
+%  Calling \<d.callSetN(c, 42)> where \<c> has no \<setN(uint \_n)> function:
+%  \begin{itemize}
+%  \item the outer transaction will succeed
+%  \item the inner \<\_e.call> transaction will fail and be reverted
+%  \item function \<\_e.call> will return \<false>
+%  \end{itemize}
+  
+%\end{frame}
+
+\begin{frame}\frametitle{Example of low-level \<callcode>}
+
+  \begin{center}
+    \includegraphics[scale=0.35,clip=false]{pictures/callcode.png}
+  \end{center}
+
+  Calling \<d.callSetN(e, 42)>:
+  \begin{itemize}
+  \item \<d.n> will become $42$
+  \item \<d.sender> will become \<d>
+  \item \<e.n> and \<e.sender> are not modified
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Example of low-level \<delegatecall>}
+
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/delegatecall.png}
+  \end{center}
+
+  Calling \<c.foo(d, e, 42)>:
+  \begin{itemize}
+  \item \<d.n> will become $42$
+  \item \<d.sender> will become \<c>
+  \item \<e.n> and \<e.sender> are not modified
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Gas consumption}
+
+  \begin{greenbox}{Each bytecode instruction and transaction type has a gas cost}
+    \begin{itemize}
+    \item it is possible to estimate the gas cost of simple functions
+      (use \<estimateGas> of web3 for instance)
+    \item \alert{the estimation is wrong in the presence of loops or recursion!}
+    \item in general, it is important to know which operations (might) cost much gas, to avoid them
+      \begin{itemize}
+      \item loops over unbounded dynamic arrays
+      \item calls to unknown contracts
+      \end{itemize}
+    \end{itemize}
+  \end{greenbox}
 \end{frame}
 
 \end{document}
