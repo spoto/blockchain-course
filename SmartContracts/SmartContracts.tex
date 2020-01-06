@@ -124,4 +124,121 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{A simple auction (1)}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/simple-auction-1.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A simple auction (2)}
+
+  \begin{center}
+    \includegraphics[scale=0.42,clip=false]{pictures/simple-auction-2.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A simple auction (3)}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/simple-auction-3.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A simple auction (4)}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/simple-auction-4.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Why this complicated withdraw pattern?}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/simple-auction-withdraw.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Why this complicated withdraw pattern?}
+
+  \begin{greenbox}{\<highestBidder.transfer(highestBid); DON'T DO THIS!!!>}
+    The problem with this call (inside function \<bid()>) is that
+    a broken or malicious bidder might redefine its own fallback function in
+    such a way to consume all gas (for instance):
+    \begin{itemize}
+    \item all subsequent bidders will get a failure when calling \<bid()>
+    \item the broken or malicious contract will never be replaced by another bidder
+    \item it will be the winner of the auction, even with a minimal bid!
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The re-entrancy nightmare}
+
+  \only<1>{
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/simple-auction-withdraw-only.png}
+  \end{center}
+  }
+  \only<2>{
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/simple-auction-withdraw-only-wrong.png}
+  \end{center}
+  }
+
+  \only<1>{
+    Why this complication of setting \<pendingReturns[msg.sender]=0>
+    so early?
+  }
+    
+  \only<2>{
+  \begin{greenbox}{Order does matter}
+    \begin{itemize}
+    \item a malicious bidder might redefine its own fallback function
+      in order to call \<withdraw()> back again, as many times as it likes
+      (in particular, if gas costs go down in the future or if
+      \<send()> is replaced with a low-level call)
+    \item it will withdraw its \<amount> as many times as it wants, until
+      the auction contract is depleted
+    \item basically, it runs away with the bids of all bidders
+    \end{itemize}
+  \end{greenbox}
+  }
+
+\end{frame}
+
+\begin{frame}\frametitle{The re-entrancy nightmare}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/re-entrancy.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The DAO attack (2016)}
+
+  \begin{greenbox}{The most famous re-entrancy exploit}
+    \begin{itemize}
+    \item the DAO was a contract for autonomous decentralized organizations
+    \item the attacker used re-entrancy to steal $50M\$$ equivalent of ETH
+    \item the Ethereum team decided to change the consensus rules in order
+      to make such transactions illegal and get some of that money back
+    \item some node maintainers didn't accept the change and continued
+      operating with the old rules, leading to a network fork known as
+      Ethereum Classic
+    \end{itemize}
+  \end{greenbox}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/ethereum-vs-ethereum-classic.jpg}
+  \end{center}
+
+\end{frame}
+
 \end{document}
