@@ -202,8 +202,6 @@
     \begin{itemize}
     \item a malicious bidder might redefine its own fallback function
       in order to call \<withdraw()> back again, as many times as it likes
-      (in particular, if gas costs go down in the future or if
-      \<send()> is replaced with a low-level call)
     \item it will withdraw its \<amount> as many times as it wants, until
       the auction contract is depleted
     \item basically, it runs away with the bids of all bidders
@@ -238,6 +236,29 @@
   \begin{center}
     \includegraphics[scale=0.5,clip=false]{pictures/ethereum-vs-ethereum-classic.jpg}
   \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Are \<send()> and \<transfer()> safe from re-entrancy?}
+
+  \begin{greenbox}{Currently yes}
+    \begin{itemize}
+    \item they only forward $2300$ units of gas, not enough for re-entrancy
+    \item differently from the low-level \verb!msg.sender.call.value(amount)("")!, that forwards all gas and definitely allows re-entrancy
+    \item however:
+      \begin{itemize}
+      \item gas costs might change in the future, allowing re-entrancy also
+        with $2300$ units of gas
+      \item the programmer might decide to forward more gas explicitly in order to deal
+        with contracts with complex fallback functions
+      \item \<send()> and \<transfer()> risk to be deprecated soon\ldots
+      \end{itemize}
+    \item in conclusion, it's good practice to
+      set \<pendingReturns[msg.sender] = 0>
+      before sending the money to
+      \<msg.sender>, however this is done
+    \end{itemize}
+  \end{greenbox}
 
 \end{frame}
 
