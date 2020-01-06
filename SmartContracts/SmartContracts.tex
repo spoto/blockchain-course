@@ -47,7 +47,7 @@
   In Ethereum:
   \begin{itemize}
   \item compiled into EVM bytecode
-  \item installed by sending a special transaction to address \<0x0>
+  \item installed in blockchain by sending a special transaction to address \<0x0>
   \item its code can be deleted if it contains a \<SELFDESTRUCT> bytecode
   \item has no keys
   \item who installs it gets no automatic privileges
@@ -59,6 +59,27 @@
   \item transactions are atomic
   \end{itemize}
   
+\end{frame}
+
+\begin{frame}\frametitle{Blocks keep transactions not state}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/blocks-state.png}
+  \end{center}
+
+  \begin{redbox}{}
+    The state root is just an hash of the state tree, to prove that
+    transactions have been execution by the miner.
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{\<SELFDESTRUCT> has effect on the state}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/state-selfdestruct.png}
+  \end{center}
+
 \end{frame}
 
 \begin{frame}\frametitle{Solidity}
