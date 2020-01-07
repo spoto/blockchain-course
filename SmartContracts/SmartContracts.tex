@@ -262,4 +262,55 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{A blind auction (1)}
+
+  \begin{greenbox}{In our simple auction, everything happens in clear}
+    We want a \alert{blind auction} now, where:
+    \begin{description}
+    \item[start] an EOA starts the auction and becomes its owner
+    \item[bidding phase] bidders place zero, one or more bids in \alert{closed envelopes};
+      some envelopes might contain bids marked as \alert{fake}, which allows one to bluff
+    \item[revealing phase] bidders provide the secret needed to open the envelopes
+    \item[end] the best non-fake bid is forwarded to the auction's owner
+    \end{description}
+  \end{greenbox}
+
+  \begin{center}
+    \includegraphics[scale=0.1,clip=false]{pictures/blind.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A blind auction (2)}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/blind-auction-1.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A blind auction (3)}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/blind-auction-2.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A blind auction (4)}
+
+  \begin{center}
+    \includegraphics[scale=0.35,clip=false]{pictures/blind-auction-3.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A blind auction (5)}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/blind-auction-4.png}
+  \end{center}
+
+\end{frame}
+
 \end{document}
