@@ -28,12 +28,14 @@ contract SimpleAuction {
     function withdraw() public returns (bool) {
         uint amount = pendingReturns[msg.sender];
         if (amount > 0) {
-            msg.sender.call.value(amount)("");
-
             pendingReturns[msg.sender] = 0;
+            
+            if (!msg.sender.send(amount)) {
+                pendingReturns[msg.sender] = amount;
+                return false;
+            }
         }
-        C c = new C();
-        c.goo.gas(100)();
+
         return true;
     }
 
@@ -44,10 +46,3 @@ contract SimpleAuction {
         owner.transfer(highestBid);
     }
 }
-
-contract C {
-    constructor () public {}
-    function goo() public {}
-}
-
-
