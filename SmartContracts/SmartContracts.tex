@@ -179,7 +179,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{The re-entrancy nightmare}
+\begin{frame}\frametitle{The reentrancy nightmare}
 
   \only<1>{
   \begin{center}
@@ -211,7 +211,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{The re-entrancy nightmare}
+\begin{frame}\frametitle{The reentrancy nightmare}
 
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/re-entrancy.png}
@@ -221,10 +221,10 @@
 
 \begin{frame}\frametitle{The DAO attack (2016)}
 
-  \begin{greenbox}{The most famous re-entrancy exploit}
+  \begin{greenbox}{The most famous reentrancy exploit}
     \begin{itemize}
     \item the DAO was a contract for autonomous decentralized organizations
-    \item the attacker used re-entrancy to steal $50M\$$ equivalent of ETH
+    \item the attacker used reentrancy to steal $50M\$$ equivalent of ETH
     \item the Ethereum team decided to change the consensus rules in order
       to make such transactions illegal and get some of that money back
     \item some node maintainers didn't accept the change and continued
@@ -239,15 +239,15 @@
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{Are \<send()> and \<transfer()> safe from re-entrancy?}
+\begin{frame}[fragile]\frametitle{Are \<send()> and \<transfer()> safe from reentrancy?}
 
   \begin{greenbox}{Currently yes}
     \begin{itemize}
-    \item they only forward $2300$ units of gas, not enough for re-entrancy
-    \item differently from the low-level \verb!msg.sender.call.value(amount)("")!, that forwards all gas and definitely allows re-entrancy
+    \item they only forward $2300$ units of gas, not enough for reentrancy
+    \item differently from the low-level \verb!msg.sender.call.value(amount)("")!, that forwards all gas and definitely allows reentrancy
     \item however:
       \begin{itemize}
-      \item gas costs might change in the future, allowing re-entrancy also
+      \item gas costs might change in the future, allowing reentrancy also
         with $2300$ units of gas
       \item the programmer might decide to forward more gas explicitly in order to deal
         with contracts with complex fallback functions
