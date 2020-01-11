@@ -215,4 +215,126 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{Issue \#4: \<delegatecall>}
+
+  It is a low-level call that allows one to call any method, as
+  done in Java by reflection.
+
+  \bigskip
+
+  \begin{redbox}{It keeps the calling context}
+    If the callee reads/modifies its $n$th state variable, it actually
+    reads/modifies the $n$th state variable of the caller, regardless of
+    names and types.
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Example: storage slot clash}
+
+  \begin{center}
+    \includegraphics[scale=0.33,clip=false]{pictures/delegatecall-storage-clash.png}
+  \end{center}
+
+  Invoking the constructor of \<Caller> with the address of a \<Callee> \visible<2>{actually
+  results in the \alert{\<private>} field \<lib> being set to $42$.
+
+  \begin{center}
+    \includegraphics[scale=0.35,clip=false]{pictures/surprised-cat.jpg}
+  \end{center}}
+
+\end{frame}
+
+\begin{frame}\frametitle{Example: call injection}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/delegatecall-call-injection.png}
+  \end{center}
+
+  The caller can forge proper data so that \<delegatecall> ends up calling
+  everything!
+
+  \bigskip
+
+  The same can occur with all low-level calls.
+
+\end{frame}
+
+\begin{frame}\frametitle{\<delegatecall>: prevention}
+
+  \begin{greenbox}{}
+    \begin{itemize}
+    \item use it only on \<library>s: they cannot have state, hence they do not read/modify fields
+      \begin{itemize}
+      \item double-check that the receiver cannot be injected
+      \end{itemize}
+    \item use it with prepared call data only, to avoid call injections
+    \item let the compiler use it, to compile calls to \<library>s
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Issue \#5: Weak encapsulation}
+
+  \begin{greenbox}{}
+    Programmers tend to be too permissive about visibility modifiers, often because
+    they do along with the default \<public> visibility.
+  \end{greenbox}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/weak-visibility.png}
+  \end{center}
+
+  \begin{redbox}{}
+    Everybody can call \<sendWinnings()>, it is \<public> by default!
+  \end{redbox}
+
+  \begin{greenbox}{}
+    Too stupid? Don't overestimate programmers: somebody stole $\$31\text{M}$ from
+    a slightly more complex contract.
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Weak encapsulation: prevention}
+
+  \begin{itemize}
+  \item be as much strict as you can about visibility
+    \begin{itemize}
+    \item even \<internal> can be dangerous, because it is callable from
+      subcontracts
+    \end{itemize}
+  \item beware of default visibility (ie., \<public>)
+    \begin{itemize}
+    \item latest compilers forbid default visibility
+    \end{itemize}
+  \item think seriously about the API of your contracts
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Issue \#6: Entropy illusion}
+
+  \begin{redbox}{Nothing is really random in blockchain}
+    \begin{itemize}
+    \item do not rely on \<block.number>, \<block.gaslimit> or \<block.timestamp>
+      as a source of randomness: they are (partially) controlled by the miner
+    \item do not rely on \<now> as a source of randomness: it is also in partial control
+      of the miner
+    \end{itemize}
+  \end{redbox}
+
+  \bigskip
+
+  \begin{greenbox}{Entry Illusion: prevention}
+    Use an external trusted \alert{oracle} as a source of randomness:
+    \begin{description}
+    \item[Oracle] A computer that regularly sends transactions that
+      store data in blockchain. For instance, it stores a random number.
+    \end{description}
+  \end{greenbox}
+    
+\end{frame}
+
 \end{document}

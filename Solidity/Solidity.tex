@@ -293,7 +293,7 @@ require(withdraw_amount <= 0.1 ether);
   \begin{description}
   \item[\<contract>] somehow similar to an object in OO-programming. It has a balance
   \item[\<interface>] functions have no code and must be implemented in subtypes
-  \item[\<library>] a contract meant to be deployed once and used by other contracts through \<delegatecall>. It has no variables and no balance. It does not receive ether
+  \item[\<library>] a contract meant to be deployed once and used by other contracts through \<delegatecall>. It has no state variables and no balance. It does not receive ether. It cannot execute \<selfdestruct>.
     \begin{center}
       \includegraphics[scale=0.45,clip=false]{pictures/library.png}
     \end{center}
