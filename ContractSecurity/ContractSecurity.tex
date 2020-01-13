@@ -422,4 +422,23 @@
   
 \end{frame}
 
+\begin{frame}\frametitle{Issue \#9: Unchecked return value}
+
+  \begin{redbox}{}
+    The return value of some functions (typicalle, \<send> and
+    \<call>) should be checked, since it is a boolean
+    that informs about a failed operation.
+  \end{redbox}
+
+  \begin{center}
+    \includegraphics[scale=0.32,clip=false]{pictures/lotto.png}
+  \end{center}
+
+  \<payedOut> is set to true even if \<winner.send(winAmount)> fails.
+
+  \begin{greenbox}{}
+    Prevention: check the result of \<send> and \<call>. Use \<transfer> instead of \<send>.
+  \end{greenbox}
+\end{frame}
+
 \end{document}
