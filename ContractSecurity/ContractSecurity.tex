@@ -291,7 +291,8 @@
   \end{redbox}
 
   \begin{greenbox}{}
-    Too stupid? Don't overestimate programmers: somebody stole $\$31\text{M}$ from
+    Too stupid? Don't overestimate the intelligence of
+    programmers: somebody stole $\$31\text{M}$ from
     a slightly more complex contract.
   \end{greenbox}
 
@@ -335,6 +336,90 @@
     \end{description}
   \end{greenbox}
     
+\end{frame}
+
+\begin{frame}\frametitle{Issue \#7: External contract referencing}
+
+  \begin{redbox}{}
+    Casts and contract types are unchecked. Do not let clients
+    inject contract types through the public API.
+  \end{redbox}
+
+  \medskip
+
+  \begin{greenbox}{By injecting a malicious \<\_tail>, function \<length> might run
+    arbitrary code}
+  \begin{center}
+    \includegraphics[scale=0.32,clip=false]{pictures/list.png}
+  \end{center}
+  \end{greenbox}
+
+  \medskip
+
+  \begin{redbox}{}
+    This even compiles if \<length> is defined as \<view>, although it can have
+    any possible side-effect.
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{External contract referencing: prevention}
+
+  \begin{itemize}
+  \item avoid it!
+  \item do not call functions on externally referenced contracts
+  \item only talk to your friends!
+    \begin{itemize}
+    \item if \<field = new MyContract()> is the only way to initialize \<field>,
+      then you can trust the type of \<field>
+    \end{itemize}
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Issue \#8: Short address/parameter attack}
+
+  \begin{redbox}{}
+    Function parameters are encoded as transaction data. If shorter than
+    expected, the encoding is silently padded with $0$'s.
+  \end{redbox}
+
+  \medskip
+
+  \begin{greenbox}{How to buy a Porsche with $500$ euros}
+    \begin{enumerate}
+    \item generate private keys until the derived address \<A> ends in \<0x00>
+    \item communicate the first $38$ bytes \<A'> of \<A> to an exchange (without the
+      two final \<0x00>), asking to buy $3$ ETH (as of today, $500$ euros)
+    \item pay the exchange the $500$ euros (plus commission)
+    \item its wallet will prepare a transaction to some
+      \<transfer(address to, uint tokens)>, with data
+      \<selector::A'::0x000000....00003::0x00>, where the final \<0x00> is padding
+      to match the expected data size for \<transfer>
+    \item the EVM will interpret the address as \<A'::0x00>, that is, \<A> (ours!)
+    \item the EVM will interpret the \<to> parameter as $\<0x0000...000300>$, that is,
+      $768$ ETH (as of today, $99,840$ euros)
+    \item you will earn $99,840-500=99,340$ euros (minus commission)
+    \end{enumerate}
+  \end{greenbox}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Prevention: Short address/parameter attack}
+
+  \begin{greenbox}{Spoiler: exchange check consistency of data nowadays}
+    \begin{center}
+      \includegraphics[scale=0.32,clip=false]{pictures/cat-jail.jpg}
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{itemize}
+  \item check parameters passed into blockchain
+  \item use wallets to check and warn about basic consistency
+  \end{itemize}
+  
 \end{frame}
 
 \end{document}
