@@ -1,6 +1,7 @@
 \documentclass[11pt]{beamer}  %% versione proiettore
 %%\documentclass[11pt,handout]{beamer} %% versione stampa
 \usepackage{lucidiJb-2ed}
+\usepackage[normalem]{ulem}
 
 \usepackage{relsize}
 
@@ -318,22 +319,29 @@
 \begin{frame}\frametitle{Issue \#6: Entropy illusion}
 
   \begin{redbox}{Nothing is really random in blockchain}
-    \begin{itemize}
-    \item do not rely on \<block.number>, \<block.gaslimit> or \<block.timestamp>
+    Do not rely on \<block.number>, \<block.gaslimit>, \<block.timestamp> or \<now>
       as a source of randomness: they are (partially) controlled by the miner
-    \item do not rely on \<now> as a source of randomness: it is also in partial control
-      of the miner
-    \end{itemize}
   \end{redbox}
 
-  \bigskip
+  \begin{center}
+    \includegraphics[scale=0.42,clip=false]{pictures/roulette.png}
+  \end{center}
 
-  \begin{greenbox}{Entry Illusion: prevention}
-    Use an external trusted \alert{oracle} as a source of randomness:
-    \begin{description}
-    \item[Oracle] A computer that regularly sends transactions that
-      store data in blockchain. For instance, it stores a random number.
-    \end{description}
+  The miner might choose \<now> so that the condition holds (or does not hold).
+\end{frame}
+
+\begin{frame}\frametitle{Entropy illusion: prevention}
+
+  \begin{greenbox}{}
+    \begin{itemize}
+      \item use an external trusted \alert{oracle} as a source of randomness:
+        \begin{description}
+        \item[Oracle] A computer that regularly sends transactions that
+          store data in blockchain. For instance, it sends and stores a random number
+        \end{description}
+      \item if \<now> or \<block.timestamp> is used to wait for a period of time,
+        it must be safer to wait for a specific blockchain height instead
+    \end{itemize}
   \end{greenbox}
     
 \end{frame}
@@ -439,6 +447,151 @@
   \begin{greenbox}{}
     Prevention: check the result of \<send> and \<call>. Use \<transfer> instead of \<send>.
   \end{greenbox}
+\end{frame}
+
+\begin{frame}\frametitle{Issue \#10: Race conditions/front running}
+
+  \begin{redbox}{}
+    Miners process transactions in the order they like (if ever);
+    in general, they tend to proceed in decreasing \<gasPrice> order.
+  \end{redbox}
+
+  \bigskip
+
+  \begin{greenbox}{Scenario \#1 (transaction ban, unlikely)}
+    A miner could be instructed to never include a transaction that is
+    detrimental to its owner. Unlikely to work for long, since it is practically impossible
+    to be the fastest to mine next block, always.
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Scenario \#2 (transaction front running, likely)}
+    A network sniffer could scan transactions, looking for
+    those containing solutions to priced puzzles, and immediately
+    place its own transaction with the same solution but a much higher \<gasPrice>,
+    so that all miners will prefer to mine its transaction rather than the
+    original one. The onwer of the sniffer will cash the price.
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Front running example}
+
+  \begin{center}
+    \includegraphics[scale=0.35,clip=false]{pictures/find-this-hash.png}
+  \end{center}
+
+  \begin{enumerate}
+  \item clients try to guess the \<solution> whose hash is the given one
+  \item a network sniffer scans all transactions, looking for calls to \<solve>
+  \item for each call to \<solve>, the sniffer verifies if the solution is correct
+  \item when, finally, a user submit the winning solution \<Ethereum!>, the sniffer
+    realizes the user is going to win and immediately places its own transaction with the
+    same solution but a very high \<gasPrice>
+  \item miners will likely prefer its transaction to the original one
+  \end{enumerate}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Prevention: race conditions/front running}
+
+  \begin{itemize}
+  \item at the level of protocol, the consensus rules might impose a maximal \<gasPrice>
+  \item at the application level, solutions could be sent through
+    the commit-reveal approach:
+    \begin{enumerate}
+    \item first a hashed solution is sent
+    \item later, when no new solutions are allowed, the original image of the hash is revealed
+    \end{enumerate}
+    \begin{itemize}
+    \item a big coding complication
+    \item payable amounts should be hidden, or otherwise the sniffer might suspect
+      something when seeing high amounts
+    \item see the blind auction example
+    \end{itemize}
+
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Issue \#11: Denial of service}
+
+  \begin{redbox}{}
+    If the cost of running transactions exceeds the block's gas limit, the
+    transaction will never be executed, which might block a contract.
+  \end{redbox}
+
+  \begin{center}
+    \includegraphics[scale=0.35,clip=false]{pictures/distribute-tokens.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Prevention: denial of service}
+  \begin{itemize}
+  \item use the withdrawal pattern
+  \item perform very cheap operations inside loops (no inner transactions, such as \<send>)
+  \item impose an upper bound to the size of dynamic structures
+  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Issue \#12: Floating point imprecision}
+
+  Solidity currently does not implement fixed nor floating-point arithmetic, hence
+  integers are used instead.
+
+  \medskip
+
+  \begin{redbox}{}
+    Beware of calculations that might lose precision! In particular: integer division.
+  \end{redbox}
+
+  \begin{center}
+    \includegraphics[scale=0.38,clip=false]{pictures/fun-with-numbers.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Prevention: floating point imprecision}
+
+  \begin{itemize}
+  \item divide at the end:
+    \<msg.value * tokensPerEth / weiPerEth>
+    rather than \<\sout{msg.value / weiPerEth * tokensPerEth}>
+  \item use libraries that simulate floating-point arithmetic
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Issue \#13: \<tx.origin> authentication}
+
+  \begin{redbox}{}
+    \<tx.origin> is the sender of the first transaction in a chain
+    of transactions, not the sender of the current transaction (ie., it is not \<msg.sender>).
+  \end{redbox}
+
+  \begin{center}
+    \includegraphics[scale=0.39,clip=false]{pictures/phishable.png}
+  \end{center}
+
+  \begin{enumerate}
+  \item an \<attacker> identifies a \<phishable> in blockchain
+  \item creates \<phisher = new Phisher(phishable, attacker)>
+  \item convinces \<phishable.owner> to send ETH to \<phisher> and gets all! 
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}\frametitle{Prevention: \<tx.origin> authentication}
+
+  \begin{itemize}
+  \item it is almost always better to use \<msg.sender> instead of \<tx.origin>
+  \item nevertheless, \<tx.origin> is legitimate sometimes:
+    \<require(tx.origin == msg.sender)> prevents functions from being called
+    from non-EOAs
+  \end{itemize}
+  
 \end{frame}
 
 \end{document}
