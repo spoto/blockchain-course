@@ -48,9 +48,9 @@
   \begin{itemize}
   \item compiled into EVM bytecode
   \item installed in blockchain by sending a special transaction to address \<0x0>
-  \item its code can be deleted if it contains a \<SELFDESTRUCT> bytecode
+  \item its code can be deleted if it executes a \<SELFDESTRUCT> bytecode
   \item has no keys
-  \item who installs it gets no automatic privileges
+  \item its installer it gets no automatic privileges
   \item runs after a transaction initiated by an EOA
     \begin{itemize}
     \item or a chain of transactions initiated by an EOA
@@ -86,7 +86,7 @@
 
   \begin{greenbox}{}
     There are many programming languages for Ethereum smart contracts,
-    but Solidity is the de facto choice:
+    but Solidity is the de facto standard:
     \begin{itemize}
     \item imperative
     \item vaguely object-oriented
@@ -142,22 +142,22 @@
 
 \begin{frame}\frametitle{Basic Solidity types}
   \begin{greenbox}{\<bool>}
-    with constants \<true> and \<false> and usual operators
+    with constants \<true> and \<false> and usual operators.
   \end{greenbox}
   \bigskip
   \begin{greenbox}{\<int>, \<unint>}
-    signed or unsigned, witgh usual operators, in increments of 8 bit size:
+    signed or unsigned, with usual operators, in increments of 8 bit size:
     \<uint8>, \<uint16>, \<int24>\ldots. Without specification, they stand for
-    \<int256> and \<unint256>, respectively
+    \<int256> and \<unint256>, respectively.
   \end{greenbox}
   \bigskip
   \begin{greenbox}{\<fixed>$M\times N$, \<ufixed>$M\times N$}
     fixed point arithmetic, signed or unsigned, $M$ bits, $N$ decimals
-    after the point: \alert{currently not implemented}
+    after the point: \alert{currently not implemented}.
   \end{greenbox}
   \bigskip
   \begin{greenbox}{\<address>}
-    a 20-bytes Ethereum address, with members \<balance> and \<transfer>
+    a 20-bytes Ethereum address.
   \end{greenbox}
 
 \end{frame}
@@ -165,25 +165,25 @@
 \begin{frame}[fragile]\frametitle{Basic Solidity types}
 
   \begin{greenbox}{\<bytes>$N$}
-    fixed-size array of bytes, of length $N$
+    fixed-size array of bytes, of length $N$.
   \end{greenbox}
 
   \bigskip
 
   \begin{greenbox}{\<bytes> or \<string>}
-    variable-sized arrays of bytes
+    variable-sized arrays of bytes.
   \end{greenbox}
 
   \bigskip
 
   \begin{greenbox}{Arrays}
     \<uint32[][5]> is a fixed size array of five dynamic
-    arrays of $32$ bits unsigned integers
+    arrays of $32$ bits unsigned integers.
   \end{greenbox}
 
   \bigskip
 
-  \begin{greenbox}{Enum's}
+  \begin{greenbox}{Enumerations}
 \begin{verbatim}
 enum NAME { A, B, ... }
 \end{verbatim}
@@ -193,7 +193,7 @@ enum NAME { A, B, ... }
 
 \begin{frame}[fragile]\frametitle{Basic Solidity types}
 
-  \begin{greenbox}{Struct's}
+  \begin{greenbox}{Structures}
 \begin{verbatim}
 struct pair {
   int16 x;
@@ -232,7 +232,7 @@ require(withdraw_amount <= 0.1 ether);
 
 \begin{frame}\frametitle{Transaction information}
 
-  \begin{greenbox}{Structures \<msg> and \<tx> are computed from the transaction request}
+  \begin{greenbox}{Structures \<msg> and \<tx> are derived from the transaction request}
     \begin{description}
     \item[\<msg.sender>] the address that sent the transaction
     \item[\<msg.value>] the ether sent along the transaction
@@ -249,7 +249,7 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{\<msg.sender> vs \<tx.origin>}
 
   \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/sender-origin.png}
+    \includegraphics[scale=0.4,clip=false]{pictures/sender-origin.png}
   \end{center}
 
 \end{frame}
@@ -258,9 +258,9 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{greenbox}{The structure \<block> is constructed by the miner}
     \begin{description}
-    \item[\<block.coinbase>] the address of the miner
-    \item[\<block.difficulty>] the proof of work difficult
-    \item[\<block.gaslimit>] the maximum gas spent in the block
+    \item[\<block.coinbase>] the address of the miner itself
+    \item[\<block.difficulty>] the proof of work difficulty
+    \item[\<block.gaslimit>] the maximum gas that can be spent in the current block
     \item[\<block.number>] the current block height
     \item[\<block.timestamp>] the mining time
     \end{description}
@@ -273,16 +273,15 @@ require(withdraw_amount <= 0.1 ether);
     \begin{description}
     \item[\<address.balance>] the balance of the address (EOA or contract),
       such as \<address(this).balance>
-    \item[\<address.transfer(x)>] sends $x$ wei to the address; throws an exception in case of
-      failure
-    \item[\<address.send(x)>] as \<transfer>, but returns \<false> in case of failure
+    \item[\<address.transfer(x)>] sends $x$ wei to the address; \alert{throws an exception in case of failure}
+    \item[\<address.send(x)>] as \<transfer>, but \alert{returns \<false> in case of failure}
     \item[\<address.call(p)>] sends a method transaction to the address, with the given
-      payload; returns \<false> in case of failure
+      payload; \alert{returns \<false> in case of failure}
     \item[\<address.callcode(p)>] sends a method transaction to the address, with the given
-      payload; runs in the scope of the caller; returns \<false> in case of failure
+      payload; runs in the scope of the caller; \alert{returns \<false> in case of failure}
     \item[\<address.delegatecode(p)>] sends a method transaction to the address, with the given
       payload, but keeps \<msg.sender> and \<msg.value> unchanged;
-      runs in the scope of the caller; returns \<false> in case of failure
+      runs in the scope of the caller; \alert{returns \<false> in case of failure}
     \end{description}
   \end{greenbox}
   
@@ -305,17 +304,17 @@ require(withdraw_amount <= 0.1 ether);
   \begin{description}
   \item[\<public>] can be called from everywhere
   \item[\<external>] like \<public> but, if called from the same contract,
-    must be prefixed with \<this.>. They cost less gas than \<public>
-  \item[\<internal>] can only be called from the contract where they are defined
+    must be prefixed with \<this.>, since it triggers a new transaction. It costs less gas than \<public>
+  \item[\<internal>] can only be called from the contract where it is defined
     or from its subtypes
-  \item[\<private>] can only be called from the contract where they are defined
+  \item[\<private>] can only be called from the contract where it is defined
   \end{description}
 
   \bigskip
 
   \begin{redbox}{Privacy?}
     Data is always publicly readable in blockchain. These modifiers
-    only refer to who can call whom.
+    only refer to who can call whom and are significant for the compiler only.
   \end{redbox}
 \end{frame}
 
@@ -338,7 +337,7 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Specifying return type(s) and value(s)}
 
   \begin{center}
-    \includegraphics[scale=0.55,clip=false]{pictures/returns.png}
+    \includegraphics[scale=0.52,clip=false]{pictures/returns.png}
   \end{center}
 
   \bigskip
@@ -426,7 +425,7 @@ require(withdraw_amount <= 0.1 ether);
 
 \begin{frame}\frametitle{Modifiers}
 
-  \begin{greenbox}{They can be used to do rather wierd things}
+  \begin{greenbox}{They can be used to do rather weird things}
     \begin{center}
       \includegraphics[scale=0.6,clip=false]{pictures/twice.png}
     \end{center}
@@ -448,7 +447,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{greenbox}{}
     \begin{center}
-      \includegraphics[width=\textwidth,clip=false]{pictures/constructor_chaining.png}
+      \includegraphics[scale=0.5,clip=false]{pictures/constructor_chaining.png}
     \end{center}
   \end{greenbox}
 
@@ -487,7 +486,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{greenbox}{}
     \begin{center}
-      \includegraphics[width=\textwidth,clip=false]{pictures/events.png}
+      \includegraphics[scale=0.5,clip=false]{pictures/events.png}
     \end{center}
   \end{greenbox}
 
@@ -569,8 +568,8 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Solidity is \alert{not} strongly-typed}
 
   \begin{enumerate}
-  \item Casts are not checked
-  \item Parameter types are just Christmas decorations
+  \item casts are not checked
+  \item parameter types are just Christmas decorations
   \end{enumerate}
 
   \bigskip
