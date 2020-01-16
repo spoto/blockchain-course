@@ -50,14 +50,14 @@
 
   \begin{redbox}{}
     Considering the importance of security for smart contracts,
-    it is questionable why the invented Solidity (hard, new, convoluted
+    it is questionable to have invented Solidity (hard, new, with convoluted
     semantics) for writing such delicate pieces of software.
   \end{redbox}
 
   \bigskip
 
   \begin{center}
-    Remember the DAO
+    Remember the DAO.
   \end{center}
   
 \end{frame}
@@ -67,7 +67,7 @@
   \begin{redbox}{}
     Our contract calls an unknown contract. The latter, unexpectedly, calls
     back into our contract again. Particularly dangerous if this cycle
-    is triggered by a call sending ETH, that would be repeated as many
+    passes through a call sending ETH, that would be repeated as many
     times as the unknown contract decides.
   \end{redbox}
 
@@ -129,7 +129,7 @@
 
   \begin{greenbox}{Test numerical operations}
     \begin{center}
-      \includegraphics[scale=0.5,clip=false]{pictures/under-overflow-fixed.png}
+      \includegraphics[scale=0.45,clip=false]{pictures/under-overflow-fixed-check.png}
     \end{center}
   \end{greenbox}
     
@@ -219,7 +219,7 @@
 \begin{frame}\frametitle{Issue \#4: \<delegatecall>}
 
   It is a low-level call that allows one to call any method, as
-  done in Java by reflection.
+  done in Java by reflection (and much worse).
 
   \bigskip
 
@@ -270,7 +270,7 @@
       \item double-check that the receiver cannot be injected
       \end{itemize}
     \item use it with prepared call data only, to avoid call injections
-    \item let the compiler use it, to compile calls to \<library>s
+    \item let the compiler, not you, use it, to compile calls to \<library>s
     \end{itemize}
   \end{greenbox}
 
@@ -280,11 +280,11 @@
 
   \begin{greenbox}{}
     Programmers tend to be too permissive about visibility modifiers, often because
-    they do along with the default \<public> visibility.
+    they get along with the default \<public> visibility.
   \end{greenbox}
 
   \begin{center}
-    \includegraphics[scale=0.4,clip=false]{pictures/weak-visibility.png}
+    \includegraphics[scale=0.45,clip=false]{pictures/weak-visibility.png}
   \end{center}
 
   \begin{redbox}{}
@@ -307,7 +307,7 @@
     \item even \<internal> can be dangerous, because it is callable from
       subcontracts
     \end{itemize}
-  \item beware of default visibility (ie., \<public>)
+  \item beware of default visibility (\emph{ie.}, \<public>)
     \begin{itemize}
     \item latest compilers forbid default visibility
     \end{itemize}
@@ -320,7 +320,7 @@
 
   \begin{redbox}{Nothing is really random in blockchain}
     Do not rely on \<block.number>, \<block.gaslimit>, \<block.timestamp> or \<now>
-      as a source of randomness: they are (partially) controlled by the miner
+      as a source of randomness: they are (partially) controlled by the miner.
   \end{redbox}
 
   \begin{center}
@@ -337,10 +337,10 @@
       \item use an external trusted \alert{oracle} as a source of randomness:
         \begin{description}
         \item[Oracle] A computer that regularly sends transactions that
-          store data in blockchain. For instance, it sends and stores a random number
+          store data in blockchain. For instance, it sends and stores a random number.
         \end{description}
       \item if \<now> or \<block.timestamp> is used to wait for a period of time,
-        it must be safer to wait for a specific blockchain height instead
+        it might be safer to wait for a specific blockchain height instead
     \end{itemize}
   \end{greenbox}
     
@@ -415,7 +415,7 @@
 
 \begin{frame}\frametitle{Prevention: Short address/parameter attack}
 
-  \begin{greenbox}{Spoiler: exchange check consistency of data nowadays}
+  \begin{greenbox}{Spoiler: exchanges check consistency of data nowadays}
     \begin{center}
       \includegraphics[scale=0.32,clip=false]{pictures/cat-jail.jpg}
     \end{center}
@@ -425,7 +425,7 @@
 
   \begin{itemize}
   \item check parameters passed into blockchain
-  \item use wallets to check and warn about basic consistency
+  \item use wallets to check basic consistency and warn otherwise
   \end{itemize}
   
 \end{frame}
@@ -435,7 +435,7 @@
   \begin{redbox}{}
     The return value of some functions (typicalle, \<send> and
     \<call>) should be checked, since it is a boolean
-    that informs about a failed operation.
+    that informs about their outcome.
   \end{redbox}
 
   \begin{center}
@@ -461,7 +461,7 @@
   \begin{greenbox}{Scenario \#1 (transaction ban, unlikely)}
     A miner could be instructed to never include a transaction that is
     detrimental to its owner. Unlikely to work for long, since it is practically impossible
-    to be the fastest to mine next block, always.
+    to be the fastest to mine the next block, always.
   \end{greenbox}
 
   \bigskip
@@ -479,14 +479,14 @@
 \begin{frame}\frametitle{Front running example}
 
   \begin{center}
-    \includegraphics[scale=0.35,clip=false]{pictures/find-this-hash.png}
+    \includegraphics[scale=0.4,clip=false]{pictures/find-this-hash.png}
   \end{center}
 
   \begin{enumerate}
   \item clients try to guess the \<solution> whose hash is the given one
   \item a network sniffer scans all transactions, looking for calls to \<solve>
   \item for each call to \<solve>, the sniffer verifies if the solution is correct
-  \item when, finally, a user submit the winning solution \<Ethereum!>, the sniffer
+  \item when, finally, a user submits the winning solution \<Ethereum!>, the sniffer
     realizes the user is going to win and immediately places its own transaction with the
     same solution but a very high \<gasPrice>
   \item miners will likely prefer its transaction to the original one
@@ -568,7 +568,7 @@
 
   \begin{redbox}{}
     \<tx.origin> is the sender of the first transaction in a chain
-    of transactions, not the sender of the current transaction (ie., it is not \<msg.sender>).
+    of transactions, not the sender of the current transaction (\emph{ie.}, it is not \<msg.sender>).
   \end{redbox}
 
   \begin{center}
