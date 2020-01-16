@@ -49,12 +49,20 @@
     decentralized applications with built-in economic functions.
   \end{greenbox}
 
-  \begin{itemize}
-  \item \emph{gas} is bought when a transaction starts, with a threshold
-    gas price
-  \item DApps are smart contracts + web frontend (web3)
-  \end{itemize}
+  \bigskip
   
+  \emph{gas} is bought when a transaction starts, at a maximal gas price.
+  
+\end{frame}
+
+\begin{frame}\frametitle{DApps}
+
+  \begin{greenbox}{DApps are smart contracts + web frontend (web3)}
+    \begin{center}
+      \includegraphics[width=\textwidth,clip=false]{pictures/dapps.png}
+    \end{center}
+  \end{greenbox}
+
 \end{frame}
 
 \begin{frame}\frametitle{People behind Ethereum}
@@ -164,7 +172,7 @@
 \begin{frame}\frametitle{Externally owned accounts (EOA) and contracts}
 
   \begin{greenbox}{}
-    EOAs have keys, contracts have code. Both have an address
+    EOAs have keys, contracts have code. Both have an address.
   \end{greenbox}
   
   \begin{center}
@@ -188,7 +196,7 @@
 \begin{frame}\frametitle{Remix: deploy an instance of the contract}
 
   \begin{greenbox}{}
-    Remix will create for us a transaction with the 0 address as destination
+    Remix will create for us a transaction with the \<0x0> address as destination.
   \end{greenbox}
 
   \begin{center}
@@ -200,7 +208,7 @@
 \begin{frame}\frametitle{Remix: an instance of \<Faucet> has been deployed}
 
   \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/deployed-faucet.png}
+    \includegraphics[scale=0.5,clip=false]{pictures/deployed-faucet.png}
   \end{center}
 
 \end{frame}
@@ -219,7 +227,7 @@
 
 \begin{frame}\frametitle{Send one Ether to the \<Faucet> through MetaMask}
 
-  This corresponds to calling the default payable function
+  This corresponds to calling the default payable function.
   
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/faucet-etherscan2.png}
@@ -288,7 +296,7 @@
     A full node stores the whole blockchain ($\sim$200GB) and
     takes part in mining. Very slow to synchronize.
     It can query the blockchain offline and
-    without letting a third party know the information that it's reading
+    without letting a third party know the information that it's reading.
   \end{greenbox}
 
   \bigskip
@@ -296,14 +304,14 @@
   \begin{greenbox}{Remote clients}
     A remote client does not store the blockchain but
     depends on another full node for operation. They are wallets
-    that create and broadcast transactions (for instance, MetaMask)
+    that create and broadcast transactions (for instance, MetaMask).
   \end{greenbox}
 
   \bigskip
 
   \begin{greenbox}{Networks}
     The \emph{mainnet}, or a \emph{testnet}, or a local blockchain
-    (Ganache)
+    (Ganache).
   \end{greenbox}
   
 \end{frame}
@@ -392,8 +400,8 @@ $ \alert{echo $((0x3b9aca00))}
 \begin{verbatim}
 <project xmlns="http://maven.apache.org/POM/4.0.0"...>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>it.univr.ethereum</groupId>
-  <artifactId>learning-ethereum</artifactId>
+  <groupId>it.univr</groupId>
+  <artifactId>ethereum</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>LearningEthereum</name>
   <dependencies>
