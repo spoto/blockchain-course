@@ -80,20 +80,22 @@
     called \emph{elliptic curve multiplication} (ECDSA).
   \end{greenbox}
 
-  \begin{center}
+  \medskip
+
+  \begin{greenbox}{}
     The generation of a private/public key pair does not require any
-    centralized service. The probability of computing an already used key
-    is negligeable.
-  \end{center}
+    centralized service and occurs completely outside the blockchain.
+    The probability of computing an already used key is negligeable.
+  \end{greenbox}
 
 \end{frame}
 
 \begin{frame}\frametitle{Ethereum representation of the keys}
 
   \begin{itemize}
-    \item A private key are 256 random bits: 64 hexadecimal digits
-    \item A public key is a couple of two 256 bit numbers: Ethereum
-      uses \<0x04> followed by $64\times 2$ hexadecimal digits
+    \item a private key are 256 random bits: 64 hexadecimal digits
+    \item a public key is a couple of two 256 bit numbers:
+      $64\times 2$ hexadecimal digits
   \end{itemize}
 
   \bigskip
@@ -109,8 +111,8 @@
 
 \begin{frame}\frametitle{Cryptographic hash functions}
 
-  \begin{greenbox}{Hash functions}
-    Any function that can be used to map data of arbitrary size to data of
+  \begin{greenbox}{Hash function}
+    Any function that maps data of arbitrary size to data of
     fixed size.
   \end{greenbox}
 
@@ -136,7 +138,7 @@
     It is the original algorithm that won the SHA-3 Cryptographic Hash
     Function Competition of 2007. NIST standardized it in a slightly
     modified way as SHA-3. However, the Ethereum team never trusted
-    such modification and used the original agorithm.
+    such modification and used the original algorithm.
   \end{greenbox}
 
   \bigskip
@@ -152,8 +154,8 @@
 \begin{frame}\frametitle{Derivation of an Ethereum address from the private key}
 
   \begin{greenbox}{}
-    Compute the public key (without leading \<0x04>),
-    hash it with Keccak-256, keep only the last 20 bytes (160 bits).
+    Compute the public key,
+    hash it with Keccak-256, keep only the last $20$ bytes (\emph{ie.}, $160$ bits, that is, $40$ hex digits).
   \end{greenbox}
   
   \begin{center}
@@ -196,8 +198,7 @@
 
   \begin{greenbox}{A backward compatible checksum injection}
     \begin{enumerate}
-    \item use Keccak-256 to compute 64 hex digits from the uncapitalized Ethereum address
-      (40 hex digits)
+    \item use Keccak-256 to compute $64$ hex digits from the uncapitalized $40$ hex digits of the Ethereum address
     \item capitalize each alphabetic address character if the corresponding hex digit
       of the hash is greater than or equal to \<0x8>
     \end{enumerate}
@@ -228,7 +229,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
 
   \begin{greenbox}{Just a Bunch of Keys -- JBOK}
     They store one or more unrelated private keys, encrypted with a password,
-    inside a keystore, ie, a textual file.
+    inside a keystore, \emph{ie.}, inside a textual file.
   \end{greenbox}
 
   \medskip
@@ -247,7 +248,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
 \begin{frame}\frametitle{Deterministic (seeded) wallets}
 
   \begin{greenbox}{Streams of keys}
-    They store just a seed, from which streams of keys can be derived.
+    They store just a seed, from which streams of keys can be derived:
     \begin{itemize}
     \item the seed is the only information that must be stored and kept private
     \item each stream can be allocated for different goals or to
@@ -359,18 +360,18 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
     A transaction is a signed message originated by an EOA, transmitted
     by the Ethereum network, and recorded on the Ethereum blockchain.
     \begin{itemize}
-    \item Nonce: sequence number per each originating EOA
-    \item Gas price: maximum willing to pay
-    \item Gas limit: maximum willing to consume
-    \item To: recipient (destination address)
-    \item Value: ether sent to destination
-    \item Data: generic payload (method name, parameters, contract code\ldots)
+    \item nonce: sequence number per each originating EOA
+    \item gas price: maximum willing to pay
+    \item gas limit: maximum willing to consume
+    \item to: recipient (destination address)
+    \item value: ether sent to destination
+    \item data: generic payload (method name, parameters, contract code\ldots)
     \item v,r,s: ECDSA signature of the originating EOA
     \end{itemize}
   \end{greenbox}
 
   \begin{center}
-    The originating EOA is implied by v,r,s
+    The address of the originating EOA is implied by v,r,s.
   \end{center}
 
 \end{frame}
@@ -412,7 +413,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
   \bigskip
 
   \begin{redbox}{}
-    Keeping track of nonces is hard for concurrent accesses!
+    Keeping track of nonces is hard for concurrent clients!
   \end{redbox}
 
 \end{frame}
@@ -427,7 +428,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
 
 \begin{frame}\frametitle{Gas}
 
-  The price of gas fluctuates, for protection against ETH spikes.
+  The price of gas fluctuates, for protection against ETH spikes:
 
   \bigskip
 
@@ -439,7 +440,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
 
   \bigskip
 
-  It is well possible that transaction with $0$ gas price will be eventually
+  It is well possible that transactions with $0$ gas price will be eventually
   processed.
 
   \bigskip
@@ -489,20 +490,24 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
 \begin{frame}\frametitle{Transactions with value (\emph{payments})}
 
   \begin{itemize}
-  \item the recipient is an EOA (data will be kept in blockchain, but not used)
+  \item the recipient is an EOA (data will be kept in blockchain, but not used):
     \begin{itemize}
     \item the EOA existed already: its balance gets increased by value
     \item the EOA didn't exist before: its balance is set to value
     \end{itemize}
-  \item the recipient is a contract
+  \item the recipient is a contract:
     \begin{itemize}
-    \item there is data: the payable method specified by the data will be executed,
-      after increasing the contract's balance by value
-    \item there is no data
+    \item there is data:
       \begin{itemize}
-      \item there is a payable \emph{fallback} function: it will be executed after
+      \item there is a \alert{payable} method specified by the data: it will be  executed, after increasing the contract's balance by value
+      \item there is no such method or it is not payable: the transaction fails
+      \end{itemize}
+    \item there is no data:
+      \begin{itemize}
+      \item there is a \alert{payable \emph{fallback} function}: it will be executed after
         increasing the contract's balance by value
       \item there is no fallback function: the balance of the contract gets increased by value
+      \item there is a fallback function, but is not payable: the transaction fails
       \end{itemize}
     \end{itemize}
   \end{itemize}
@@ -546,14 +551,6 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\col
   \item the data component contains the compiled bytecode of the contract
   \item the transaction receipt contains the address of the new contract
   \end{itemize}
-
-  \bigskip
-
-  \begin{redbox}{}
-    If the same code is deployed more times, it is \underline{not}
-    shared among all instances of the contract. That is, there is no
-    notion of classpath in Ethereum.
-  \end{redbox}
 
 \end{frame}
 
@@ -635,8 +632,8 @@ byte[] signedMessage = TransactionEncoder.signMessage
 \begin{frame}\frametitle{Multi-signature transactions}
 
   \begin{greenbox}{}
-    Differently from Bitcoin, Ethereum has no native support for multi-signature transactions,
-    that are only valid if signed by more EOAs. However,
+    Differently from Bitcoin, Ethereum has no native support for multi-signature transactions
+    (that is, transactions that are only valid if signed by more EOAs). However,
     multi-signature and other signature schemes can be programmed through smart contracts:
 
     \begin{itemize}
