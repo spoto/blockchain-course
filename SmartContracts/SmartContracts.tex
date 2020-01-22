@@ -312,4 +312,40 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{Exercise}
+
+  \begin{greenbox}{Write a \<TicTacToe.sol> smart contract}
+    \begin{itemize}
+    \item the first EOA that calls the payable function \<play(x,y)> becomes player~1:
+      she must pay at least $0.01$ ETH
+    \item the second EOA that calls the payable function \<play(x,y)> becomes player~2:
+      he must be different from player~1;
+      he must pay at least what player~1 payed
+    \item subsequent calls to \<play> do not require any payed amount
+    \item if one player wins, the balance of the game goes
+      \begin{itemize}
+      \item $90\%$ to the winner
+      \item $10\%$ to the creator of the game
+      \end{itemize}
+    \item if the game is a draw, $10\%$ of the balance of the game goes to the creator of the game
+    \item after victory or draw, the game resets and is ready to accept new players
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Exercise}
+
+  \begin{greenbox}{Write a user interface that connects to the \<TicTacToe.sol> smart contract}
+    \begin{itemize}
+    \item as a Java textual desktop application using Infura
+    \item as a Java graphical desktop application using Infura
+    \item as an Android mobile application using Infura
+    \item as a web application (Javascript) using Infura
+    \item the same as above, but connecting directly to an Ethereum node\ldots
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
 \end{document}
