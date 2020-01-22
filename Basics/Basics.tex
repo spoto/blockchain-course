@@ -90,6 +90,75 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{What is inside the blocks?}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/inside-blocks.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Accounts, state and receipts are \alert{not} in blockchain}
+
+  They are kept inside a database, local to each node.
+
+  \begin{center}
+    \includegraphics[scale=0.38,clip=false]{pictures/accounts-state-receipts.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Mining with proof of work (PoW)}
+  Each miner works as follows:
+  \begin{enumerate}
+  \item collect transactions received from users or from other nodes
+  \item choose and execute some of these transactions: the choice is free,
+    as long as choice and execution respect the \alert{consensus rules}
+  \item build a candidate block containing (among other):
+    \begin{itemize}
+    \item hash of the previous block
+    \item selected transactions
+    \item hash of the transaction receipts
+    \item hash of the state at the end of the last transaction in the block
+    \item address of the beneficiary miner (itself)
+    \item timestamp
+    \item the current level of difficulty $d$
+    \item a random \alert{nonce}    
+    \end{itemize}
+  \item hash the candidate block
+    \begin{itemize}
+    \item if this hash starts with at least $d$ zero's, add the candidate block to
+      your local copy of the blockchain and
+      spread it among peers
+    \item otherwise, go back to step 3, but change nonce
+    \end{itemize}
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}\frametitle{Multiple chains, only one emerging}
+
+  \begin{center}
+    \includegraphics[scale=0.29,clip=false]{pictures/chains.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Changing the story with the 51\% attack}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/51-a.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Changing the story with the 51\% attack}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/51-b.png}
+  \end{center}
+
+\end{frame}
+
 \begin{frame}\frametitle{Ether (ETH) price over the years}
 
   \begin{center}
@@ -314,24 +383,6 @@
     (Ganache).
   \end{greenbox}
   
-\end{frame}
-
-\begin{frame}\frametitle{What is inside the blocks?}
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/inside-blocks.jpg}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Accounts, state and receipts are \alert{not} in blockchain}
-
-  They are kept inside a database, local to each node.
-
-  \begin{center}
-    \includegraphics[scale=0.38,clip=false]{pictures/accounts-state-receipts.png}
-  \end{center}
-
 \end{frame}
 
 \begin{frame}\frametitle{Infura: a cloud service to a full node}
