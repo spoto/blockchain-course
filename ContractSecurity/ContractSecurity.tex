@@ -302,7 +302,7 @@
 \begin{frame}\frametitle{Weak encapsulation: prevention}
 
   \begin{itemize}
-  \item be as much strict as you can about visibility
+  \item be the stricter as you can about visibility
     \begin{itemize}
     \item even \<internal> can be dangerous, because it is callable from
       subcontracts
@@ -397,7 +397,7 @@
   \begin{greenbox}{How to buy a Porsche with $500$ euros}
     \begin{enumerate}
     \item generate private keys until the derived address \<A> ends in \<0x00>
-    \item communicate the first $38$ bytes \<A'> of \<A> to an exchange (without the
+    \item communicate the first $39$ bytes \<A'> of \<A> to an exchange (without the
       two final \<0x00>), asking to buy $3$ ETH (as of today, $500$ euros)
     \item pay the exchange the $500$ euros (plus commission)
     \item its wallet will prepare a transaction to some
@@ -405,7 +405,7 @@
       \<selector::A'::0x000000....00003::0x00>, where the final \<0x00> is padding
       to match the expected data size for \<transfer>
     \item the EVM will interpret the address as \<A'::0x00>, that is, \<A> (ours!)
-    \item the EVM will interpret the \<to> parameter as $\<0x0000...000300>$, that is,
+    \item the EVM will interpret the \<tokens> parameter as $\<0x0000...000300>$, that is,
       $768$ ETH (as of today, $99,840$ euros)
     \item you will earn $99,840-500=99,340$ euros (minus commission)
     \end{enumerate}
@@ -433,7 +433,7 @@
 \begin{frame}\frametitle{Issue \#9: Unchecked return value}
 
   \begin{redbox}{}
-    The return value of some functions (typicalle, \<send> and
+    The return value of some functions (typically, \<send> and
     \<call>) should be checked, since it is a boolean
     that informs about their outcome.
   \end{redbox}
