@@ -108,6 +108,109 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{The state}
+  The state is a key/value store, typically held in a database:
+  \begin{itemize}
+  \item it must be possible to reconstruct the state at the end of
+    each block, hence it must be saved by difference wrt.\ the previous block
+  \item keys are bit sequences, typically hashes of deposits, addresses,
+    of program variables, of array elements\ldots
+  \item values are bit sequences, ie.\ amounts,
+    the value of accounts, their code, the
+    value of program variables\ldots
+  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Bitcoin: a very simple state model}
+  \begin{itemize}
+  \item Bitcoin uses the state to map deposits into their value; such deposits
+    are called \emph{unspent transaction output} (UTXO)
+  \item transactions consume UTXOs to produce UTXOs
+  \item an UTXO cannot be consumed twice (double spending): this is
+    forbidden by the consensus rules
+  \end{itemize}
+
+  \begin{center}
+    \includegraphics[scale=0.38,clip=false]{pictures/utxo.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Ethereum: a very general state model}
+  \begin{itemize}
+  \item Ethereum uses the state to map program variables, array elements,
+    addresses to their value, their code etc.
+  \item a new programming language, called Solidity, was meant to compile into
+    updates of a memory made of key/value tuples
+  \item transactions execute Solidity code, provided by users, and can
+    have any effect on the state
+  \end{itemize}
+
+  \begin{redbox}{}
+    In reality, in Ethereum there are also \emph{primitive}
+    transactions used for simple money transfers or for contract
+    creation, that do not run any Solidity code. This hybrid
+    approach might be
+    an optimization of special, frequently used transactions,
+    or the sign of an uncertain design (Solidity was added later,
+    over a layer that was initially meant for simple money tranfers)
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The state: which data structure?}
+  It must allow
+  \begin{enumerate}
+  \item a compact representation by difference from a previous state
+  \item fast recomputation of its hash once the state is updated
+  \item fast access to the value bound to each given key
+  \end{enumerate}
+
+  \medskip
+  Traditional data structures such as hash maps only satisfy~3
+  (and~2, but only for trivial hashing functions, which is not
+  acceptable for blockchains)
+
+\end{frame}
+
+\begin{frame}\frametitle{Patricia trie: fast access to the value bound to each key}
+
+  \begin{center}
+    \textbf{P}ractical \textbf{A}lgorithm \textbf{T}o \textbf{R}etrieve \textbf{I}nformation \textbf{C}oded \textbf{I}n \textbf{A}lphanumeric
+  \end{center}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/trie_search.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Patricia trie: compact representation by difference}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/trie-update.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Merkle trie: fast recomputation of its hash upon update}
+
+  Proceed bottom-up:
+  \begin{center}
+    \includegraphics[scale=0.7,clip=false]{pictures/trie-hash.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Merkle-Patricia tries}
+
+  \begin{center}
+    \includegraphics[scale=0.11,clip=false]{pictures/merkle-patricia.png}
+  \end{center}
+
+  Links are not pointers, but the hash of the node they refer to
+\end{frame}
+
 \begin{frame}\frametitle{Mining with proof of work (PoW)}
   Each miner works as follows:
   \begin{enumerate}
@@ -157,6 +260,18 @@
     \includegraphics[width=\textwidth,clip=false]{pictures/51-b.png}
   \end{center}
 
+\end{frame}
+
+\begin{frame}\frametitle{PoW energy consumption in 2018}
+ \begin{center}
+    \includegraphics[scale=0.24,clip=false]{pictures/energy-consumption-2018.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Proof of Stake (PoS)}
+ \begin{center}
+    \includegraphics[scale=0.39,clip=false]{pictures/proofs.jpg}
+  \end{center}
 \end{frame}
 
 \begin{frame}\frametitle{Ether (ETH) price over the years}
