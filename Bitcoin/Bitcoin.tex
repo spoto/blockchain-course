@@ -1,7 +1,7 @@
 \documentclass[11pt]{beamer}  %% versione proiettore
 %%\documentclass[11pt,handout]{beamer} %% versione stampa
 \usepackage{lucidiJb-2ed}
-
+\usepackage{mathtools}
 \usepackage{relsize}
 
 \mode<article>
@@ -323,7 +323,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{How a miner works}
+\begin{frame}\frametitle{How miners work}
 
   \begin{enumerate}
     \item Each miner listens the p2p network for new transactions and stores them in a
@@ -353,336 +353,166 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Proof of Stake (PoS)}
- \begin{center}
-    \includegraphics[scale=0.39,clip=false]{pictures/proofs.jpg}
-  \end{center}
-\end{frame}
+\begin{frame}\frametitle{Cryptography}
 
-\begin{frame}\frametitle{Ether (ETH) price over the years}
-
-  \begin{center}
-    \includegraphics[scale=0.29,clip=false]{pictures/ethereum.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Ethereum Classic Ether (ETC) price over the years}
-
-  \begin{center}
-    \includegraphics[scale=0.29,clip=false]{pictures/ethereum-classic.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Ether denominations and unit names}
-
-  \begin{center}
-    \includegraphics[scale=0.2,clip=false]{pictures/ether-denominations.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Wallets}
-
-  \begin{greenbox}{}
-    A wallet is a
-    software application that helps you manage your Ethereum account(s),
-    by keeping your keys, creating and broadcasting transactions:
-    \begin{itemize}
-    \item mobile (Jaxx)
-    \item desktop (Jaxx, Emerald Wallet)
-    \item web-based (MetaMask, MyEtherWallet)
-    \end{itemize}
+  \begin{greenbox}{Bitcoin uses cryptography for many goals}
+    \begin{description}
+      \item[Hashing]
+        \begin{itemize}
+        \item as synthetic representation of very long information (compaction)
+        \item as machine-independent pointers to data structures (reference)
+        \item to solve a mathematical puzzle (mining)
+        \end{itemize}
+        \bigskip
+      \item[Signature]
+        \begin{itemize}
+        \item to prove the identity of the sender of transactions (witness)
+        \end{itemize}
+    \end{description}
   \end{greenbox}
 
-\end{frame}
+  \bigskip
 
-\begin{frame}\frametitle{MetaMask: create account}
-
-  \url{https://metamask.io}
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/metamask-account.png}
-  \end{center}
+  \begin{redbox}{}
+    Bitcoin doesn't use cryptography to hide data
+    (everybody sees everything)
+  \end{redbox}
 
 \end{frame}
 
-\begin{frame}\frametitle{MetaMask: connect to the faucet}
-
-  \begin{center}
-    \includegraphics[scale=0.3,clip=false]{pictures/metamask-faucet.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{MetaMask: transaction for getting 1 ETH}
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/metamask-faucet-transaction.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{MetaMask: detail of the transaction}
-
-  \begin{center}
-    \includegraphics[scale=0.4,clip=false]{pictures/metamask-faucet-transaction-details.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{MetaMask: transactions of our account}
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/metamask-faucet-transactions.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Externally owned accounts (EOA) and contracts}
+\begin{frame}\frametitle{Cryptographic hash functions}
 
   \begin{greenbox}{}
-    EOAs have keys, contracts have code. Both have an address.
+    A \alert{hash function} maps data of arbitrary size to data of fixed size
+  \end{greenbox}
+
+  \begin{center}
+    \includegraphics[scale=0.38,clip=false]{pictures/hashing.png}
+  \end{center}
+
+  \begin{greenbox}{Cryptographic hash function}
+    \begin{enumerate}
+    \item determinism
+    \item verifiability (in linear time)
+    \item non-correlation (small change of input $\Rightarrow$ extensive change of hash)
+    \item irreversibility (\emph{one-way})
+    \item collision protection: difficult to compute two inputs with same hash
+    \end{enumerate}
   \end{greenbox}
   
-  \begin{center}
-    \includegraphics[scale=0.35,clip=false]{pictures/eoa-contract.jpg}
-  \end{center}
-
 \end{frame}
 
-\begin{frame}\frametitle{Remix: web IDE for Solidity}
-
-  \begin{greenbox}{}
-    \url{https://remix.ethereum.org}
-  \end{greenbox}
+\begin{frame}\frametitle{Asymmetric encryption}
 
   \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/faucet_sol.png}
+    Secure random generator $\Rightarrow$ private key $\xRightarrow[]{\text{ECM}}$ public key
   \end{center}
 
-\end{frame}
-
-\begin{frame}\frametitle{Remix: deploy an instance of the contract}
-
-  \begin{greenbox}{}
-    Remix will create for us a transaction with the \<0x0> address as destination.
-  \end{greenbox}
-
-  \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/deploy-faucet.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Remix: an instance of \<Faucet> has been deployed}
-
-  \begin{center}
-    \includegraphics[scale=0.5,clip=false]{pictures/deployed-faucet.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Check the outcome on Etherscan}
-
-  \begin{greenbox}{}
-    \url{https://ropsten.etherscan.io}
-  \end{greenbox}
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/faucet-etherscan.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Send one Ether to the \<Faucet> through MetaMask}
-
-  This corresponds to calling the default payable function.
+  Ellyptic Curve Multiplication (ECM) is an abstraction or hashing algorithm
   
   \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/faucet-etherscan2.png}
+    \includegraphics[scale=0.5,clip=false]{pictures/asymmetric-encryption.png}
   \end{center}
 
 \end{frame}
 
-\begin{frame}\frametitle{Run the \<withdraw> function of the \<Faucet> in Remix}
+\begin{frame}\frametitle{Digital signature}
 
   \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/faucet-withdraw.png}
-  \end{center}
-
-  \begin{center}
-    $17$ zero's
-  \end{center}
-  
-\end{frame}
-
-\begin{frame}\frametitle{Check again on Etherscan}
-
-  The faucet worked properly!
-  
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/faucet-etherscan3.png}
+    \includegraphics[scale=0.3,clip=false]{pictures/digital-signatures.jpg}
   \end{center}
 
 \end{frame}
 
-\begin{frame}\frametitle{The \<Faucet> has originated an internal transaction}
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/faucet-etherscan-internal.png}
-  \end{center}
-
-  \begin{center}
-    \<msg.sender.transfer(withdraw\_amount)>
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Ethereum clients}
-
-  \begin{greenbox}{}
-    An Ethereum client is a software application that implements
-    the Ethereum specification (the \emph{Yellow Paper}) and communicates
-    over the peer-to-peer network with other Ethereum clients.
-  \end{greenbox}
-
-  \medskip
+\begin{frame}\frametitle{Bitcoin addresses}
 
   \begin{itemize}
-  \item Parity (Rust)
-  \item Geth (Go)
-  \item \<cpp-ethereum> (C++)
-  \item \<pyethereum> (Python)
-  \item Mantis (Scala)
-  \item Harmony (Java)
+  \item private key: $256$ bits ($32$ bytes)
+  \item public key: $256$ bits
+  \item bitcoin address: $160$ bits ($20$ bytes ie., $40$ hex digits)
   \end{itemize}
-  
-\end{frame}
-
-\begin{frame}\frametitle{Client types}
-
-  \begin{greenbox}{Full nodes}
-    A full node stores the whole blockchain ($\sim$200GB) and
-    takes part in mining. Very slow to synchronize.
-    It can query the blockchain offline and
-    without letting a third party know the information that it's reading.
-  \end{greenbox}
-
-  \bigskip
-
-  \begin{greenbox}{Remote clients}
-    A remote client does not store the blockchain but
-    depends on another full node for operation. They are wallets
-    that create and broadcast transactions (for instance, MetaMask).
-  \end{greenbox}
-
-  \bigskip
-
-  \begin{greenbox}{Networks}
-    The \emph{mainnet}, or a \emph{testnet}, or a local blockchain
-    (Ganache).
-  \end{greenbox}
-  
-\end{frame}
-
-\begin{frame}\frametitle{Infura: a cloud service to a full node}
-
-  \url{https://infura.io}
 
   \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/infura.png}
+    \includegraphics[scale=1,clip=false]{pictures/mbc2_0401.png}
+  \end{center}
+
+  \[A=\mathit{RIPEMD160}(\mathit{SHA256}(K))\]
+
+\end{frame}
+
+\begin{frame}\frametitle{Base58 representation of addresses}
+
+  \begin{center}
+    $40$ hex digits is too long!
+  \end{center}
+
+  \begin{greenbox}{Base58}
+    A representation of natural numbers in base $58$, using the following
+    symbols for the $58$ digits:
+
+    \texttt{123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz}
+
+  \end{greenbox}
+
+  \begin{center}
+    $28$ Base58 digits are enough to cover $40$ hex digits
   \end{center}
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{Infura: ask for client version}
-
-  \begin{greenbox}{}
-    Register to Infura and create a project. Use the provided
-    ID to build a query to Infura's JSON-RPC API:
-
-\begin{semiverbatim}
-$ \alert{curl https://mainnet.infura.io/v3/05....4
-  -X POST
-  -H "Content-Type: application/json"
-  -d '\{"jsonrpc":"2.0","method":"web3_clientVersion",
-  "params": [],"id":1\}'}
-{\color{blue}\{"jsonrpc":"2.0","id":1,
- "result":"Geth/v1.9.9-omnibus-e320ae4c-20191206
-               /linux-amd64/go1.13.4"\}}
-\end{semiverbatim}
-
-\end{greenbox}
-
-\end{frame}
-
-\begin{frame}[fragile]\frametitle{Infura: ask for gas price}
-
-  \begin{greenbox}{}
-    Use your Infura ID to build a query to Infura's JSON-RPC API:
-
-\begin{semiverbatim}
-$ \alert{curl https://mainnet.infura.io/v3/05....4
-  -X POST
-  -H "Content-Type: application/json"
-  -d '\{"jsonrpc":"2.0","method":"eth_gasPrice",
-       "params": [],"id":1\}'}
-{\color{blue}\{"jsonrpc":"2.0","id":1,"result":"0x3b9aca00"\}}
-$ \alert{echo $((0x3b9aca00))}
-{\color{blue}1000000000}
-\end{semiverbatim}
-
-  \end{greenbox}
-
-\end{frame}
-
-\begin{frame}\frametitle{Infura implements the Ethereum JSON-RPC API}
+\begin{frame}\frametitle{Base58Check adds a checksum}
 
   \begin{center}
-    \includegraphics[scale=0.47,clip=false]{pictures/infura-json-rpc.png}
+    Base58 addresses are too easy to spell wrong!
+  \end{center}
+
+  \begin{center}
+    \includegraphics[scale=0.6,clip=false]{pictures/mbc2_0406.png}
+  \end{center}
+
+  \begin{center}
+    $34$ Base58Check digits are enough for a bitcoin address
   \end{center}
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{A Java client that connects to Infura}
-
-  \begin{greenbox}{Create in Eclipse a new Java Maven project with this \<pom.xml>}
-\begin{verbatim}
-<project xmlns="http://maven.apache.org/POM/4.0.0"...>
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>it.univr</groupId>
-  <artifactId>ethereum</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>LearningEthereum</name>
-  <dependencies>
-    <dependency>
-      <groupId>org.web3j</groupId>
-      <artifactId>core</artifactId>
-      <version>4.5.11</version>
-    </dependency>
-  </dependencies>
-</project>
-\end{verbatim}
-  \end{greenbox}
-\end{frame}
-
-\begin{frame}\frametitle{A Java client that connects to Infura}
+\begin{frame}\frametitle{Put it all together}
 
   \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/client-version-java.png}
+    \includegraphics[scale=0.52,clip=false]{pictures/mbc2_0405.png}
   \end{center}
+
+  \begin{center}
+    Public key: {\scriptsize\texttt{0202a406624211f2abbdc68da3df929f938c3399dd79fac1b51b0e4ad1d26a47aa}}\\
+    Address: \texttt{1PRTTaJesdNovgne6Ehcdu1fpEdX7913CK}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Vanity addresses}
+
+  \begin{greenbox}{Alice wants a bitcoin address whose first letters are ``Love''}
+  \begin{center}
+    \texttt{1\alert{Love}BPzzD72PUXLzCkYAtGFYmK5vYNR33}
+  \end{center}
+  \end{greenbox}
 
   \bigskip
 
-  \url{https://javadoc.io/doc/org.web3j}
+  \begin{itemize}
+  \item vanity addresses can only be found by brute-force computation
+  \item realistic up to $7$ characters
+  \item vanity addresses are typically recycled for many transactions, since
+    they are hard to find
+    \begin{description}
+      \item[$\Rightarrow$] reduced security
+    \end{description}
+  \end{itemize}
 
-\end{frame}
-
-\begin{frame}\frametitle{Mobile remote client: Jaxx}
+  \bigskip
 
   \begin{center}
-    \includegraphics[scale=0.1,clip=false]{pictures/jaxx.png}
+    \url{https://vanitypool.appspot.com/}
   \end{center}
 
 \end{frame}
