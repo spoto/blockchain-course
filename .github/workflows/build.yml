@@ -20,5 +20,6 @@ jobs:
       - name: Compile Bitcoin slides
         uses: xu-cheng/latex-action@v2
         with:
-	  pre_compile: "cd Bitcoin"
           root_file: Bitcoin/Bitcoin.tex
+	  pre_compile: |
+            cd Bitcoin
