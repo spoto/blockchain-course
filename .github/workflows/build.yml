@@ -22,4 +22,12 @@ jobs:
         with:
           root_file: Bitcoin.tex
           working_directory: Bitcoin/
-
+      - name: Check pdf files
+        run: |
+          file Bitcoin/Bitcoin.pdf | grep -q ' PDF '
+      - name: Upload
+        uses: actions/upload-artifact@master
+        with:
+          name: Bitcoin/Bitcoin.pdf
+          path: Bitcoin.pdf
+        if: always()
