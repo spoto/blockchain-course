@@ -28,6 +28,6 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@master
         with:
-          name: Bitcoin/Bitcoin.pdf
-          path: Bitcoin.pdf
+          name: Bitcoin.pdf
+          path: Bitcoin/Bitcoin.pdf
         if: always()
