@@ -1195,4 +1195,99 @@ tx = \{
 
 \end{frame}
 
+\begin{frame}\frametitle{Headers, blocks and blockchain, genesis block}
+
+  \begin{center}
+    \includegraphics[scale=0.2,clip=false]{pictures/bitcoin-blocks.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The blockchain grows}
+
+  \begin{greenbox}{Full nodes are peers that keep the full blockchain in their database}
+    \begin{itemize}
+    \item they receive transactions from other peers or the outside world
+      \begin{itemize}
+      \item they keep them in their mempool
+      \item they whisper them to their peers
+      \end{itemize}
+    \item they produce blocks by packing mempool transactions
+      \begin{itemize}
+      \item they forward them to their peers
+      \end{itemize}
+    \item they receive blocks from peers
+      \begin{itemize}
+      \item they use the previous block hash of the received blocks to
+        attach them at the right place in the blockchain
+
+        $\Rightarrow$ the bitcoin blockchain is a tree, not a list
+      \end{itemize}
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The header contains the hash of the transactions (Merkle root)}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/mbc2_0902.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Merkle trees provide an efficient inclusion test}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/mbc2_0905.png}
+  \end{center}
+
+  \begin{greenbox}{I know the root hash and want to know if the {\color{black}black $H_K$} is included}
+    The {\color{blue}four blue hashes} can be given to me as that proof of inclusion
+    (\emph{authentication path})
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The Merkle tree helps external tools}
+
+  \begin{greenbox}{A wallet wants to know when its transaction $t$ has been processed}
+    \begin{itemize}
+    \item the wallet downloads the header of each new block from a full node;
+      the header is much smaller than the block; it contains the Merkle tree's root
+    \item the wallet asks the full node for a proof of inclusion of $t$ in the block
+    \item the full node answers with a proof consisting of only
+      $32\times\log_2(\mathit{transactions\_in\_block})$ bytes
+    \item the wallet checks the proof by computing
+      $\log_2(\mathit{transactions\_in\_block})$ hashes and comparing the last
+      hash computed to the Merkle root in the header
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The Merkle tree is not in blockchain!}
+
+  \begin{greenbox}{}
+    \begin{itemize}
+    \item it is not in the blocks
+    \item it is not the the header of the blocks
+      \begin{itemize}
+      \item[$\Rightarrow$] only the hash of the Merkle tree's root is in the header
+      \end{itemize}
+    \item it is in the volatile memory of full nodes
+      \begin{itemize}
+      \item[$\Rightarrow$] to answer inclusion tests with a short, efficient proof
+      \end{itemize}      
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/ghost-tree.png}
+  \end{center}
+
+\end{frame}
+
 \end{document}
