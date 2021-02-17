@@ -4,7 +4,15 @@
 
 These are the slides of my course about blockchain technology at the
 University of Verona, Italy.
-You can download them as a zipped directory containing the PDF the slides,
-from <a href="https://www.dropbox.com/sh/w0pz4betj0wqurq/AACPpBQNkJhGGiX7u2xDu9yUa?dl=0">here</a>.
+You can download them in PDF format, from
+<a href="https://www.dropbox.com/sh/w0pz4betj0wqurq/AACPpBQNkJhGGiX7u2xDu9yUa?dl=0">this link</a>.
 In alternative, you can regenerate the slides with the <code>build.sh</code> script
 (requires <code>pdflatex</code>).
+
+These slides cover the following arguments:
+
+* Basics: introduction and history of the blockchain technology
+* Bitcoin: the bitcoin blockchain
+* Ethereum: the ethereum blockchain, including the Solidity language and smart contracts
+* Tendermint: the tendermint engine for creating PoS blokchains, including Cosmos
+* Hotmoka: the hotmoka nodes and the Takamaka language for smart programming contracts in Java
