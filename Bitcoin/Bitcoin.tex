@@ -39,9 +39,9 @@
 
   \begin{greenbox}{What do we expect from money}
     \begin{itemize}
-    \item money should be protected from counterfeiting
-    \item money should not be spent twice
-    \item no one can claim that my money belongs to him
+    \item money should be protected from counterfeiting (\emph{legality})
+    \item money should not be spent twice (\emph{uniqueness})
+    \item no one can claim that my money belongs to him (\emph{ownership})
     \end{itemize}
   \end{greenbox}
 
@@ -288,7 +288,7 @@
     \[
     \mathit{fee}=\sum\mathit{inputs}-\mathit{amount}-\mathit{change}\ge 0
     \]
-    is the network's reward for processing the transaction
+    is the network's reward (and protection) for processing the transaction
   \end{enumerate}
 
 \end{frame}
@@ -367,6 +367,33 @@
       \item if no other peer has been faster, it forwards the new block to all its peers
       \end{itemize}
   \end{enumerate}
+\end{frame}
+
+\begin{frame}\frametitle{Fees}
+
+  \begin{center}
+    \url{https://bitcoinfees.earn.com/}
+  \end{center}
+
+  \bigskip
+  \begin{greenbox}{For example}
+    \begin{itemize}
+    \item if I want a transaction processed in one hour at most, I must offer $0.0000009$ BTC per byte
+    \item a simple transaction is in average $250$ bytes long
+    \item a BTC is $42780$ euros worth (as of today)
+    \end{itemize}
+    \begin{center}
+      $\Rightarrow$ I must offer $0.0000009 * 250 * 42780=9.6255$ euros as fee
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+  \begin{redbox}{}
+    \begin{center}
+      The size, not the value of the transaction is relevant!
+    \end{center}
+  \end{redbox}
+
 \end{frame}
 
 \begin{frame}\frametitle{Block's height, depth and confirmations}
@@ -700,6 +727,472 @@
       \end{tabular}
     \end{center}
   \end{greenbox}
+\end{frame}
+
+\begin{frame}\frametitle{The transaction, again}
+
+  \begin{center}
+    \includegraphics[scale=0.21,clip=false]{pictures/bitcoin-spend.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The real transaction}
+
+  \begin{center}
+    no coins, no senders, no recipients no balances, no accounts, no addresses
+  \end{center}
+
+  {\scriptsize\begin{alltt}
+\{
+  "vins": [
+    \{
+      "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
+      "vout": 0,
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
+      "sequence": 4294967295
+    \}
+  ],
+  "vouts": [
+    \{
+      "value": 0.01500000,
+      "lock": "DUP HASH160 ab68025513c3dbd2f7b92a94e0581f5d50f654e7 
+               EQUALVERIFY CHECKSIG"
+    \},
+    \{
+      "value": 0.08450000,
+      "lock": "DUP HASH160 7f9b1a7fb68d60c536c2fd8aeaa53a8f3cc025a8
+               EQUALVERIFY CHECKSIG"
+    \}
+  ]
+\}
+\end{alltt}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The real transaction}
+
+  \begin{center}
+    two new UTXOs (unspent transaction outputs)
+  \end{center}
+
+  {\scriptsize\begin{alltt}
+\{
+  "vins": [
+    \{
+      "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
+      "vout": 0,
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
+      "sequence": 4294967295
+    \}
+  ],
+  \color{red}{"vouts": [
+    \{
+      "value": 0.01500000,
+      "lock": "DUP HASH160 ab68025513c3dbd2f7b92a94e0581f5d50f654e7
+               EQUALVERIFY CHECKSIG"
+    \},
+    \{
+      "value": 0.08450000,
+      "lock": "DUP HASH160 7f9b1a7fb68d60c536c2fd8aeaa53a8f3cc025a8
+               EQUALVERIFY CHECKSIG",
+    \}
+  ]}
+\}
+\end{alltt}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The real transaction}
+
+  \begin{center}
+    reference to an old UTXO
+  \end{center}
+
+  {\scriptsize\begin{alltt}
+\{
+  \alert{"vins": [
+    \{
+      "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
+      "vout": 0,
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
+      "sequence": 4294967295
+    \}
+  ]},
+  "vouts": [
+    \{
+      "value": 0.01500000,
+      "lock": "DUP HASH160 ab68025513c3dbd2f7b92a94e0581f5d50f654e7
+               EQUALVERIFY CHECKSIG"
+    \},
+    \{
+      "value": 0.08450000,
+      "lock": "DUP HASH160 7f9b1a7fb68d60c536c2fd8aeaa53a8f3cc025a8
+               EQUALVERIFY CHECKSIG"
+    \}
+  ]
+\}
+\end{alltt}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The real transaction}
+
+  \begin{center}
+    the amount of the first new UTXO (in satoshis)
+  \end{center}
+
+  {\scriptsize\begin{alltt}
+\{
+  "vins": [
+    \{
+      "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
+      "vout": 0,
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
+      "sequence": 4294967295
+    \}
+  ],
+  "vouts": [
+    \{
+      \alert{"value": 0.01500000},
+      "lock": "DUP HASH160 ab68025513c3dbd2f7b92a94e0581f5d50f654e7
+               EQUALVERIFY CHECKSIG"
+    \},
+    \{
+      "value": 0.08450000,
+      "lock": "DUP HASH160 7f9b1a7fb68d60c536c2fd8aeaa53a8f3cc025a8
+               EQUALVERIFY CHECKSIG"
+    \}
+  ]
+\}
+\end{alltt}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The real transaction}
+
+  \begin{center}
+    the unlocking or witness script of the first new UTXO (crypto-puzzle)
+  \end{center}
+
+  {\scriptsize\begin{alltt}
+\{
+  "vins": [
+    \{
+      "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
+      "vout": 0,
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
+      "sequence": 4294967295
+    \}
+  ],
+  "vouts": [
+    \{
+      "value": 0.01500000,
+      \alert{"lock": "DUP HASH160 ab68025513c3dbd2f7b92a94e0581f5d50f654e7
+               EQUALVERIFY CHECKSIG"}
+    \},
+    \{
+      "value": 0.08450000,
+      "lock": "DUP HASH160 7f9b1a7fb68d60c536c2fd8aeaa53a8f3cc025a8
+               EQUALVERIFY CHECKSIG"
+    \}
+  ]
+\}
+\end{alltt}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The real transaction}
+
+  \begin{center}
+    the hash of the transaction whose $\mathtt{vout}^{\mathit{th}}$ UTXO is being spent
+  \end{center}
+
+  {\scriptsize\begin{alltt}
+\{
+  "vins": [
+    \{
+      \alert{"txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
+      "vout": 0},
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
+      "sequence": 4294967295
+    \}
+  ],
+  "vouts": [
+    \{
+      "value": 0.01500000,
+      "lock": "DUP HASH160 ab68025513c3dbd2f7b92a94e0581f5d50f654e7
+               EQUALVERIFY CHECKSIG"
+    \},
+    \{
+      "value": 0.08450000,
+      "lock": "DUP HASH160 7f9b1a7fb68d60c536c2fd8aeaa53a8f3cc025a8
+               EQUALVERIFY CHECKSIG"
+    \}
+  ]
+\}
+\end{alltt}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The real transaction}
+
+  \begin{center}
+    the unlocking script (usually digital signature + public key)
+  \end{center}
+
+  {\scriptsize\begin{alltt}
+\{
+  "vins": [
+    \{
+      "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
+      "vout": 0,
+      \alert{"unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f..."},
+      "sequence": 4294967295
+    \}
+  ],
+  "vouts": [
+    \{
+      "value": 0.01500000,
+      "lock": "DUP HASH160 ab68025513c3dbd2f7b92a94e0581f5d50f654e7
+               EQUALVERIFY CHECKSIG"
+    \},
+    \{
+      "value": 0.08450000,
+      "lock": "DUP HASH160 7f9b1a7fb68d60c536c2fd8aeaa53a8f3cc025a8
+               EQUALVERIFY CHECKSIG",
+    \}
+  ]
+\}
+\end{alltt}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The real transaction}
+
+  \begin{center}
+    scripts are written in the Script programming language
+  \end{center}
+
+  {\scriptsize\begin{alltt}
+\{
+  "vins": [
+    \{
+      "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
+      "vout": 0,
+      "unlock": \alert{"3045022100884d142d86652a3f47... 0484ecc0d46f..."},
+      "sequence": 4294967295
+    \}
+  ],
+  "vouts": [
+    \{
+      "value": 0.01500000,
+      "lock": \alert{"DUP HASH160 ab68025513c3dbd2f7b92a94e0581f5d50f654e7
+               EQUALVERIFY CHECKSIG"}
+    \},
+    \{
+      "value": 0.08450000,
+      "lock": \alert{"DUP HASH160 7f9b1a7fb68d60c536c2fd8aeaa53a8f3cc025a8
+               EQUALVERIFY CHECKSIG"}
+    \}
+  ]
+\}
+\end{alltt}}
+
+\end{frame}
+
+\begin{frame}\frametitle{The Script programming language}
+
+  \begin{greenbox}{Reverse-polish stack-based stateless language}
+    \begin{itemize}
+    \item[{\includegraphics[scale=0.03]{pictures/check.png}}] sequence
+    \item[{\includegraphics[scale=0.03]{pictures/check.png}}] conditional
+    \item[{\includegraphics[scale=0.0135]{pictures/uncheck.png}}] repetition
+    \end{itemize}
+
+    \begin{center}
+      \alert{$\Rightarrow$ Turing incomplete}
+    \end{center}
+
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Why Turing incomplete?}
+    \begin{enumerate}
+    \item predictable execution time
+    \item guaranteed termination
+    \end{enumerate}
+
+    \begin{center}
+      denial of service attacks are impossible
+    \end{center}
+
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Script validity}
+
+  \begin{greenbox}{}
+    A program in the Script language is \alert{valid} if its execution
+    does not stop with failure and terminates with a stack whose topmost element is \texttt{TRUE}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Execution proceeds left-to-right}
+    Let us execute \texttt{2 3 ADD 5 EQUAL} to see if it's valid
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{\texttt{2 3 ADD 5 EQUAL}}
+
+  \begin{center}
+    \only<1>{\includegraphics[width=\textwidth,clip=false]{pictures/stack1.png}}
+    \only<2>{\includegraphics[width=\textwidth,clip=false]{pictures/stack2.png}}
+    \only<3>{\includegraphics[width=\textwidth,clip=false]{pictures/stack3.png}}
+    \only<4>{\includegraphics[width=\textwidth,clip=false]{pictures/stack4.png}}
+    \only<5>{\includegraphics[width=\textwidth,clip=false]{pictures/stack5.png}}
+  \end{center}
+
+  \begin{center}
+    \only<5>{The program is valid!}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Other examples of (in-)valid scripts}
+
+  \begin{greenbox}{These are all valid}
+    \begin{itemize}
+    \item \texttt{TRUE}
+    \item \texttt{FALSE TRUE}
+    \item \texttt{2 7 ADD 3 SUB 1 ADD 7 EQUAL}
+    \item \texttt{2 7 EQUAL IF FALSE ELSE TRUE ENDIF}
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{These are all invalid}
+    \begin{itemize}
+    \item \texttt{FALSE}
+    \item \texttt{2 7 EQUAL}
+    \item \texttt{2 7 EQUAL IF TRUE ELSE FALSE ENDIF}
+    \item \texttt{2 7 EQUAL TRUE ENDIF}
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The validation algorithm for bitcoin transactions}
+
+{\scriptsize\begin{alltt}
+previous_tx = \{ // this transaction has hash H
+  "vins": .....
+  "vouts": [ \{ "value": .....,     "lock": "....." \}, ..... ]
+\}
+
+tx = \{
+  "vins": [ \{ "txid": H,     "vout": .....,     "unlock": "....." \}, ..... ],
+  "vouts": .....
+\}
+\end{alltt}}
+
+    {\small\begin{alltt}
+    boolean is_valid(Transaction tx) \{
+      for each (txid, vout, unlock) in tx.vins
+        previous_tx = \alert{get_transaction}(txid)
+        lock = previous_tx.vouts[vout].lock
+        if ({\color{blue}{unlock lock}} is invalid)
+          return false
+
+      return true
+    \}
+    \end{alltt}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The typical P2PKH script (\emph{pay to publickey hash})}
+
+\begin{greenbox}{``I want to send some value to \<address>''}
+{\scriptsize\begin{alltt}
+previous_tx = \{ // this transaction has hash H
+  "vins": .....
+  "vouts": [\{ "value": ..., "lock": {\color{blue}{DUP HASH160 <address> EQUALVERIFY CHECKSIG}} \},
+            .....]
+\}
+\end{alltt}}
+\end{greenbox}
+
+\bigskip
+
+\begin{greenbox}{``I'm \<address>, here is my signature, use that value''}
+{\scriptsize\begin{alltt}
+tx = \{
+  "vins": [ \{ "txid": H,   "vout": .....,   "unlock": {\color{blue}{<sig> <PubK>}}\}, ..... ],
+  "vouts": .....
+\}
+\end{alltt}}
+\end{greenbox}
+
+\bigskip
+
+\begin{greenbox}{\<unlock lock>}
+  \begin{center}
+    \texttt{<sig> <PubK> DUP HASH160 <address> EQUALVERIFY CHECKSIG}
+  \end{center}
+\end{greenbox}
+
+The bitcoin \<address> is often referred to as \<PublicKHash>
+
+\end{frame}
+
+\begin{frame}\frametitle{\texttt{<sig> <PubK> DUP HASH160 <address> EQUALVERIFY CHECKSIG}}
+
+  \begin{center}
+    \only<1>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh1.png}}
+    \only<2>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh2.png}}
+    \only<3>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh3.png}}
+    \only<4>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh4.png}}
+    \only<5>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh5.png}}
+    \only<6>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh6.png}}+
+    \only<7>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh7.png}}
+  \end{center}
+
+  \begin{center}
+    \only<7>{This script gives proof of ownership!}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{How block explorers and wallets infer accounts}
+
+\begin{greenbox}{The typical transaction}
+{\scriptsize\begin{alltt}
+tx = \{
+  "vins": [ \{ "txid": ..., "vout": ..., "unlock": {\color{blue}{<sig> <PubK>}}\}, ..... ],
+  "vouts": [\{ "value": v, "lock": {\color{blue}{DUP HASH160 <address> EQUALVERIFY CHECKSIG}} \},
+            .....]
+\}
+\end{alltt}}
+\end{greenbox}
+
+\bigskip
+
+\begin{center}
+  RIPEMD160(SHA256(\<PubK>)) $\xRightarrow[]{v}$ \<address>
+\end{center}
+
+\bigskip
+\begin{redbox}{}
+  \begin{center}
+    Fragile! It works for the standard script only
+  \end{center}
+\end{redbox}
+
 \end{frame}
 
 \end{document}
