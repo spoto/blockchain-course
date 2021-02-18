@@ -17,10 +17,10 @@
   \usefonttheme[onlysmall]{structurebold}
 }
 
-\subtitle{Learning Ethereum}
-\title{The Basics}
+\subtitle{Blockchain Course}
+\title{Ethereum}
 \institute{Universit\`a di Verona, Italy}
-\date{January 2020}
+\date{February 2021}
 
 \setbeamercovered{invisible}
 
@@ -32,6 +32,16 @@
 
 \begin{frame}
   \titlepage
+\end{frame}
+
+\begin{frame}\frametitle{The mainstream view of blockchain}
+
+  \begin{center}
+    \includegraphics[scale=0.209,clip=false]{pictures/dropout.png}
+    \hspace*{2ex}
+    \includegraphics[scale=0.29,clip=false]{pictures/insane.png}
+  \end{center}
+
 \end{frame}
 
 \begin{frame}
@@ -121,21 +131,6 @@
   \end{itemize}
 \end{frame}
 
-\begin{frame}\frametitle{Bitcoin: a very simple state model}
-  \begin{itemize}
-  \item Bitcoin uses the state to map deposits into their value; such deposits
-    are called \emph{unspent transaction output} (UTXO)
-  \item transactions consume UTXOs to produce UTXOs
-  \item an UTXO cannot be consumed twice (double spending): this is
-    forbidden by the consensus rules
-  \end{itemize}
-
-  \begin{center}
-    \includegraphics[scale=0.38,clip=false]{pictures/utxo.png}
-  \end{center}
-
-\end{frame}
-
 \begin{frame}\frametitle{Ethereum: a very general state model}
   \begin{itemize}
   \item Ethereum uses the state to map program variables, array elements,
@@ -209,63 +204,6 @@
   \end{center}
 
   Links are not pointers, but the hash of the node they refer to
-\end{frame}
-
-\begin{frame}\frametitle{Mining with proof of work (PoW)}
-  Each miner works as follows:
-  \begin{enumerate}
-  \item collect transactions received from users or from other nodes
-  \item choose and execute some of these transactions: the choice is free,
-    as long as choice and execution respect the \alert{consensus rules}
-  \item build a candidate block containing (among other):
-    \begin{itemize}
-    \item hash of the previous block
-    \item selected transactions
-    \item hash of the transaction receipts
-    \item hash of the state at the end of the last transaction in the block
-    \item address of the beneficiary miner (itself)
-    \item timestamp
-    \item the current level of difficulty $d$
-    \item a random \alert{nonce}    
-    \end{itemize}
-  \item hash the candidate block
-    \begin{itemize}
-    \item if this hash starts with at least $d$ zero's, add the candidate block to
-      your local copy of the blockchain and
-      spread it among peers
-    \item otherwise, go back to step 3, but change nonce
-    \end{itemize}
-  \end{enumerate}
-\end{frame}
-
-\begin{frame}\frametitle{Multiple chains, only one emerging}
-
-  \begin{center}
-    \includegraphics[scale=0.29,clip=false]{pictures/chains.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Changing the story with the 51\% attack}
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/51-a.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Changing the story with the 51\% attack}
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/51-b.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{PoW energy consumption in 2018}
- \begin{center}
-    \includegraphics[scale=0.24,clip=false]{pictures/energy-consumption-2018.png}
-  \end{center}
 \end{frame}
 
 \begin{frame}\frametitle{Proof of Stake (PoS)}

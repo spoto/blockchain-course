@@ -1,0 +1,47 @@
+\documentclass[11pt]{beamer}  %% versione proiettore
+%%\documentclass[11pt,handout]{beamer} %% versione stampa
+\usepackage{lucidiJb-2ed}
+
+\usepackage{relsize}
+
+\mode<article>
+{
+  \usepackage{fullpage}
+  \usepackage{hyperref}
+}
+
+\mode<presentation>
+{
+  \setbeamertemplate{background canvas}[vertical shading][bottom=red!10,top=blue!10]
+  \usetheme{Course}
+  \usefonttheme[onlysmall]{structurebold}
+}
+
+\subtitle{Blockchain Course}
+\title{Introduction}
+\institute{Universit\`a di Verona, Italy}
+\date{February 2021}
+
+\setbeamercovered{invisible}
+
+\def\codesize{\smaller}
+\def\<#1>{\codeid{#1}}
+\newcommand{\codeid}[1]{\ifmmode{\mbox{\codesize\ttfamily{#1}}}\else{\codesize\ttfamily #1}\fi}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}\frametitle{The mainstream view of blockchain}
+
+  \begin{center}
+    \includegraphics[scale=0.209,clip=false]{pictures/dropout.png}
+    \hspace*{2ex}
+    \includegraphics[scale=0.29,clip=false]{pictures/insane.png}
+  \end{center}
+
+\end{frame}
+
+\end{document}

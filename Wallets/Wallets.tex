@@ -34,31 +34,6 @@
   \titlepage
 \end{frame}
 
-\begin{frame}\frametitle{Private/public keys from random numbers}
-
-  \begin{greenbox}{Private key}
-    In principle, just a random sequence of $256$ bits.
-  \end{greenbox}
-
-  \bigskip
-
-  \begin{greenbox}{Public key}
-    It is computed from the private key, through a one-way function
-    called \emph{elliptic curve multiplication} (ECDSA).
-  \end{greenbox}
-
-\end{frame}
-
-\begin{frame}\frametitle{Ethereum representation of the keys}
-
-  \begin{itemize}
-    \item a private key are 256 random bits: 64 hexadecimal digits
-    \item a public key is a couple of two 256 bit numbers:
-      $64\times 2$ hexadecimal digits
-  \end{itemize}
-
-\end{frame}
-
 \begin{frame}\frametitle{Ethereum's cryptographic hash function}
 
   \begin{greenbox}{Keccak-256}
@@ -415,22 +390,6 @@ byte[] signedMessage = TransactionEncoder.signMessage
     so that transactions cannot be replayed across networks
     (mainnet, testnets\ldots).
   \end{greenbox}
-\end{frame}
-
-\begin{frame}\frametitle{Offline signing}
-
-  \begin{greenbox}{}
-    For extreme security, transactions might be signed offline,
-    on an \emph{airgapped} computer, so that private keys are not
-    in memory of any connected computer.
-  \end{greenbox}
-
-  \bigskip
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/offline_signing.png}
-  \end{center}
-
 \end{frame}
 
 \begin{frame}\frametitle{Transaction broadcasting}

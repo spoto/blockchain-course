@@ -17,6 +17,11 @@ jobs:
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
+      - name: Compile Introduction slides
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: Introduction.tex
+          working_directory: Introduction/
       - name: Compile Bitcoin slides
         uses: xu-cheng/latex-action@v2
         with:
@@ -25,10 +30,12 @@ jobs:
       - name: Check pdf files
         run: |
           file Bitcoin/Bitcoin.pdf | grep -q ' PDF '
+          file Introduction/Introduction.pdf | grep -q ' PDF '
       - name: Upload
         uses: actions/upload-artifact@v2
         with:
           name: blockchain-course
           path: |
+            Introduction/Introduction.pdf
             Bitcoin/Bitcoin.pdf
         if: always()
