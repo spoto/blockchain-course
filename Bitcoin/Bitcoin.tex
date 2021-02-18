@@ -347,6 +347,14 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{Bitcoin supply over the years}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/mbc2_1001.png}
+  \end{center}
+
+\end{frame}
+
 \begin{frame}\frametitle{How miners work}
 
   \begin{enumerate}
@@ -1025,7 +1033,7 @@
     \end{enumerate}
 
     \begin{center}
-      denial of service attacks are impossible
+      denial-of-service attacks are impossible at language level
     \end{center}
 
   \end{greenbox}
@@ -1287,6 +1295,269 @@ tx = \{
   \begin{center}
     \includegraphics[scale=0.5,clip=false]{pictures/ghost-tree.png}
   \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Mining}
+
+  \begin{center}
+    \includegraphics[scale=0.1,clip=false]{pictures/mining.png}
+  \end{center}
+
+  \bigskip
+
+  \begin{greenbox}{The vision of the miner}
+    The goal of mining is to mint new coins and earn money
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{The vision of Nakamoto}
+    The goal of mining is to secure the bitcoin network
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Miners are expected to create new \emph{valid} blocks}
+
+  \begin{greenbox}{New valid block = it respects the {\color{pink}{consensus rules}}}
+    \begin{itemize}
+    \item the structure of data in the header and transactions must be correct
+    \item transactions have at least one input (but coinbase transactions)
+    \item transactions have at least one output
+    \item transactions do not create money (but for coinbase transactions)
+    \item coinbase transactions have a correct reward
+    \item transactions are all valid (their unlocking scripts match the corresponsing locking scripts)
+    \item transaction inputs refer unspent UTXO only
+      (\alert{no double-spending inside the same history})
+    \item \ldots
+    \end{itemize}
+  \end{greenbox}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Construction of a new valid block at height $H$}
+
+    \begin{greenbox}{}
+      \begin{itemize}
+      \item addition of a selection of some valid transactions from the mempool
+      \item addition of a coinbase transaction
+      \item computation of their Merkle tree root
+      \item creation of the block's header:
+        \begin{itemize}
+        \item hash of block $H-1$
+        \item timestamp
+        \item Merkle tree root
+        \item nonce (for now, an arbitrary number)
+        \end{itemize}
+      \end{itemize}
+    \end{greenbox}
+
+    \bigskip
+
+    \begin{greenbox}{If a miner receives from its peers a block $b$ at height $H$
+        while it's building that same block}
+      It verifies the validity of $b$. If $b$ is valid,
+      it stops working at the block at height $H$, adds $b$ to the blockchain
+      and immediately starts working at block at height $H+1$ on top of $b$. In this sense,
+      the miner \emph{votes} for $b$
+    \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Whom should I trust?}
+
+  \begin{redbox}{The construction of a new block is too easy!}
+    Just a small fraction of second
+
+    \begin{itemize}
+    \item[$\Rightarrow$] each miner can build as many blocks as it wants
+    \item[$\Rightarrow$] each miner can forge its own history
+    \end{itemize}
+  \end{redbox}
+
+  \bigskip
+  \bigskip
+
+  \pause
+
+  \begin{center}
+    The real genius of Nakamoto:\\
+
+    \mbox{}\\
+    
+    {\Huge make it randomly hard!}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Proof-of-work (PoW)}
+
+  \begin{greenbox}{Add the following consensus rule}
+    The hash of valid blocks is smaller than
+    a given constant $\mathit{difficulty}$
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Each miner does work}
+    \begin{enumerate}
+    \item build a new block
+    \item set the nonce field of its header to a random value
+    \item compute the hash $h$ of the header
+    \item if $h < \mathit{difficulty}$ stop
+    \item go back to step 2
+    \end{enumerate}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{itemize}
+  \item the header of the resulting block is the PoW
+  \item the time to solve this puzzle is inversely proportional to $\mathit{difficulty}$
+  \item the algorithm can be easily run in parallel
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}\frametitle{The blockchain grows}
+
+  \begin{itemize}
+  \item the miner creates a new block on top of the main history
+  \item the miner receivers a valid new block from a peer
+    \begin{itemize}
+    \item whose parent is the top of the main history, or
+    \item whose parent is another block of the blockchain (fork), or
+    \item whose parent is unknown to the miner (orphan block)
+    \end{itemize}
+  \item in case of fork, the main history is the longest one, but the miner keeps all histories,
+    in case they might become the new main history in the future
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Fork: all nodes start with the same vision}
+
+  \begin{center}
+    \includegraphics[scale=0.8,clip=false]{pictures/mbc2_1002.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Fork: two nodes expand the blockchain simultaneously}
+
+  \begin{center}
+    \includegraphics[scale=0.53,clip=false]{pictures/mbc2_1003.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Fork: the network is split}
+
+  \begin{center}
+    \includegraphics[scale=0.56,clip=false]{pictures/mbc2_1004.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Fork: either chain is expanded further}
+
+  \begin{center}
+    \includegraphics[scale=0.47,clip=false]{pictures/mbc2_1005.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Fork: the network reconverges}
+
+  \begin{center}
+    \includegraphics[scale=0.47,clip=false]{pictures/mbc2_1006.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The magic behind PoW}
+
+  \begin{greenbox}{}
+    It makes expensive the production of new blocks, in time and cost (electricity)
+    \begin{itemize}
+    \item who produces invalid blocks sees its blocks rejected by peers and wastes resources
+    \item a single node cannot drive the history, since it must fight against
+      the hashing power of all other nodes together
+    \item forks become unlikely, since the probability of finding a new block at the same time
+      is small
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Difficulty over time}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/difficulty.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{PoW costs electricity}
+
+  \begin{greenbox}{2019}
+    \begin{center}
+      \includegraphics[scale=0.17,clip=false]{pictures/bitcoin-consumption.jpg}
+      \includegraphics[scale=0.14,clip=false]{pictures/greta.jpg}
+    \end{center}
+  \end{greenbox}
+    
+\end{frame}
+
+\begin{frame}\frametitle{Consensus attacks}
+
+  \begin{greenbox}{Two main categories}
+    \begin{enumerate}
+    \item history change (for the topmost few blocks)
+    \item denial-of-service (against specific transactions or accounts)
+    \end{enumerate}
+  \end{greenbox}
+
+  \bigskip
+
+  Possible if the attacker controls a large portion of the total hashing power
+
+  \begin{center}
+    \includegraphics[scale=0.17,clip=false]{pictures/51-percenters.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Changing the consensus rules}
+
+  \begin{greenbox}{Why?}
+    \begin{itemize}
+    \item new features
+    \item bug fixes
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Soft fork: the new rules are more restrictive than the old rules}
+    \begin{itemize}
+    \item nodes that do not upgrade can continue to work
+    \item but might pay for creating blocks that will be rejected by the upgraded nodes
+    \item to avoid a network split, a preliminary vote shows that
+      most nodes have already upgraded, before the new rules get activated
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{redbox}{Hard fork: the new rules are less restrictive than the old rules}
+    If only a subset of the nodes upgrade their software, this will inevitably
+    lead to a fork that does not recoverge
+    \begin{itemize}
+    \item[$\Rightarrow$] the network splits in two parts, each with its own view of the history
+    \end{itemize}
+  \end{redbox}
 
 \end{frame}
 
