@@ -11,7 +11,7 @@ In alternative, you can regenerate the slides with the <code>build.sh</code> scr
 
 These slides cover the following arguments:
 
-* Basics: introduction and history of the blockchain technology
+* Introduction: introduction and history of the blockchain technology
 * Bitcoin: the bitcoin blockchain
 * Ethereum: the ethereum blockchain, including the Solidity language and smart contracts
 * Tendermint: the tendermint engine for creating PoS blokchains, including Cosmos
