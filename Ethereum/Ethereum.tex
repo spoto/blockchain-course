@@ -36,31 +36,31 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{What is Ethereum?}
+  \frametitle{Thw world computer}
 
   \begin{greenbox}{}
-    An open source, globally decentralized computing infrastructure
-    that executes programs called \emph{smart contracts}, written
-    in a Turing-complete programming language, translated into
-    bytecode and run on a virtual machine. It uses a
-    blockchain to synchronize and store the system's state changes
+    An open source, globally \alert{decentralized computing infrastructure}
+    that executes programs called \alert{smart contracts}, written
+    in a \alert{Turing-complete} programming language, translated into
+    bytecode and run on a \alert{virtual machine}. It uses a
+    \alert{blockchain} to synchronize and store the system's \alert{singleton state} changes
     (key/value tuples), along
-    with a cryptocurrency called \emph{ether} to meter and constrain
+    with a cryptocurrency called \alert{ether} to \alert{meter and constrain}
     execution resource costs. It enables developers to build
-    decentralized applications with built-in economic functions.
+    \alert{decentralized applications} with \alert{built-in economic functions}
   \end{greenbox}
 
-  \bigskip
-  
-  \emph{gas} is bought when a transaction starts, at a maximal gas price.
-  
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/world-computer.jpg}
+  \end{center}
+
 \end{frame}
 
 \begin{frame}\frametitle{DApps}
 
-  \begin{greenbox}{DApps are smart contracts + web frontend (web3)}
+  \begin{greenbox}{DApps = smart contracts (Solidity) + web3 frontend (JavaScript\ldots)}
     \begin{center}
-      \includegraphics[width=\textwidth,clip=false]{pictures/dapps.png}
+      \includegraphics[scale=0.43,clip=false]{pictures/dapps.png}
     \end{center}
   \end{greenbox}
 
@@ -81,13 +81,29 @@
 \begin{frame}\frametitle{References used in this course}
 
   \begin{center}
-  \begin{tabular}{c@{\hskip 1.5cm}c}
-    \includegraphics[scale=.3,clip=false]{pictures/mastering-ethereum.jpg} &
-    \includegraphics[scale=.3,clip=false]{pictures/building-games.jpg}
-  \end{tabular}
+    Yellow Paper: \url{https://ethereum.github.io/yellowpaper/paper.pdf}\\
+    \mbox{}\\
+    \begin{tabular}{c@{\hskip 1.5cm}c}
+      \includegraphics[scale=.3,clip=false]{pictures/mastering-ethereum.jpg} &
+      \includegraphics[scale=.3,clip=false]{pictures/building-games.jpg}
+    \end{tabular}
   \end{center}
 
   The first: \url{https://github.com/ethereumbook/ethereumbook}
+
+\end{frame}
+
+\begin{frame}\frametitle{Deterministic (infinite) state machine}
+
+  \begin{greenbox}{A very abstract view of blockchain}
+    A blockchain is a distributed ledger of transaction requests, aggregated in blocks
+    \begin{itemize}
+    \item[] \hspace*{-3ex}\alert{Bitcoin:} transaction requests require a change of the set of UTXOs
+    \item[] \hspace*{-3ex}\alert{Ethereum:} transaction requests require a change of a
+      map $\mathit{key}\to\mathit{value}$
+    \end{itemize}
+    The change must be \alert{deterministic} otherwise consensus cannot be reached!
+  \end{greenbox}
 
 \end{frame}
 
