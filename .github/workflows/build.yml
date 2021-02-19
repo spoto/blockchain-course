@@ -27,10 +27,16 @@ jobs:
         with:
           root_file: Bitcoin.tex
           working_directory: Bitcoin/
+      - name: Compile Ethereum slides
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: Ethereum.tex
+          working_directory: Ethereum/
       - name: Check pdf files
         run: |
-          file Bitcoin/Bitcoin.pdf | grep -q ' PDF '
           file Introduction/Introduction.pdf | grep -q ' PDF '
+          file Bitcoin/Bitcoin.pdf | grep -q ' PDF '
+          file Ethereum/Ethereum.pdf | grep -q ' PDF '
       - name: Upload
         uses: actions/upload-artifact@v2
         with:
@@ -38,4 +44,5 @@ jobs:
           path: |
             Introduction/Introduction.pdf
             Bitcoin/Bitcoin.pdf
+            Ethereum/Ethereum.pdf
         if: always()
