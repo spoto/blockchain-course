@@ -104,7 +104,7 @@
     \end{tabular}
   \end{center}
 
-  The first: \url{https://github.com/ethereumbook/ethereumbook}
+  The leftmost: \url{https://github.com/ethereumbook/ethereumbook}
 
 \end{frame}
 
@@ -405,8 +405,9 @@ $ \alert{curl https://mainnet.infura.io/v3/05550caa054f4fec80ff...
   -H "Content-Type: application/json"
   -d '\{"jsonrpc":"2.0","method":"eth_gasPrice",
        "params": [],"id":1\}'}
-{\color{blue}\{"jsonrpc":"2.0","id":1,"result":"0x248dede201 0x3b9aca00"\}}
-$ \alert{echo $((0x248dede201))}
+{\color{blue}\{"jsonrpc":"2.0","id":1,"result":"{\color{black}0x248dede201}"\}}
+
+$ \alert{echo $(({\color{black}0x248dede201}))}
 {\color{blue}157000000001}
 \end{semiverbatim}
 
