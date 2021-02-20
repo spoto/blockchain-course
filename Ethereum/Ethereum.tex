@@ -15,6 +15,7 @@
 \documentclass[11pt]{beamer}  %% versione proiettore
 %%\documentclass[11pt,handout]{beamer} %% versione stampa
 \usepackage{lucidiJb-2ed}
+\usepackage{mathtools}
 \usepackage[normalem]{ulem}
 
 \usepackage{relsize}
@@ -459,106 +460,10 @@ $ \alert{echo $((0x248dede201))}
 
   \bigskip
 
-  \url{https://javadoc.io/doc/org.web3j}
-
-\end{frame}
-
-\begin{frame}\frametitle{Accounts, state and receipts are \alert{not} in blockchain}
-
-  They are kept inside a database, local to each node.
-
   \begin{center}
-    \includegraphics[scale=0.38,clip=false]{pictures/accounts-state-receipts.png}
+    \url{https://javadoc.io/doc/org.web3j}
   \end{center}
 
-\end{frame}
-
-\begin{frame}\frametitle{The state}
-  The state is a key/value store, typically held in a database:
-  \begin{itemize}
-  \item it must be possible to reconstruct the state at the end of
-    each block, hence it must be saved by difference wrt.\ the previous block
-  \item keys are bit sequences, typically hashes of deposits, addresses,
-    of program variables, of array elements\ldots
-  \item values are bit sequences, ie.\ amounts,
-    the value of accounts, their code, the
-    value of program variables\ldots
-  \end{itemize}
-\end{frame}
-
-\begin{frame}\frametitle{Ethereum: a very general state model}
-  \begin{itemize}
-  \item Ethereum uses the state to map program variables, array elements,
-    addresses to their value, their code etc.
-  \item a new programming language, called Solidity, was meant to compile into
-    updates of a memory made of key/value tuples
-  \item transactions execute Solidity code, provided by users, and can
-    have any effect on the state
-  \end{itemize}
-
-  \begin{redbox}{}
-    In reality, in Ethereum there are also \emph{primitive}
-    transactions used for simple money transfers or for contract
-    creation, that do not run any Solidity code. This hybrid
-    approach might be
-    an optimization of special, frequently used transactions,
-    or the sign of an uncertain design (Solidity was added later,
-    over a layer that was initially meant for simple money tranfers)
-  \end{redbox}
-
-\end{frame}
-
-\begin{frame}\frametitle{The state: which data structure?}
-  It must allow
-  \begin{enumerate}
-  \item a compact representation by difference from a previous state
-  \item fast recomputation of its hash once the state is updated
-  \item fast access to the value bound to each given key
-  \end{enumerate}
-
-  \medskip
-  Traditional data structures such as hash maps only satisfy~3
-  (and~2, but only for trivial hashing functions, which is not
-  acceptable for blockchains)
-
-\end{frame}
-
-\begin{frame}\frametitle{Patricia trie: fast access to the value bound to each key}
-
-  \begin{center}
-    \textbf{P}ractical \textbf{A}lgorithm \textbf{T}o \textbf{R}etrieve \textbf{I}nformation \textbf{C}oded \textbf{I}n \textbf{A}lphanumeric
-  \end{center}
-
-  \begin{center}
-    \includegraphics[scale=0.5,clip=false]{pictures/trie_search.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Patricia trie: compact representation by difference}
-
-  \begin{center}
-    \includegraphics[scale=0.4,clip=false]{pictures/trie-update.jpg}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Merkle trie: fast recomputation of its hash upon update}
-
-  Proceed bottom-up:
-  \begin{center}
-    \includegraphics[scale=0.7,clip=false]{pictures/trie-hash.jpg}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Merkle-Patricia tries}
-
-  \begin{center}
-    \includegraphics[scale=0.11,clip=false]{pictures/merkle-patricia.png}
-  \end{center}
-
-  Links are not pointers, but the hash of the node they refer to
 \end{frame}
 
 \begin{frame}\frametitle{Ethereum's cryptographic hash function}
@@ -568,7 +473,7 @@ $ \alert{echo $((0x248dede201))}
     It is the original algorithm that won the SHA-3 Cryptographic Hash
     Function Competition of 2007. NIST standardized it in a slightly
     modified way as SHA-3. However, the Ethereum team never trusted
-    such modification and used the original algorithm.
+    such modification and used the original algorithm
   \end{greenbox}
 
   \bigskip
@@ -585,7 +490,7 @@ $ \alert{echo $((0x248dede201))}
 
   \begin{greenbox}{}
     Compute the public key,
-    hash it with Keccak-256, keep only the last $20$ bytes (\emph{ie.}, $160$ bits, that is, $40$ hex digits).
+    hash it with Keccak-256, keep only the last $20$ bytes (\emph{ie.}, $160$ bits, that is, $40$ hex digits). No checksum!
   \end{greenbox}
   
   \begin{center}
@@ -593,7 +498,14 @@ $ \alert{echo $((0x248dede201))}
   \end{center}
 
   \begin{center}
-    No checksum!
+    \begin{itemize}
+    \item[] {\color{red}Bitcoin:} private $\xRightarrow{\mathit{ECDSA}}$ public
+      $\xRightarrow{\mathit{sha256}}$
+      hash $\xRightarrow{\mathit{ripemd160}}$ address
+    \item[] {\color{red}Ethereum:} private $\xRightarrow{\mathit{ECDSA}}$ public
+      $\xRightarrow{\mathit{kekkak256}}$
+      hash $\xRightarrow{\mathit{last\ 20\ bytes}}$ address
+    \end{itemize}
   \end{center}
 
 \end{frame}
@@ -638,9 +550,9 @@ $ \alert{echo $((0x248dede201))}
 
   \begin{greenbox}{Example}
 \begin{semiverbatim}
-Address:   001d3f1ef827552ae1114027bd3ecf1f086ba0f9
-Keccak256: 23a69c1653e4ebbb619b0b2cb8a9bad49892a8b9...
-Result:    001d3{\color{red}F}1ef827552{\color{red}A}e111402{\color{red}B}7{\color{red}D}3{\color{red}ECF}1f086b{\color{red}A}0{\color{red}F}9
+Address:   001d3{\color{purple}f}1ef827552{\color{purple}a}e1114027{\color{purple}bd}3{\color{purple}ecf}1f086b{\color{purple}a}0{\color{purple}f}9
+Keccak256: 23a69{\color{blue}c}1653e4ebb{\color{blue}b}619b0b2c{\color{blue}b8}a{\color{blue}9ba}d49892{\color{blue}a}8{\color{blue}b}9...
+Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\color{red}ECF}1f086b{\color{red}A}0{\color{red}F}9
 \end{semiverbatim}
   \end{greenbox}
 
@@ -931,6 +843,104 @@ byte[] signedMessage = TransactionEncoder.signMessage
     \includegraphics[scale=0.15,clip=false]{pictures/multi-signature.png}
   \end{center}
 
+\end{frame}
+
+\begin{frame}\frametitle{Accounts, state and receipts are \alert{not} in blockchain}
+
+  They are kept inside a database, local to each node.
+
+  \begin{center}
+    \includegraphics[scale=0.38,clip=false]{pictures/accounts-state-receipts.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The state}
+  The state is a key/value store, typically held in a database:
+  \begin{itemize}
+  \item it must be possible to reconstruct the state at the end of
+    each block, hence it must be saved by difference wrt.\ the previous block
+  \item keys are bit sequences, typically hashes of deposits, addresses,
+    of program variables, of array elements\ldots
+  \item values are bit sequences, ie.\ amounts,
+    the value of accounts, their code, the
+    value of program variables\ldots
+  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Ethereum: a very general state model}
+  \begin{itemize}
+  \item Ethereum uses the state to map program variables, array elements,
+    addresses to their value, their code etc.
+  \item a new programming language, called Solidity, was meant to compile into
+    updates of a memory made of key/value tuples
+  \item transactions execute Solidity code, provided by users, and can
+    have any effect on the state
+  \end{itemize}
+
+  \begin{redbox}{}
+    In reality, in Ethereum there are also \emph{primitive}
+    transactions used for simple money transfers or for contract
+    creation, that do not run any Solidity code. This hybrid
+    approach might be
+    an optimization of special, frequently used transactions,
+    or the sign of an uncertain design (Solidity was added later,
+    over a layer that was initially meant for simple money tranfers)
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The state: which data structure?}
+  It must allow
+  \begin{enumerate}
+  \item a compact representation by difference from a previous state
+  \item fast recomputation of its hash once the state is updated
+  \item fast access to the value bound to each given key
+  \end{enumerate}
+
+  \medskip
+  Traditional data structures such as hash maps only satisfy~3
+  (and~2, but only for trivial hashing functions, which is not
+  acceptable for blockchains)
+
+\end{frame}
+
+\begin{frame}\frametitle{Patricia trie: fast access to the value bound to each key}
+
+  \begin{center}
+    \textbf{P}ractical \textbf{A}lgorithm \textbf{T}o \textbf{R}etrieve \textbf{I}nformation \textbf{C}oded \textbf{I}n \textbf{A}lphanumeric
+  \end{center}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/trie_search.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Patricia trie: compact representation by difference}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/trie-update.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Merkle trie: fast recomputation of its hash upon update}
+
+  Proceed bottom-up:
+  \begin{center}
+    \includegraphics[scale=0.7,clip=false]{pictures/trie-hash.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Merkle-Patricia tries}
+
+  \begin{center}
+    \includegraphics[scale=0.11,clip=false]{pictures/merkle-patricia.png}
+  \end{center}
+
+  Links are not pointers, but the hash of the node they refer to
 \end{frame}
 
 \begin{frame}\frametitle{A smart contract is\ldots}
