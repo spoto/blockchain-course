@@ -1,4 +1,4 @@
-package it.univr.ethereum;
+package it.univr.ethereumclient;
 
 import java.math.BigInteger;
 import java.util.Arrays;
