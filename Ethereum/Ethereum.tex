@@ -303,7 +303,7 @@
   \begin{greenbox}{}
     An Ethereum client is a software application that implements
     the Ethereum specification (the \emph{Yellow Paper}) and communicates
-    over the peer-to-peer network with other Ethereum clients.
+    over the p2p network with other Ethereum clients
   \end{greenbox}
 
   \medskip
@@ -316,16 +316,34 @@
   \item Mantis (Scala)
   \item Harmony (Java)
   \end{itemize}
-  
+
+  \bigskip
+
+  \begin{center}
+    More clients means robustness against attacks
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Too big to fail?}
+
+  \begin{center}
+    \includegraphics[scale=0.25,clip=false]{pictures/ethereum-size.png}
+  \end{center}
+
+  \begin{center}
+    An 8TB SSD unit costs 160€ (2021)
+  \end{center}
+
 \end{frame}
 
 \begin{frame}\frametitle{Client types}
 
   \begin{greenbox}{Full nodes}
-    A full node stores the whole blockchain ($\sim$200GB) and
+    A full node stores the whole blockchain ($\sim$6TB) and
     takes part in mining. Very slow to synchronize.
     It can query the blockchain offline and
-    without letting a third party know the information that it's reading.
+    without letting a third party know the information that it's reading
   \end{greenbox}
 
   \bigskip
@@ -333,14 +351,13 @@
   \begin{greenbox}{Remote clients}
     A remote client does not store the blockchain but
     depends on another full node for operation. They are wallets
-    that create and broadcast transactions (for instance, MetaMask).
+    that create and broadcast transactions (for instance, MetaMask)
   \end{greenbox}
 
   \bigskip
 
   \begin{greenbox}{Networks}
-    The \emph{mainnet}, or a \emph{testnet}, or a local blockchain
-    (Ganache).
+    The \emph{mainnet}, or a \emph{testnet}, or a local blockchain (Ganache)
   \end{greenbox}
   
 \end{frame}
@@ -362,14 +379,14 @@
     ID to build a query to Infura's JSON-RPC API:
 
 \begin{semiverbatim}
-$ \alert{curl https://mainnet.infura.io/v3/05....4
+$ \alert{curl https://mainnet.infura.io/v3/05550caa054f4fec80ff...
   -X POST
   -H "Content-Type: application/json"
   -d '\{"jsonrpc":"2.0","method":"web3_clientVersion",
   "params": [],"id":1\}'}
 {\color{blue}\{"jsonrpc":"2.0","id":1,
- "result":"Geth/v1.9.9-omnibus-e320ae4c-20191206
-               /linux-amd64/go1.13.4"\}}
+  "result":"Geth/v1.9.25-omnibus-331c5f09
+            /linux-amd64/go1.15.6"\}}
 \end{semiverbatim}
 
 \end{greenbox}
@@ -382,14 +399,14 @@ $ \alert{curl https://mainnet.infura.io/v3/05....4
     Use your Infura ID to build a query to Infura's JSON-RPC API:
 
 \begin{semiverbatim}
-$ \alert{curl https://mainnet.infura.io/v3/05....4
+$ \alert{curl https://mainnet.infura.io/v3/05550caa054f4fec80ff...
   -X POST
   -H "Content-Type: application/json"
   -d '\{"jsonrpc":"2.0","method":"eth_gasPrice",
        "params": [],"id":1\}'}
-{\color{blue}\{"jsonrpc":"2.0","id":1,"result":"0x3b9aca00"\}}
-$ \alert{echo $((0x3b9aca00))}
-{\color{blue}1000000000}
+{\color{blue}\{"jsonrpc":"2.0","id":1,"result":"0x248dede201 0x3b9aca00"\}}
+$ \alert{echo $((0x248dede201))}
+{\color{blue}157000000001}
 \end{semiverbatim}
 
   \end{greenbox}
