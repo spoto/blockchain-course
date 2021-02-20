@@ -15,4 +15,4 @@ These slides cover the following arguments:
 * Bitcoin: the bitcoin blockchain
 * Ethereum: the ethereum blockchain, including the Solidity language and smart contracts
 * Tendermint: the tendermint engine for creating PoS blokchains, including Cosmos
-* Hotmoka: the hotmoka nodes and the Takamaka language for smart programming contracts in Java
+* Hotmoka: the hotmoka nodes and the Takamaka language for programming smart contracts in Java
