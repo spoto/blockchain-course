@@ -423,23 +423,31 @@ $ \alert{echo $((0x248dede201))}
 
 \begin{frame}[fragile]\frametitle{A Java client that connects to Infura}
 
-  \begin{greenbox}{Create in Eclipse a new Java Maven project with this \<pom.xml>}
-\begin{verbatim}
+  \begin{greenbox}{Import project \<ethereum-client> as an existing Maven project}
+{\scriptsize\begin{alltt}
 <project xmlns="http://maven.apache.org/POM/4.0.0"...>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>it.univr</groupId>
-  <artifactId>ethereum</artifactId>
+  {\color{violet}{<groupId>it.univr</groupId>
+  <artifactId>it.univr.ethereumclient</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>LearningEthereum</name>
-  <dependencies>
+  <name>Ethereum Client</name>}}
+  {\color{red}{<build>
+    <plugins><plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration><release>11</release></configuration>
+    </plugin></plugins>
+  </build>}}
+  {\color{blue}{<dependencies>
     <dependency>
       <groupId>org.web3j</groupId>
       <artifactId>core</artifactId>
-      <version>4.5.11</version>
+      <version>5.0.0</version>
     </dependency>
-  </dependencies>
+  </dependencies>}}
 </project>
-\end{verbatim}
+\end{alltt}}
   \end{greenbox}
 \end{frame}
 
@@ -452,14 +460,6 @@ $ \alert{echo $((0x248dede201))}
   \bigskip
 
   \url{https://javadoc.io/doc/org.web3j}
-
-\end{frame}
-
-\begin{frame}\frametitle{Mobile remote client: Jaxx}
-
-  \begin{center}
-    \includegraphics[scale=0.1,clip=false]{pictures/jaxx.png}
-  \end{center}
 
 \end{frame}
 
