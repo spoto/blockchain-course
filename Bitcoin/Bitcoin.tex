@@ -643,6 +643,19 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{Nondeterministic wallets}
+
+  \begin{greenbox}{Password stretching}
+    To make dictionary attacks harder, nondeterministic
+    wallets repeatedly apply a hash function
+    to each password, using th hash result as the actual encryption password
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/key-derivation-function.png}
+  \end{center}
+  \end{greenbox}
+
+\end{frame}
+
 \begin{frame}\frametitle{Deterministic wallets (BIP-32, seeded, Type-1)}
 
   \begin{greenbox}{Streams of keys}
@@ -1558,6 +1571,57 @@ tx = \{
   \end{center}
 
 \end{frame}
+
+\begin{frame}\frametitle{How the 51\% attack works}
+
+  \begin{greenbox}{The malicious miner spends $100$ BTC on the public chain
+      while it is adding blocks to its
+      private blockchain, without broadcasting them. In its private chain,
+      the spend transaction is missing}
+    \begin{center}
+      \includegraphics[width=\textwidth,clip=false]{pictures/51attack_1.png}
+    \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{How the 51\% attack works}
+
+  \begin{greenbox}{The malicious miner makes its private chain longer,
+      since it has more hashing power than the rest of the miners taken together}
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/51attack_2.png}
+  \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{How the 51\% attack works}
+
+  \begin{greenbox}{The malicious miner broadcasts its private chain; since it is longer,
+      all other miners switch to this alternative view of the history}
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/51attack_3.png}
+  \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{How the 51\% attack works}
+
+  \begin{greenbox}{The malicious miner can spend its $100$ BTC again! Everybody agrees\ldots}
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/51attack_4.png}
+  \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{center}
+    History is written by the victors
+  \end{center}
+
+  \end{frame}
 
 \begin{frame}\frametitle{Changing the consensus rules}
 
