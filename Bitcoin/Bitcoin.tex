@@ -297,6 +297,14 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{A DAG of transactions}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/bitcoin-dag.png}
+  \end{center}
+
+\end{frame}
+
 \begin{frame}\frametitle{How Alice's wallet prepares a transaction}
 
   \begin{enumerate}
@@ -350,28 +358,29 @@
 
 \begin{frame}\frametitle{Miners and Rewards}
 
-  Miners are (some) nodes of the bitcoin network. They receive, forward
-  and put transactions into collectors, called \alert{blocks}.
+  \begin{greenbox}{Miners are (some) nodes of the bitcoin network. They receive, forward
+      and aggregate transactions into collectors, called \alert{blocks}}
+    When a node creates a new block, it has the right to tag the block
+    with a bitcoin address $\mu$, called the \alert{miner}'s address:
+    \begin{itemize}
+    \item the fees $\phi_1\cdots\phi_n$ of the $n$ transactions in the block go to $\mu$
+    \item some amount of money $\iota$ is created out of thin air and goes to $\mu$
+    \end{itemize}
+  \end{greenbox}
 
-  When a node creates a new block, it has the right to tag the block
-  with a bitcoin address $\mu$, called the \alert{miner}'s address:
+  \bigskip
 
-  \begin{itemize}
-  \item the fees $\phi_1\cdots\phi_n$ of the $n$ transactions in the block go to $\mu$
-  \item some amount of money $\iota$ is created out of thin air and goes to $\mu$
-  \end{itemize}
-
-  \medskip
   \begin{greenbox}{}
     Typically, $\mu$ belongs to the person/organization who owns the machine that runs the node
   \end{greenbox}
 
-  \medskip
+  \bigskip
+
   \begin{greenbox}{}
     $\iota$ is the \alert{inflation}: it is computed through a fixed algorithm that makes it decrease with the time
-    and will eventually reach $0$, the day when $21,000,000$ total bitcoins will be mined
+    and will eventually reach $0$, the day when 21,000,000 total bitcoins will be mined
     \begin{itemize}
-    \item bitcoin is deflationary
+    \item[$\Rightarrow$] bitcoin is deflationary
     \end{itemize}
   \end{greenbox}
 
@@ -1366,12 +1375,12 @@ tx = \{
   \begin{greenbox}{New valid block = it respects the {\color{pink}{consensus rules}}}
     \begin{itemize}
     \item the structure of data in the header and transactions must be correct
-    \item transactions have at least one input (but coinbase transactions)
+    \item transactions have at least one input (but for coinbase transactions)
     \item transactions have at least one output
     \item transactions do not create money (but for coinbase transactions)
     \item coinbase transactions have a correct reward
     \item transactions are all valid (their unlocking scripts match the corresponsing locking scripts)
-    \item transaction inputs refer unspent UTXO only
+    \item transaction inputs refer to unspent UTXO only
       (\alert{no double-spending inside the same history})
     \item \ldots
     \end{itemize}
