@@ -754,7 +754,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
   through EIP-55
 \end{frame}
 
-\begin{frame}\frametitle{Signing and sending a transaction in Java with Infura}
+\begin{frame}\frametitle{Signing and sending a transaction in Java}
 
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/send-transaction-java.png}
@@ -762,7 +762,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
 
 \end{frame}
 
-\begin{frame}\frametitle{Example: sending ETH from our account to the faucet}
+\begin{frame}\frametitle{Sending ETH from our account to the faucet}
 
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/send-ether-transaction-java.png}
@@ -838,7 +838,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
 
 \end{frame}
 
-\begin{frame}\frametitle{Creating an instance of \<Faucet.sol> with Infura}
+\begin{frame}\frametitle{Creating an instance of \<Faucet.sol>}
 
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/send-contract-transaction-java.png}
@@ -903,63 +903,152 @@ byte[] signedMessage = TransactionEncoder.signMessage
 
 \end{frame}
 
-\begin{frame}\frametitle{Accounts, state and receipts are \alert{not} in blockchain}
-
-  They are kept inside a database, local to each node.
+\begin{frame}\frametitle{The state of Ethereum}
 
   \begin{center}
-    \includegraphics[scale=0.38,clip=false]{pictures/accounts-state-receipts.png}
+    The state of Ethereum is a global singleton map {\color{magenta}$\sigma:\mathit{key}\to\mathit{value}$}
+  \end{center}
+
+  \bigskip
+
+  \begin{redbox}{The state is not in blockchain!}
+    Each node keeps and maintains its own copy in a private database
+  \end{redbox}
+
+  \bigskip
+
+  \begin{greenbox}{API of the state}
+    \begin{enumerate}
+    \item \<value=get(address)>
+    \item \<put(address, value)>
+    \end{enumerate}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Encoding data into the state}
+
+  \begin{greenbox}{Store the balance of an EOA}
+    \begin{center}
+      \<put(address\_of\_EOA, balance)>
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Read the balance of an EOA}
+    \begin{center}
+      \<get(address\_of\_EOA)>
+    \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Encoding data into the state}
+
+  \begin{greenbox}{EOA installs a smart contract}
+    \begin{center}
+      \<put(>{\color{blue}$\underbrace{\<hash(address\_of\_EOA, nonce\_of\_EOA)>}_{\mathit{address\ of\ the\ new\ smart\ contract}}$}\<, bytecode\_of\_smart\_contract)>
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{A smart contract writes $v$ into its $n$th instance variable (field)}
+    \begin{center}
+      \<put(>{\color{blue}$\underbrace{\<hash(address\_of\_smart\_contract, n)>}_{\mathit{address\ of\ the\ n-th\ field}}$}\<, v)>
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{A smart contract reads from its $n$th instance variable (field)}
+    \begin{center}
+      \<get(>{\color{blue}$\underbrace{\<hash(address\_of\_smart\_contract, n)>}_{\mathit{address\ of\ the\ n-th\ field}}$}\<)>
+    \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The hash of the state}
+
+  \begin{greenbox}{In \alert{Bitcoin}, the header of a block contains the hash \alert{of the transactions} in the block}
+    That is, the head of the Merkle tree of transactions. Miners must execute
+    the transactions to validate them, since invalid transactions would make the whole block invalid,
+    which would make the miner lose money
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{In \alert{Ethereum}, the header of a block contains the hash \alert{of the state} at the end of the execution of the transactions in the block}
+    Since syntactically correct transactions are always valid, this obliges the miners to execute the transactions
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{API of the state}
+    \begin{enumerate}
+    \item \<value=get(address)>
+    \item \<put(address, value)>
+    \item \<h=get\_hash()>
+    \end{enumerate}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The state of a node must change across different views}
+
+  \begin{center}
+    \includegraphics[scale=0.47,clip=false]{pictures/mbc2_1005.png}
   \end{center}
 
 \end{frame}
 
-\begin{frame}\frametitle{The state}
-  The state is a key/value store, typically held in a database:
-  \begin{itemize}
-  \item it must be possible to reconstruct the state at the end of
-    each block, hence it must be saved by difference wrt.\ the previous block
-  \item keys are bit sequences, typically hashes of deposits, addresses,
-    of program variables, of array elements\ldots
-  \item values are bit sequences, ie.\ amounts,
-    the value of accounts, their code, the
-    value of program variables\ldots
-  \end{itemize}
-\end{frame}
+\begin{frame}\frametitle{Change view to the state at the end of a block}
 
-\begin{frame}\frametitle{Ethereum: a very general state model}
-  \begin{itemize}
-  \item Ethereum uses the state to map program variables, array elements,
-    addresses to their value, their code etc.
-  \item a new programming language, called Solidity, was meant to compile into
-    updates of a memory made of key/value tuples
-  \item transactions execute Solidity code, provided by users, and can
-    have any effect on the state
-  \end{itemize}
+  \begin{greenbox}{A node sets its view of the state as at the end of a block}
+    \begin{center}
+      \<checkout(block.header.state\_hash)>
+    \end{center}
+  \end{greenbox}
 
-  \begin{redbox}{}
-    In reality, in Ethereum there are also \emph{primitive}
-    transactions used for simple money transfers or for contract
-    creation, that do not run any Solidity code. This hybrid
-    approach might be
-    an optimization of special, frequently used transactions,
-    or the sign of an uncertain design (Solidity was added later,
-    over a layer that was initially meant for simple money tranfers)
-  \end{redbox}
+  \bigskip
+
+  \begin{greenbox}{The final API of the state}
+    \begin{enumerate}
+    \item \<value=get(address)>
+    \item \<put(address, value)>
+    \item \<h=get\_hash()>
+    \item \<checkout(h)>
+    \end{enumerate}
+  \end{greenbox}
 
 \end{frame}
 
-\begin{frame}\frametitle{The state: which data structure?}
-  It must allow
+\begin{frame}\frametitle{Merkle-Patricia tries}
+
   \begin{enumerate}
   \item a compact representation by difference from a previous state
   \item fast recomputation of its hash once the state is updated
   \item fast access to the value bound to each given key
+  \item fast change of view
   \end{enumerate}
 
   \medskip
-  Traditional data structures such as hash maps only satisfy~3
+  Traditional data structures such as hashmaps only satisfy~3
   (and~2, but only for trivial hashing functions, which is not
   acceptable for blockchains)
+
+  \bigskip
+
+  \begin{greenbox}{The final API of the state for keys of length $L$}
+    \begin{enumerate}
+    \item \<value=get(address)> \hfill $O(L)$
+    \item \<put(address, value)> \hfill $O(L)$
+    \item \<h=get\_hash()> \hfill $O(L)$
+    \item \<checkout(h)> \hfill $O(1)$
+    \end{enumerate}
+  \end{greenbox}
 
 \end{frame}
 
@@ -998,7 +1087,10 @@ byte[] signedMessage = TransactionEncoder.signMessage
     \includegraphics[scale=0.11,clip=false]{pictures/merkle-patricia.png}
   \end{center}
 
-  Links are not pointers, but the hash of the node they refer to
+  \begin{center}
+    Links are not pointers, but the hash of the node they refer to
+  \end{center}
+
 \end{frame}
 
 \begin{frame}\frametitle{A smart contract is\ldots}
