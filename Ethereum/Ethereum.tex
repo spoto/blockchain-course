@@ -685,7 +685,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
 
   The price of gas fluctuates, for protection against ETH spikes:
 
-  \bigskip
+  \medskip
 
   \begin{greenbox}{\url{https://ethgasstation.info/}}
     \begin{center}
@@ -695,12 +695,40 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
 
   \bigskip
 
-  It is well possible that transactions with $0$ gas price will be eventually
-  processed.
+  It is theoretically possible that transactions with $0$ gas price will be eventually
+  processed
 
-  \bigskip
+  \medskip
 
-  The maximal gas cost of a transaction will be $\mathit{Gas\ price}\times\mathit{Gas\ limit}$.
+  Maximal fees: $\mathit{Gas\ price}\times\mathit{Gas\ limit}
+  \times \mathit{Euros\ per\ Gwei}$
+
+  \medskip
+
+  \begin{redbox}{Example: a small transaction requires 21000 units of gas}
+    \begin{center}
+      $\mathit{fees} = 151\times 21000\times 0.00000162$€$=5.137$€
+    \end{center}
+  \end{redbox}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Average fees chart}
+
+  \begin{greenbox}{\url{https://blockchair.com/}}
+    \begin{center}
+      \includegraphics[width=\textwidth,clip=false]{pictures/ethereum-fees-chart.png}
+    \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Computing the gas price in Java using Infura}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/get-gas-price-java.png}
+  \end{center}
+
 \end{frame}
 
 \begin{frame}\frametitle{To}
@@ -723,7 +751,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
   \bigskip
 
   Clients should check for correctness of addresses, for instance
-  through EIP-55.
+  through EIP-55
 \end{frame}
 
 \begin{frame}\frametitle{Signing and sending a transaction in Java with Infura}
@@ -762,7 +790,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
       \item there is a \alert{payable \emph{fallback} function}: it will be executed after
         increasing the contract's balance by value
       \item there is no fallback function: the balance of the contract gets increased by value
-      \item there is a fallback function, but is not payable: the transaction fails
+      \item there is a fallback function, but it is not payable: the transaction fails
       \end{itemize}
     \end{itemize}
   \end{itemize}
@@ -773,8 +801,8 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
 
   \begin{itemize}
   \item the signing key specifies the caller
-  \item the recipient specifies the receiver contract of the call
-  \item the data component specifies signature and actual arguments of the call
+  \item the recipient is the address of the receiving contract of the call
+  \item the data component encodes signature and actual arguments of the call
   \end{itemize}
 
   \bigskip
@@ -790,7 +818,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
 
 \end{frame}
 
-\begin{frame}\frametitle{Example: call \<withdraw()> on contract installed with Remix}
+\begin{frame}\frametitle{Calling \<withdraw()> on a contract installed with Remix}
 
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/send-function-transaction-java.png}
@@ -804,12 +832,13 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
   \item the signing key specifies the caller
   \item the recipient is set to the zero address
   \item the data component contains the compiled bytecode of the contract
+    (ask Remix for that)
   \item the transaction receipt contains the address of the new contract
   \end{itemize}
 
 \end{frame}
 
-\begin{frame}\frametitle{Example: create an instance of \<Faucet.sol> with Infura}
+\begin{frame}\frametitle{Creating an instance of \<Faucet.sol> with Infura}
 
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/send-contract-transaction-java.png}
@@ -846,9 +875,9 @@ byte[] signedMessage = TransactionEncoder.signMessage
 
   \begin{greenbox}{}
     The public key of the signer can be recovered from the signed transaction.
-    A numerical chain identifier is added to the transaction before signing,
+    A numerical \alert{chain identifier} is added to the transaction before signing,
     so that transactions cannot be replayed across networks
-    (mainnet, testnets\ldots).
+    (mainnet, testnets\ldots)
   \end{greenbox}
 \end{frame}
 
