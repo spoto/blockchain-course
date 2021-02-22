@@ -1862,7 +1862,9 @@ require(withdraw_amount <= 0.1 ether);
     \includegraphics[width=\textwidth,clip=false]{pictures/simple-ponzi.png}
   \end{center}
 
-  The first investment will be burned to address \<0x0>.
+  \begin{center}
+    The first investment will be burned to address \<0x0>
+  \end{center}
   
 \end{frame}
 
@@ -1880,7 +1882,7 @@ require(withdraw_amount <= 0.1 ether);
   \end{enumerate}
 
   \bigskip
-  You can check the current investment and investor from Remix.
+  You can check the current investment and investor from Remix
 
 \end{frame}
 
@@ -1896,6 +1898,10 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{center}
     \includegraphics[scale=0.4,clip=false]{pictures/simple-lottery-1.png}
+  \end{center}
+
+  \begin{center}
+    \<now> is the timestamp of the block where the transaction is mined
   \end{center}
 
 \end{frame}
@@ -1940,7 +1946,7 @@ require(withdraw_amount <= 0.1 ether);
   \end{enumerate}
 
   \medskip
-  You can check the winner from Remix.
+  You can check the winner from Remix
 
 \end{frame}
 
@@ -2046,10 +2052,10 @@ require(withdraw_amount <= 0.1 ether);
     \begin{itemize}
     \item the DAO was a contract for autonomous decentralized organizations
     \item the attacker used reentrancy to steal $50\text{M}\$$ equivalent of ETH
-    \item the Ethereum team decided to change the consensus rules in order
+    \item the Ethereum team decided to make the consensus rules more restrictive in order
       to make such transactions illegal and get some of that money back
     \item some node maintainers didn't accept the change and continued
-      operating with the old rules, leading to a network fork known as
+      operating with the old rules and another chain id, leading to a network hard fork known as
       Ethereum Classic
     \end{itemize}
   \end{greenbox}
