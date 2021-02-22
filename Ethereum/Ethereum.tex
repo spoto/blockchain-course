@@ -2191,14 +2191,14 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{redbox}{}
     Considering the importance of security for smart contracts,
-    it is questionable to have invented Solidity (hard, new, with convoluted
-    semantics) for writing such delicate pieces of software.
+    it is questionable to have invented Solidity (hard, new, with complex
+    semantics) for writing such delicate pieces of software
   \end{redbox}
 
   \bigskip
 
   \begin{center}
-    Remember the DAO.
+    Remember the DAO
   \end{center}
   
 \end{frame}
@@ -2209,7 +2209,7 @@ require(withdraw_amount <= 0.1 ether);
     Our contract calls an unknown contract. The latter, unexpectedly, calls
     back into our contract again. Particularly dangerous if this cycle
     passes through a call sending ETH, that would be repeated as many
-    times as the unknown contract decides.
+    times as the unknown contract decides
   \end{redbox}
 
   \bigskip
@@ -2253,7 +2253,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{redbox}{}
     An operation tries to compute a fixed-size value that is outside the
-    bounds for its type.
+    bounds for its type
   \end{redbox}
 
   \bigskip
@@ -2297,7 +2297,7 @@ require(withdraw_amount <= 0.1 ether);
   \medskip
 
   \begin{center}
-    \url{https://docs.openzeppelin.com/contracts/2.x/api/math}
+    \url{https://docs.openzeppelin.com/contracts/3.x/api/math}
   \end{center}
   
 \end{frame}
@@ -2306,7 +2306,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{redbox}{}
     Code correctness depends on invariants about \<this.balance>,
-    that actually do not hold.
+    that actually do not hold
   \end{redbox}
 
   \bigskip
@@ -2334,6 +2334,8 @@ require(withdraw_amount <= 0.1 ether);
     \item write a suicidal contract that executes \<selfdestruct(beneficiary)>
       and forwards its balance to \<beneficiary>: it does not even call
       the fallback function of \<beneficiary>!
+    \item mine a block and put the contract as destination coinbase address
+      (expensive, but it depends on the final goal\ldots)
     \item let ether be there from the very beginning, by sending ether
       to the address of the contract before its same creation!
       Remember that the address of a contract is computed deterministically
@@ -2346,7 +2348,7 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Unexpected ether: prevention}
 
   \begin{greenbox}{Do not rely on \<this.balance>}
-    Use your own counter instead.
+    Use your own counter instead
   \end{greenbox}
 
   \bigskip
@@ -2360,14 +2362,14 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Issue \#4: \<delegatecall>}
 
   It is a low-level call that allows one to call any method, as
-  done in Java by reflection (and much worse).
+  done in Java by reflection (actually much worse than reflection)
 
   \bigskip
 
   \begin{redbox}{It keeps the calling context}
     If the callee reads/modifies its $n$th state variable, it actually
     reads/modifies the $n$th state variable of the caller, regardless of
-    names and types.
+    names and types
   \end{redbox}
 
 \end{frame}
@@ -2378,8 +2380,8 @@ require(withdraw_amount <= 0.1 ether);
     \includegraphics[scale=0.33,clip=false]{pictures/delegatecall-storage-clash.png}
   \end{center}
 
-  Invoking the constructor of \<Caller> with the address of a \<Callee> \visible<2>{actually
-  results in the \alert{\<private>} field \<lib> being set to $42$.
+  By invoking the constructor of \<Caller> with the address of a \<Callee> \only<1>{\ldots}\visible<2>{one actually
+  sets the \alert{\<private>} field \<lib> of the \<Caller> to $42$
 
   \begin{center}
     \includegraphics[scale=0.35,clip=false]{pictures/surprised-cat.jpg}
@@ -2398,7 +2400,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \bigskip
 
-  The same can occur with all low-level calls.
+  The same can occur with all low-level calls
 
 \end{frame}
 
@@ -2421,21 +2423,25 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{greenbox}{}
     Programmers tend to be too permissive about visibility modifiers, often because
-    they get along with the default \<public> visibility.
+    they get along with the default \<public> visibility
   \end{greenbox}
 
   \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/weak-visibility.png}
+    \includegraphics[scale=0.4,clip=false]{pictures/weak-visibility.png}
   \end{center}
 
   \begin{redbox}{}
-    Everybody can call \<sendWinnings()>, it is \<public> by default!
+    \begin{center}
+      Everybody can call \<sendWinnings()>, it \sout{is} was \<public> by default!
+    \end{center}
   \end{redbox}
 
+  \medskip
+
   \begin{greenbox}{}
-    Too stupid? Don't overestimate the intelligence of
+    Too stupid? Do not overestimate the intelligence of
     programmers: somebody stole $\$31\text{M}$ from
-    a slightly more complex contract.
+    a slightly more complex contract than this
   \end{greenbox}
 
 \end{frame}
@@ -2443,7 +2449,7 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Weak encapsulation: prevention}
 
   \begin{itemize}
-  \item be the stricter as you can about visibility
+  \item be the stricter you can about visibility
     \begin{itemize}
     \item even \<internal> can be dangerous, because it is callable from
       subcontracts
@@ -2454,21 +2460,29 @@ require(withdraw_amount <= 0.1 ether);
     \end{itemize}
   \item think seriously about the API of your contracts
   \end{itemize}
-  
+
+  \bigskip
+
+  \begin{redbox}{}
+    What, in traditional software development,
+    is \emph{just} a question of style, order and good engineering,
+    becomes here a question of MONEY
+  \end{redbox}
+
 \end{frame}
 
 \begin{frame}\frametitle{Issue \#6: Entropy illusion}
 
   \begin{redbox}{Nothing is really random in blockchain}
     Do not rely on \<block.number>, \<block.gaslimit>, \<block.timestamp> or \<now>
-      as a source of randomness: they are (partially) controlled by the miner.
+      as a source of randomness: they are (partially) controlled by the miner
   \end{redbox}
 
   \begin{center}
     \includegraphics[scale=0.42,clip=false]{pictures/roulette.png}
   \end{center}
 
-  The miner might choose \<now> so that the condition holds (or does not hold).
+  The miner might choose \<now> so that the condition holds (or does not hold)
 \end{frame}
 
 \begin{frame}\frametitle{Entropy illusion: prevention}
@@ -2478,10 +2492,11 @@ require(withdraw_amount <= 0.1 ether);
       \item use an external trusted \alert{oracle} as a source of randomness:
         \begin{description}
         \item[Oracle] A computer that regularly sends transactions that
-          store data in blockchain. For instance, it sends and stores a random number.
+          store data in blockchain. For instance, it sends and stores a random number
         \end{description}
       \item if \<now> or \<block.timestamp> is used to wait for a period of time,
-        it might be safer to wait for a specific blockchain height instead
+        it might be safer to wait for a specific blockchain height instead, since it cannot
+        really be controlled by miners
     \end{itemize}
   \end{greenbox}
     
@@ -2491,7 +2506,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{redbox}{}
     Casts and contract types are unchecked. Do not let clients
-    inject contract types through the public API.
+    inject contract types through the public API
   \end{redbox}
 
   \medskip
@@ -2507,7 +2522,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{redbox}{}
     This even compiles if \<length> is defined as \<view>, although it can have
-    any possible side-effect.
+    any possible side-effect
   \end{redbox}
 
 \end{frame}
@@ -2520,7 +2535,7 @@ require(withdraw_amount <= 0.1 ether);
   \item only talk to your friends!
     \begin{itemize}
     \item if \<field = new MyContract()> is the only way to initialize \<field>,
-      then you can trust the type of \<field>
+      then you can be sure about the run-time type of \<field>
     \end{itemize}
   \end{itemize}
   
@@ -2530,25 +2545,25 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{redbox}{}
     Function parameters are encoded as transaction data. If shorter than
-    expected, the encoding is silently padded with $0$'s.
+    expected, the encoding is silently padded with $0$'s
   \end{redbox}
 
   \medskip
 
-  \begin{greenbox}{How to buy a Porsche with $500$ euros}
+  \begin{greenbox}{How to buy a Porsche with $1431$ euros}
     \begin{enumerate}
     \item generate private keys until the derived address \<A> ends in \<0x00>
     \item communicate the first $38$ digits \<A'> of \<A> to an exchange (without the
-      two final \<0x00>), asking to buy $3$ ETH (as of today, $500$ euros)
-    \item pay the exchange the $500$ euros (plus commission)
+      two final \<0x00>), asking to buy $1$ ETH (as of today, $1431$ euros)
+    \item pay the exchange the $1431$ euros (plus commission)
     \item its wallet will prepare a transaction to some
       \<transfer(address to, uint tokens)>, with data
-      \<selector::A'::0x000000....00003::0x00>, where the final \<0x00> is padding
+      \<selector::A'::0x000000....00001::0x00>, where the final \<0x00> is padding
       to match the expected data size for \<transfer>
     \item the EVM will interpret the address as \<A'::0x00>, that is, \<A> (ours!)
-    \item the EVM will interpret the \<tokens> parameter as $\<0x0000...000300>$, that is,
-      $768$ ETH (as of today, $99,840$ euros)
-    \item you will earn $99,840-500=99,340$ euros (minus commission)
+    \item the EVM will interpret the \<tokens> parameter as $\<0x0000...000100>$, that is,
+      $256$ ETH (as of today, $366336$ euros)
+    \item you will earn $336336-1431=364905$ euros (minus commission)
     \end{enumerate}
   \end{greenbox}
   
@@ -2564,11 +2579,10 @@ require(withdraw_amount <= 0.1 ether);
 
   \bigskip
 
-  \begin{itemize}
-  \item check parameters passed into blockchain
-  \item use wallets to check basic consistency and warn otherwise
-  \end{itemize}
-  
+  \begin{center}
+    Let your applications check parameters passed into blockchain
+  \end{center}
+
 \end{frame}
 
 \begin{frame}\frametitle{Issue \#9: Unchecked return value}
@@ -2576,25 +2590,29 @@ require(withdraw_amount <= 0.1 ether);
   \begin{redbox}{}
     The return value of some functions (typically, \<send> and
     \<call>) should be checked, since it is a boolean
-    that informs about their outcome.
+    that informs about their outcome
   \end{redbox}
 
   \begin{center}
-    \includegraphics[scale=0.32,clip=false]{pictures/lotto.png}
+    \includegraphics[scale=0.3,clip=false]{pictures/lotto.png}
   \end{center}
 
-  \<payedOut> is set to true even if \<winner.send(winAmount)> fails.
+  \begin{center}
+    \<payedOut> is set to true even if \<winner.send(winAmount)> fails
+  \end{center}
+
+  \medskip
 
   \begin{greenbox}{}
-    Prevention: check the result of \<send> and \<call>. Use \<transfer> instead of \<send>.
+    Prevention: check the result of \<send> and \<call>. Use \<transfer> instead of \<send>
   \end{greenbox}
 \end{frame}
 
 \begin{frame}\frametitle{Issue \#10: Race conditions/front running}
 
   \begin{redbox}{}
-    Miners process transactions in the order they like (if ever);
-    in general, they tend to proceed in decreasing \<gasPrice> order.
+    Miners process transactions fromthe mempool in the order they like (if ever);
+    in general, they tend to proceed in decreasing \<gasPrice> order
   \end{redbox}
 
   \bigskip
@@ -2602,7 +2620,7 @@ require(withdraw_amount <= 0.1 ether);
   \begin{greenbox}{Scenario \#1 (transaction ban, unlikely)}
     A miner could be instructed to never include a transaction that is
     detrimental to its owner. Unlikely to work for long, since it is practically impossible
-    to be the fastest to mine the next block, always.
+    to be the fastest to mine the next block, always
   \end{greenbox}
 
   \bigskip
@@ -2612,7 +2630,7 @@ require(withdraw_amount <= 0.1 ether);
     those containing solutions to priced puzzles, and immediately
     place its own transaction with the same solution but a much higher \<gasPrice>,
     so that all miners will prefer to mine its transaction rather than the
-    original one. The onwer of the sniffer will cash the price.
+    original one. The onwer of the sniffer will cash the price
   \end{greenbox}
 
 \end{frame}
@@ -2660,7 +2678,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{redbox}{}
     If the cost of running transactions exceeds the block's gas limit, the
-    transaction will never be executed, which might block a contract.
+    transaction will never be executed, which might block a contract
   \end{redbox}
 
   \begin{center}
@@ -2680,12 +2698,12 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Issue \#12: Floating point imprecision}
 
   Solidity currently does not implement fixed nor floating-point arithmetic, hence
-  integers are used instead.
+  integers are used instead
 
   \medskip
 
   \begin{redbox}{}
-    Beware of calculations that might lose precision! In particular: integer division.
+    Beware of calculations that might lose precision! In particular: integer division
   \end{redbox}
 
   \begin{center}
@@ -2709,17 +2727,18 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{redbox}{}
     \<tx.origin> is the sender of the first transaction in a chain
-    of transactions, not the sender of the current transaction (\emph{ie.}, it is not \<msg.sender>).
+    of transactions, not the sender of the current transaction (\emph{ie.}, it is not \<msg.sender>)
   \end{redbox}
 
   \begin{center}
-    \includegraphics[scale=0.39,clip=false]{pictures/phishable.png}
+    \includegraphics[scale=0.36,clip=false]{pictures/phishable.png}
   \end{center}
 
   \begin{enumerate}
   \item an \<attacker> identifies a \<phishable> in blockchain
   \item creates \<phisher = new Phisher(phishable, attacker)>
-  \item convinces \<phishable.owner> to send ETH to \<phisher> and gets all! 
+  \item convinces \<phishable.owner> to send ETH to \<phisher> and caches all the money
+    of the \<phishable>!
   \end{enumerate}
 
 \end{frame}
@@ -2727,10 +2746,9 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Prevention: \<tx.origin> authentication}
 
   \begin{itemize}
-  \item it is almost always better to use \<msg.sender> instead of \<tx.origin>
+  \item it is almost always correct to use \<msg.sender> instead of \<tx.origin>
   \item nevertheless, \<tx.origin> is legitimate sometimes:
-    \<require(tx.origin == msg.sender)> prevents functions from being called
-    from non-EOAs
+    \<require(tx.origin == msg.sender)> constrains functions to be called from EOAs only
   \end{itemize}
   
 \end{frame}
