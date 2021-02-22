@@ -1159,8 +1159,8 @@ byte[] signedMessage = TransactionEncoder.signMessage
   \end{center}
 
   \begin{redbox}{}
-    The state root is just an hash of the state tree, to prove that
-    transactions have been executed by the miner.
+    The state root is just a hash of the state tree, to prove that
+    transactions have been executed by the miner
   \end{redbox}
 
 \end{frame}
@@ -1185,6 +1185,21 @@ byte[] signedMessage = TransactionEncoder.signMessage
     \item \alert{non}-strongly-typed
     \item unorthogonal features
     \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{}
+    \begin{itemize}
+    \item[{\includegraphics[scale=0.03]{pictures/check.png}}] sequence
+    \item[{\includegraphics[scale=0.03]{pictures/check.png}}] conditional
+    \item[{\includegraphics[scale=0.03]{pictures/check.png}}] repetition
+    \end{itemize}
+
+    \begin{center}
+      \alert{$\Rightarrow$ Turing complete (bug or feature?)}
+    \end{center}
+
   \end{greenbox}
 
 \end{frame}
@@ -1226,50 +1241,75 @@ byte[] signedMessage = TransactionEncoder.signMessage
 \begin{frame}[fragile]\frametitle{Select a compiler version}
 
   \begin{greenbox}{Add a pragma directive}
-    \verb!pragma solidity ^0.4.19! requires to compile with a compiler for version $0.4.x$ with $x\ge 19$.
+    \verb!pragma solidity ^0.4.19! requires to compile with a compiler for version $0.4.x$ with $x\ge 19$
   \end{greenbox}
 
 \end{frame}
 
 \begin{frame}\frametitle{Basic Solidity types}
   \begin{greenbox}{\<bool>}
-    with constants \<true> and \<false> and usual operators.
+    with constants \<true> and \<false> and usual operators
   \end{greenbox}
   \bigskip
   \begin{greenbox}{\<int>, \<unint>}
     signed or unsigned, with usual operators, in increments of 8 bit size:
     \<uint8>, \<uint16>, \<int24>\ldots. Without specification, they stand for
-    \<int256> and \<unint256>, respectively.
+    \<int256> and \<unint256>, respectively
   \end{greenbox}
   \bigskip
   \begin{greenbox}{\<fixed>$M\times N$, \<ufixed>$M\times N$}
     fixed point arithmetic, signed or unsigned, $M$ bits, $N$ decimals
-    after the point: \alert{currently not implemented}.
+    after the point: \alert{currently not implemented}
   \end{greenbox}
-  \bigskip
+
+\end{frame}
+
+\begin{frame}\frametitle{Back to C's \<void *>}
+
   \begin{greenbox}{\<address>}
-    a 20-bytes Ethereum address.
+    A 20-bytes Ethereum address
+
+    \begin{itemize}
+    \item it has \<balance> field
+    \item there is no \<instanceof> operator
+    \item casts never fail
+    \end{itemize}
+
   \end{greenbox}
+
+  \bigskip
+
+  \begin{center}
+    \includegraphics[scale=0.04,clip=false]{pictures/frog-prince.png}
+  \end{center}
+
+  \begin{redbox}{}
+    \begin{itemize}
+    \item you can dress a frog as a prince, but it will remain a frog
+    \item you can dress a prince as a frog, but it will remain a prince
+    \item you will understand the difference when you kiss it (segmentation fault)
+    \end{itemize}
+  \end{redbox}
 
 \end{frame}
 
 \begin{frame}[fragile]\frametitle{Basic Solidity types}
 
   \begin{greenbox}{\<bytes>$N$}
-    fixed-size array of bytes, of length $N$.
+    fixed-size array of bytes, of length $N$
   \end{greenbox}
 
   \bigskip
 
   \begin{greenbox}{\<bytes> or \<string>}
-    variable-sized arrays of bytes.
+    variable-sized arrays of bytes
   \end{greenbox}
 
   \bigskip
 
   \begin{greenbox}{Arrays}
     \<uint32[][5]> is a fixed size array of five dynamic
-    arrays of $32$ bits unsigned integers.
+    arrays of $32$ bits unsigned integers
   \end{greenbox}
 
   \bigskip
@@ -1293,12 +1333,23 @@ struct pair {
 \end{verbatim}
   \end{greenbox}
 
-  \bigskip
+  \medskip
 
   \begin{greenbox}{Mappings}
 \begin{verbatim}
 mapping(address => unint256) balances;
 \end{verbatim}
+
+A field of type mapping spreads its values into the state through hashing:
+\<balances[k]=v> executes
+\<put(>{{\color{blue}$\underbrace{\<hash(balances,k)>}_{\mathit{address\ of\ \<balances[k]>}}$}}\<, v)>
+
+\begin{itemize}
+\item[$\Rightarrow$] mappings default to $0$
+\item[$\Rightarrow$] there is no \<containsKey> (you need a sentinel value)
+\item[$\Rightarrow$] it is not possible to compute the key set or value set of a mapping
+\item[$\Rightarrow$] it is not possible to iterate on a mapping
+\end{itemize}
   \end{greenbox}
 
 \end{frame}
@@ -1325,7 +1376,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{greenbox}{Structures \<msg> and \<tx> are derived from the transaction request}
     \begin{description}
-    \item[\<msg.sender>] the address that sent the transaction
+    \item[\<msg.sender>] the address of the \alert{caller EOA or contract}
     \item[\<msg.value>] the ether sent along the transaction
     \item[\<msg.gasleft>] what remains to consume of the gas limit
     \item[\<msg.data>] the data payload of the transaction
@@ -1345,19 +1396,6 @@ require(withdraw_amount <= 0.1 ether);
 
 \end{frame}
 
-\begin{frame}\frametitle{Block information}
-
-  \begin{greenbox}{The structure \<block> is constructed by the miner}
-    \begin{description}
-    \item[\<block.coinbase>] the address of the miner itself
-    \item[\<block.difficulty>] the proof of work difficulty
-    \item[\<block.gaslimit>] the maximum gas that can be spent in the current block
-    \item[\<block.number>] the current block height
-    \item[\<block.timestamp>] the mining time
-    \end{description}
-  \end{greenbox}
-
-\end{frame}
 \begin{frame}\frametitle{Members of an address}
 
   \begin{greenbox}{}
@@ -1378,12 +1416,27 @@ require(withdraw_amount <= 0.1 ether);
   
 \end{frame}
 
+\begin{frame}\frametitle{Block information}
+
+  \begin{greenbox}{The structure \<block> is constructed by the miner}
+    \begin{description}
+    \item[\<block.coinbase>] the address of the miner itself
+    \item[\<block.difficulty>] the proof of work difficulty
+    \item[\<block.gaslimit>] the maximum gas that can be spent in the current block
+    \item[\<block.number>] the current block height
+    \item[\<block.timestamp>] the mining time
+    \end{description}
+  \end{greenbox}
+
+\end{frame}
+
 \begin{frame}\frametitle{Main types in Solidity}
 
   \begin{description}
   \item[\<contract>] somehow similar to an object in OO-programming. It has a balance
   \item[\<interface>] functions have no code and must be implemented in subtypes
   \item[\<library>] a contract meant to be deployed once and used by other contracts through \<delegatecall>. It has no state variables and no balance. It does not receive ether. It cannot execute \<selfdestruct>.
+    \medskip
     \begin{center}
       \includegraphics[scale=0.45,clip=false]{pictures/library.png}
     \end{center}
@@ -1405,14 +1458,14 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{redbox}{Privacy?}
     Data is always publicly readable in blockchain. These modifiers
-    only refer to who can call whom and are significant for the compiler only.
+    only refer to who can call whom and are significant for the compiler only
   \end{redbox}
 \end{frame}
 
 \begin{frame}\frametitle{Side-effect modifiers}
 
   \begin{description}
-  \item[\<view>] the function cannot modify the state
+  \item[\<view> or \sout{\<constant>}] the function cannot modify the state
     \begin{center}
       \includegraphics[scale=0.45,clip=false]{pictures/not-view.png}
     \end{center}
@@ -1434,15 +1487,15 @@ require(withdraw_amount <= 0.1 ether);
   \bigskip
 
   \begin{redbox}{\<return> is not mandatory on every execution path}
-    When missing, the return value(s) defaults to $0$.
+    When missing, the return value(s) defaults to $0$
   \end{redbox}
 \end{frame}
 
 \begin{frame}\frametitle{Constructors}
   \begin{greenbox}{}
     A contract \alert{can} have \alert{up to one} contructor, that gets called
-    only once as part of a transaction that deploys an instance
-    of the contract.
+    only once as part of each transaction that deploys an instance
+    of the contract
   \end{greenbox}
 
   \begin{center}
@@ -1476,7 +1529,7 @@ require(withdraw_amount <= 0.1 ether);
     \item required for calling \<send()>, \<transfer()> and \<call()>
     \item all of \<msg.sender>, \<tx.origin> and \<block.coinbase> are
       \<payable>
-    \item you can cast between \<address> and \<address payable> and such casts never fails
+    \item you can cast between \<address> and \<address payable> and casts never fails
     \end{itemize}
   \end{greenbox}
 
@@ -1524,7 +1577,7 @@ require(withdraw_amount <= 0.1 ether);
 
 \end{frame}
 
-\begin{frame}\frametitle{Contract extension}
+\begin{frame}\frametitle{Contract extension and inheritance (also multiple)}
 
   \begin{greenbox}{}
     \begin{center}
@@ -1546,8 +1599,9 @@ require(withdraw_amount <= 0.1 ether);
 
 \begin{frame}\frametitle{Assertions}
   \begin{greenbox}{\<require(condition[,msg])>}
-    Evaluates the condition. If false, an exception is thrown and the
-    transaction is reverted. Typically used for checking function parameters.
+    Evaluates the condition, \alert{that could reasonably not hold}.
+    If false, an exception is thrown and the
+    transaction is reverted. Typically used for checking user input
   \end{greenbox}
 
   \bigskip
@@ -1555,20 +1609,22 @@ require(withdraw_amount <= 0.1 ether);
   \begin{greenbox}{\<assert(condition[,msg])>}
     Evaluates the condition, \alert{that is expected to hold}.
     If false, an exception is thrown and the
-    transaction is reverted. Typically used to verify runtime conditions
-    for debugging.
+    transaction is reverted. Typically used to verify internal runtime conditions
+    for debugging
   \end{greenbox}
 
   \bigskip
 
-  \begin{greenbox}{\<revert([msg])>}
-    Throws an exception and reverts the current transaction.
+  \begin{greenbox}{\<revert([msg])> or {\sout{\<throw>}}}
+    Throws an exception and reverts the current transaction
   \end{greenbox}
 
   \bigskip
 
   \begin{redbox}{}
-    There is no way to catch exceptions.
+    \begin{center}
+      There is no way to catch exceptions
+    \end{center}
   \end{redbox}
 
 \end{frame}
@@ -1583,7 +1639,10 @@ require(withdraw_amount <= 0.1 ether);
 
   \bigskip
 
-  DApps can listen and react to events.
+  \begin{center}
+    DApps can listen and react to events
+  \end{center}
+
 \end{frame}
 
 \begin{frame}\frametitle{Specifying gas and value for inner transactions}
@@ -1618,7 +1677,10 @@ require(withdraw_amount <= 0.1 ether);
 
   \bigskip
 
-  We know what gets called with \<faucet.destroy()>.
+  \begin{center}
+    In this case, we know what gets called with \<faucet.destroy()>
+  \end{center}
+
 \end{frame}
 
 \begin{frame}\frametitle{Contract creation with payable constructor}
@@ -1631,7 +1693,10 @@ require(withdraw_amount <= 0.1 ether);
 
   \bigskip
 
-  We know what gets called with \<faucet.destroy()>.
+  \begin{center}
+    Also in this case, we know what gets called with \<faucet.destroy()>
+  \end{center}
+
 \end{frame}
 
 \begin{frame}\frametitle{Casts do not fail in Solidity}
@@ -1700,7 +1765,7 @@ require(withdraw_amount <= 0.1 ether);
     \includegraphics[scale=0.35,clip=false]{pictures/normal-call.png}
   \end{center}
 
-  Calling \<d.callSetN(e, 42)>:
+  Calling \<d.callSetN(e, 42)> where \<e> is a \<E>:
   \begin{itemize}
   \item \<e.n> will become $42$
   \item \<e.sender> will become \<d>
@@ -1714,7 +1779,7 @@ require(withdraw_amount <= 0.1 ether);
     \includegraphics[scale=0.35,clip=false]{pictures/call.png}
   \end{center}
 
-  Calling \<d.callSetN(e, 42)>:
+  Calling \<d.callSetN(e, 42)> where \<e> is a \<E>:
   \begin{itemize}
   \item \<e.n> will become $42$
   \item \<e.sender> will become \<d>
@@ -1744,7 +1809,7 @@ require(withdraw_amount <= 0.1 ether);
     \includegraphics[scale=0.35,clip=false]{pictures/callcode.png}
   \end{center}
 
-  Calling \<d.callSetN(e, 42)>:
+  Calling \<d.callSetN(e, 42)> where \<e> is a \<E>:
   \begin{itemize}
   \item \<d.n> will become $42$
   \item \<d.sender> will become \<d>
@@ -1759,10 +1824,10 @@ require(withdraw_amount <= 0.1 ether);
     \includegraphics[scale=0.3,clip=false]{pictures/delegatecall.png}
   \end{center}
 
-  Calling \<c.foo(d, e, 42)>:
+  Calling \<c.foo(d, e, 42)> where \<d> is a \<D> and \<e> is a \<E>:
   \begin{itemize}
   \item \<d.n> will become $42$
-  \item \<d.sender> will become \<c>
+  \item \<d.sender> \alert{will become \<c>}
   \item \<e.n> and \<e.sender> are not modified
   \end{itemize}
   
@@ -1772,10 +1837,17 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{greenbox}{Each bytecode instruction and transaction type has a gas cost}
     \begin{itemize}
-    \item it is possible to estimate the gas cost of simple functions
+    \item it is possible to compute in advance the gas cost \alert{of simple functions}
       (use \<estimateGas> of web3 for instance)
-    \item \alert{the estimation is wrong in the presence of loops or recursion!}
-    \item in general, it is important to know which operations (might) cost much gas, to avoid them
+    \item \alert{the result is wrong in the presence of loops or recursion!}
+      \begin{itemize}
+      \item obvious, since gas cost computation is equivalent to complexity analysis
+        which can be used to decide termination of programs
+        \begin{itemize}
+        \item[$\Rightarrow$] an algorithm for computing gas costs in advance cannot exist
+        \end{itemize}
+      \end{itemize}
+    \item in general, it is important to know which operations (might) cost much gas, and avoid them
       \begin{itemize}
       \item loops over unbounded dynamic arrays
       \item calls to unknown contracts
