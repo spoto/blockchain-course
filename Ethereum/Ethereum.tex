@@ -146,6 +146,13 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{Ethereum forks}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/ethereum-forks.jpg}
+  \end{center}
+
+\end{frame}
 
 \begin{frame}\frametitle{Wallets}
 
@@ -999,16 +1006,23 @@ byte[] signedMessage = TransactionEncoder.signMessage
 \begin{frame}\frametitle{The state of a node must change across different views}
 
   \begin{center}
-    \includegraphics[scale=0.47,clip=false]{pictures/mbc2_1005.png}
+    \includegraphics[width=\textwidth,clip=false]{pictures/longest.png}
   \end{center}
+
+  \bigskip
+
+  \begin{itemize}
+  \item[] {\color{red}Bitcoin:} (kind of) nothing to do
+  \item[] {\color{red}Ethereum:} hard: method executions undo, others must be done
+  \end{itemize}
 
 \end{frame}
 
 \begin{frame}\frametitle{Change view to the state at the end of a block}
 
-  \begin{greenbox}{A node sets its view of the state as at the end of a block}
+  \begin{greenbox}{Undo of state updates, up to the state at the end of an old block}
     \begin{center}
-      \<checkout(block.header.state\_hash)>
+      \<checkout(old\_block.header.state\_hash)>
     \end{center}
   \end{greenbox}
 
@@ -1022,6 +1036,24 @@ byte[] signedMessage = TransactionEncoder.signMessage
     \item \<checkout(h)>
     \end{enumerate}
   \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Ethereum's state is on Git}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/git.png}
+  \end{center}
+
+  \bigskip
+
+  \begin{center}
+    \<git checkout create-sql-dev>\\
+    \medskip
+    \<git checkout master>\\
+    \medskip
+    \<git checkout formula-rewrite>
+  \end{center}
 
 \end{frame}
 

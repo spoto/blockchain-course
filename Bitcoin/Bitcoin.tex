@@ -1630,7 +1630,7 @@ tx = \{
     History is written by the victors
   \end{center}
 
-  \end{frame}
+\end{frame}
 
 \begin{frame}\frametitle{Changing the consensus rules}
 
@@ -1638,30 +1638,48 @@ tx = \{
     \begin{itemize}
     \item new features
     \item bug fixes
+    \item protocols exist for voting for/against the upgrade, before the new rules
+      get activated
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Soft fork: new rules more restrictive than old rules}
+
+  \begin{greenbox}{}
+    \begin{itemize}
+    \item if the next block is mined by a yellow node, it is accepted by all nodes
+    \item if the next block is mined by a black node, it might be rejected by the yellow nodes
+    \item if $51\%$ of the nodes are yellow (upgraded), the network will not split and will follow
+      the new rules of the yellow nodes
     \end{itemize}
   \end{greenbox}
 
   \bigskip
 
-  \begin{greenbox}{Soft fork: the new rules are more restrictive than the old rules}
-    \begin{itemize}
-    \item nodes that do not upgrade can continue to work
-    \item but might pay for creating blocks that will be rejected by the upgraded nodes
-    \item to avoid a network split, a preliminary vote shows that
-      most nodes have already upgraded, before the new rules get activated
-    \end{itemize}
-  \end{greenbox}
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/soft-fork.png}
+  \end{center}
 
-  \bigskip
+\end{frame}
 
-  \begin{redbox}{Hard fork: the new rules are less restrictive than the old rules}
-    If only a subset of the nodes upgrade their software, this will inevitably
-    lead to a fork that does not recoverge
+\begin{frame}\frametitle{Hard fork: new rules less restrictive than old rules}
+
+  \begin{redbox}{}
     \begin{itemize}
-    \item[$\Rightarrow$] the network splits in two parts, each with its own view of the history
+    \item if the next block is mined by a black node, it is accepted by all nodes
+    \item if the next block is mined by a yellow node, it might be rejected by the black nodes
+    \item if $51\%$ of the nodes are yellow (upgraded), the network splits in two
     \end{itemize}
   \end{redbox}
 
+  \bigskip
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/hard-fork.png}
+  \end{center}
+    
 \end{frame}
 
 \end{document}
