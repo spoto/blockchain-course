@@ -32,11 +32,17 @@ jobs:
         with:
           root_file: Ethereum.tex
           working_directory: Ethereum/
+      - name: Compile Tendermint slides
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: Tendermint.tex
+          working_directory: Tendermint/
       - name: Check pdf files
         run: |
           file Introduction/Introduction.pdf | grep -q ' PDF '
           file Bitcoin/Bitcoin.pdf | grep -q ' PDF '
           file Ethereum/Ethereum.pdf | grep -q ' PDF '
+          file Tendermint/Tendermint.pdf | grep -q ' PDF '
       - name: Upload
         uses: actions/upload-artifact@v2
         with:
@@ -45,4 +51,5 @@ jobs:
             Introduction/Introduction.pdf
             Bitcoin/Bitcoin.pdf
             Ethereum/Ethereum.pdf
+            Tendermint/Tendermint.pdf
         if: always()

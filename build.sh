@@ -6,5 +6,7 @@ cd ../Bitcoin
 pdflatex Bitcoin.tex
 cd ../Ethereum
 pdflatex Ethereum.tex
+cd ../Tendermint
+pdflatex Tendermint.tex
 cd ..
 
