@@ -108,6 +108,14 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{Tendermint's polka}
+
+  \begin{center}
+    \includegraphics[scale=.15,clip=false]{pictures/polka.png}
+  \end{center}
+
+\end{frame}
+
 \begin{frame}\frametitle{The mempool}
 
   \begin{center}
@@ -165,6 +173,150 @@
   \begin{center}
     \includegraphics[scale=.38,clip=false]{pictures/tendermint-block.png}
   \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A layered implementation in Golang}
+
+  \begin{center}
+    \includegraphics[scale=.38,clip=false]{pictures/tendermint-core.jpg}
+  \end{center}
+
+  \begin{center}
+    ABCI: Application BlockChain Interface
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The application layer}
+
+  \begin{center}
+    \includegraphics[scale=.15,clip=false]{pictures/tendermint-core.jpg}
+  \end{center}
+  
+  \begin{greenbox}{The application layer is not part of Tendermint Core}
+    Programmers can write their own application layer
+    \begin{itemize}
+    \item connected to TendermintCore via ABCI using sockets
+    \item possibly on a different machine than Tendermint Core
+    \item in any programming language
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{redbox}{}
+    \begin{center}
+      The application layer must be deterministic!
+    \end{center}
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The ABCI}
+
+  \begin{center}
+    \url{https://docs.tendermint.com/master/spec/abci/abci.html}
+  \end{center}
+
+  \begin{itemize}
+  \item[] \alert{\<checkTx>}: called before entering the mempool and to verify blocks
+    \begin{itemize}
+    \item[$\Rightarrow$] only transactions that satisfy \<checkTx> are added in blocks
+    \item[{\includegraphics[scale=0.0135]{pictures/uncheck.png}}] must not modify the state of the application
+    \end{itemize}
+    \hrule
+  \item[] \alert{\<beginBlock>}: called at the beginning of a block; receives information
+    about the validator set of the previous block and which of them signed the previous block
+  \item[] \alert{\<deliverTx>}: called for each transaction added to a block: it executes
+    the transaction by modifying the state of the application
+  \item[] \alert{\<endBlock>}: called at the end of a block; provides information
+    about the validator set for the next block
+  \item[] \alert{\<commit>}: called when a block is being committed; provides the hash of
+    the state of the application
+    \hrule
+  \item[] \alert{\<query>}: called when the user wants to read data from the blockchain
+  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{The ABCI}
+
+  \begin{center}
+    \includegraphics[scale=.2,clip=false]{pictures/abci.png}
+  \end{center}
+
+  \begin{redbox}{}
+    State updates between \<beginBlock> and \<commit> must be seen as a single atomic update
+    of the application state
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The database of blocks and the application state}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/tendermint-databases.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The application state}
+
+  \begin{greenbox}{It must have a function to compute its hash}
+    Only that hash is reported in blockchain, for consensus
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{It must allow transactional, atomic updates}
+    Between \<beginBlock> and \<commit>
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{No need for checkout to a previous hash}
+    Tendermint enjoys finality: there are no forks
+    \begin{itemize}
+      \item[$\Rightarrow$] there is never any need to come
+        back in time to the state of a previous block
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Cosmos: a Tendermint application in Golang}
+
+  \begin{center}
+    \includegraphics[scale=0.2,clip=false]{pictures/cosmos.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The application state of Cosmos}
+
+  \begin{greenbox}{Cosmos keeps data inside \alert{keepers}}
+    They are maps $\mathit{key}\to\mathit{value}$. Programmers must store
+    persistent data inside a keeper: all other data is lost if the node
+    is turned off and on again
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Golang}
+    Cosmos can be expanded with arbitrary Golang code, but:
+    \begin{itemize}
+    \item it must be deterministic
+    \item it must store persistent data in a keeper
+    \item it must count gas consumption explicitly
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Smart contracts?}
+    There are no smart contracts in Cosmos, really. The system as a whole
+    is a big (fixed) smart contract
+  \end{greenbox}
 
 \end{frame}
 
