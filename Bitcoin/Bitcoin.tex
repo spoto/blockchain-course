@@ -811,8 +811,7 @@
     \{
       "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
       "vout": 0,
-      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
-      "sequence": 4294967295
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f..."
     \}
   ],
   "vouts": [
@@ -844,8 +843,7 @@
     \{
       "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
       "vout": 0,
-      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
-      "sequence": 4294967295
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f..."
     \}
   ],
   \color{red}{"vouts": [
@@ -868,7 +866,7 @@
 \begin{frame}[fragile]\frametitle{The real transaction}
 
   \begin{center}
-    reference to an old UTXO
+    reference to an old UTXO (soon to be TXO)
   \end{center}
 
   {\scriptsize\begin{alltt}
@@ -877,8 +875,7 @@
     \{
       "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
       "vout": 0,
-      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
-      "sequence": 4294967295
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f..."
     \}
   ]},
   "vouts": [
@@ -910,8 +907,7 @@
     \{
       "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
       "vout": 0,
-      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
-      "sequence": 4294967295
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f..."
     \}
   ],
   "vouts": [
@@ -943,8 +939,7 @@
     \{
       "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
       "vout": 0,
-      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
-      "sequence": 4294967295
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f..."
     \}
   ],
   "vouts": [
@@ -976,8 +971,7 @@
     \{
       \alert{"txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
       "vout": 0},
-      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f...",
-      "sequence": 4294967295
+      "unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f..."
     \}
   ],
   "vouts": [
@@ -1009,8 +1003,7 @@
     \{
       "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
       "vout": 0,
-      \alert{"unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f..."},
-      "sequence": 4294967295
+      \alert{"unlock": "3045022100884d142d86652a3f47... 0484ecc0d46f..."}
     \}
   ],
   "vouts": [
@@ -1042,8 +1035,7 @@
     \{
       "txid": "7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18",
       "vout": 0,
-      "unlock": \alert{"3045022100884d142d86652a3f47... 0484ecc0d46f..."},
-      "sequence": 4294967295
+      "unlock": \alert{"3045022100884d142d86652a3f47... 0484ecc0d46f..."}
     \}
   ],
   "vouts": [
@@ -1220,13 +1212,22 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
     \only<3>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh3.png}}
     \only<4>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh4.png}}
     \only<5>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh5.png}}
-    \only<6>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh6.png}}+
-    \only<7>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh7.png}}
+    \only<6-7>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh6.png}}+
+    \only<8>{\includegraphics[width=\textwidth,clip=false]{pictures/p2pkh7.png}}
   \end{center}
 
-  \begin{center}
-    \only<7>{This script gives proof of ownership!}
-  \end{center}
+  \uncover<7>{
+    \begin{greenbox}{}
+      \<CHECKSIG> verifies that \<sig> is a signature of the transaction
+      by using the private key corresponsing to \<pubK>
+    \end{greenbox}
+  }
+
+  \uncover<8>{
+    \begin{center}
+      This script gives proof of ownership!
+    \end{center}
+  }
 
 \end{frame}
 
@@ -1333,7 +1334,7 @@ tx = \{
   \begin{greenbox}{}
     \begin{itemize}
     \item it is not in the blocks
-    \item it is not the the header of the blocks
+    \item it is not in the header of the blocks
       \begin{itemize}
       \item[$\Rightarrow$] only the hash of the Merkle tree's root is in the header
       \end{itemize}
@@ -1426,7 +1427,7 @@ tx = \{
 
     \begin{itemize}
     \item[$\Rightarrow$] each miner can build as many blocks as it wants
-    \item[$\Rightarrow$] each miner can forge its own history
+    \item[$\Rightarrow$] each miner can decide its own history
     \end{itemize}
   \end{redbox}
 
@@ -1478,7 +1479,7 @@ tx = \{
 
   \begin{itemize}
   \item the miner creates a new block on top of the main history
-  \item the miner receivers a valid new block from a peer
+  \item the miner receives a valid new block from a peer
     \begin{itemize}
     \item whose parent is the top of the main history, or
     \item whose parent is another block of the blockchain (fork), or
@@ -1661,7 +1662,7 @@ tx = \{
     \begin{itemize}
     \item if the next block is mined by a yellow node, it is accepted by all nodes
     \item if the next block is mined by a black node, it might be rejected by the yellow nodes
-    \item if $51\%$ of the nodes are yellow (upgraded), the network will not split and will follow
+    \item if at least $51\%$ of the hashing power is yellow (upgraded), the network will not split and will follow
       the new rules of the yellow nodes
     \end{itemize}
   \end{greenbox}
@@ -1680,7 +1681,7 @@ tx = \{
     \begin{itemize}
     \item if the next block is mined by a black node, it is accepted by all nodes
     \item if the next block is mined by a yellow node, it might be rejected by the black nodes
-    \item if $51\%$ of the nodes are yellow (upgraded), the network splits in two
+    \item if at least $51\%$ of the hashing power is yellow (upgraded), the network splits in two
     \end{itemize}
   \end{redbox}
 
