@@ -17,6 +17,7 @@
 \usepackage{lucidiJb-2ed}
 \usepackage{mathtools}
 \usepackage{relsize}
+\usepackage[normalem]{ulem}
 
 \mode<article>
 {
@@ -274,12 +275,19 @@
 
   \bigskip
 
-  \begin{greenbox}{No need for checkout to a previous hash}
+  \begin{greenbox}{The API of the state}
     Tendermint enjoys finality: there are no forks
     \begin{itemize}
-      \item[$\Rightarrow$] there is never any need to come
+      \item[$\Rightarrow$] one never needs to come
         back in time to the state of a previous block
     \end{itemize}
+
+    \begin{enumerate}
+    \item get data
+    \item put data
+    \item \<h=get\_hash()>
+    \item \sout{\<checkout(h)>} $\Rightarrow$ big opportunity for garbage collection!
+    \end{enumerate}
   \end{greenbox}
 
 \end{frame}
