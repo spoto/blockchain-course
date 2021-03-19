@@ -8,5 +8,7 @@ cd ../Ethereum
 pdflatex Ethereum.tex
 cd ../Tendermint
 pdflatex Tendermint.tex
+cd ../Hotmoka
+pdflatex Hotmoka.tex
 cd ..
 
