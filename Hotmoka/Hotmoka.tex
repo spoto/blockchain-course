@@ -52,6 +52,85 @@
 \begin{frame}
   \frametitle{Hotmoka}
 
+  \begin{greenbox}{\url{https://github.com/Hotmoka/hotmoka}}
+    An open-source implementation of a network of nodes:
+    \begin{itemize}
+    \item nodes of a blockchain
+    \item IoT devices
+    \item computers in the cloud
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Requests are OO-based}
+    \begin{itemize}
+    \item create an object
+    \item call a method of an object
+    \item methods are implemented in a subset of Java
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Nodes can be Tendermint applications}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/tendermint-databases.png}
+  \end{center}
+    
+\end{frame}
+
+\begin{frame}\frametitle{The API of a Hotmoka node}
+
+  \begin{itemize}
+  \item \<[add|post]JarStore(request):TransactionReference>
+  \item \<[add|post]ConstructorCall(request):StorageReference>
+  \item \<[add|post|run]InstanceMethodCall(request):StorageValue>
+  \item \<[add|post|run]StaticMethodCall(request):StorageValue>
+  \item \<subscribeToEvents(key):Subscription>
+  \item \<getState(StorageReference):State>
+  \end{itemize}
+
+  \bigskip
+
+  \begin{greenbox}{}
+    \<add> calls are synchronous (wait for the result)
+
+    \smallskip
+    \<post> calls are asynchronous (yield a future)
+
+    \smallskip
+    \<run> calls are synchronous and only for read-only methods
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{An OO state}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/hotmoka-structure.pdf}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The API of the state}
+  
+    \begin{enumerate}
+    \item get jar at \<hash>: access the Responses map and find the jar
+    \item get object at \<obj>: access the Histories at \<obj>: for each \<hash>
+      there, access the Responses map at \<hash>, project the updates on \<obj>
+      and reconstruct the state of \<obj>
+    \item put request/response in state: expand Responses with hash(request)$\Rightarrow$response
+      \begin{itemize}
+      \item[] if the response contains updates, add hash(request) to the histories of
+        the updated objects
+      \end{itemize}
+    \item \<h=get\_hash()>: compute the hash of the hash of the Merkle-Patricia trie for
+      Responses and of that for Histories
+    \item \sout{\<checkout(h)>} $\Rightarrow$ unused data from points above are garbage-collected
+    \end{enumerate}
+
 \end{frame}
 
 \end{document}
