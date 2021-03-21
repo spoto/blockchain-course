@@ -76,7 +76,8 @@
 \begin{frame}\frametitle{Documentation}
 
   \begin{greenbox}{}
-    There is an online tutorial on Hotmoka and Takamaka:
+    There is an online tutorial on Hotmoka and Takamaka
+    in the \<README.md> of the main repository of Hotmoka:
 
     \url{https://github.com/Hotmoka/hotmoka}
   \end{greenbox}
@@ -84,7 +85,7 @@
   \bigskip
 
   \begin{greenbox}{}
-    Its many examples of Takamaka projects are available here:
+    Its examples of Takamaka projects are available here:
 
     \url{https://github.com/Hotmoka/hotmoka_tutorial}
   \end{greenbox}
@@ -148,6 +149,120 @@
       Responses and of that for Histories
     \item \sout{\<checkout(h)>} $\Rightarrow$ unused data from points above are garbage-collected
     \end{enumerate}
+
+\end{frame}
+
+% How I started the node:
+%java --module-path modules/explicit:modules/automatic --class-path "modules/unnamed/*" --module io.hotmoka.tools/io.hotmoka.tools.CLI init-tendermint 1000000000000000000000000000000000000 --open-unsigned-faucet
+
+\begin{frame}[fragile]\frametitle{Info about a Hotmoka node}
+
+  A Hotmoka node over Tendermint has been published on AWS for the duration of this course
+
+  \bigskip
+
+  \begin{greenbox}{Run this inside the Hotmoka repository (on a single line!)}
+    {\small\begin{semiverbatim}
+java {\color{red}--module-path modules/explicit:modules/automatic
+     --class-path "modules/unnamed/*"}
+     {\color{blue}--module io.hotmoka.tools/io.hotmoka.tools.CLI} info
+     --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+    \end{semiverbatim}}
+  \end{greenbox}
+
+  \medskip
+
+  \begin{greenbox}{You can define an alias to simplify the command (single line!)}
+    {\small\begin{semiverbatim}
+alias CLI='java --module-path modules/explicit:modules/automatic
+                --class-path "modules/unnamed/*"
+                --module io.hotmoka.tools/io.hotmoka.tools.CLI'
+    \end{semiverbatim}}
+  \end{greenbox}
+
+  \medskip
+
+  \begin{greenbox}{Use the alias instead}
+{\small\<CLI info --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080>}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{\<CLI info --url ec2....>}
+
+{\tiny\begin{semiverbatim}
+ {\color{red}takamakaCode:} 02dfd29348abaa44f720525179fa170f26063c973fd40c3ff368a9402551882c
+ {\color{red}manifest:} 42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4776e6e4add7668#0
+   chainId: {\color{violet}chain-ASdWiN}
+   maxErrorLength: 300
+   maxDependencies: 20
+   maxCumulativeSizeOfDependencies: 10000000
+   allowsSelfCharged: false
+   {\color{violet}allowsUnsignedFaucet: true}
+   skipsVerification: false
+   signature: ed25519
+   {\color{red}gamete:} 4f7d7ca1fbea152d8f323c21e1abcfa1d979c7c4ea667d8457381a26b08a2d71#0
+     balance: 999999999999999999999999999999992180
+     redBalance: 0
+     {\color{violet}maxFaucet: 1000000}
+     maxRedFaucet: 0
+   {\color{red}gasStation:} 42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4776e6e4add7668#10
+     {\color{violet}gasPrice: 1}
+     maxGasPerTransaction: 1000000000
+     ignoresGasPrice: false
+     targetGasAtReward: 1000000
+     inflation: 10000 (ie. 0.10%)
+     oblivion: 250000 (ie. 25.00%)
+   {\color{red}validators:} 42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4776e6e4add7668#2
+     {\color{violet}number of validators: 1}
+     validator #0: 42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4776e6e4add7668#1
+       id: C220489CDBAE0FAFF8F8286A9C541FD55BA2CE7C 
+       power: 1
+     ticketForNewPoll: 100
+     number of polls: 0
+   {\color{red}versions:} 42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4776e6e4add7668#f
+     verificationVersion: 0
+  \end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}\frametitle{The minimal content of a Hotmoka node's state}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/state1.pdf}
+  \end{center}
+  
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The state contains actual Java objects}
+
+  {\scriptsize
+    \texttt{manifest:} $\underbrace{{\color{red}\mathtt{42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4776e6e4add7668\#0}}}_{\text{machine-independent memory address of an object}}$
+  }
+
+  \bigskip
+
+  \begin{greenbox}{{\scriptsize\<CLI state 42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4776e6e4add7668\#0 --url ec2...>}}
+    {\tiny\begin{semiverbatim}
+class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed at 02dfd29348abaa44f7205251...)
+  allowsSelfCharged:boolean = false
+  allowsUnsignedFaucet:boolean = true
+  chainId:java.lang.String = "chain-ASdWiN"
+  gamete:io.takamaka.code.lang.Account = {\color{red}4f7d7ca1fbea152d8f323c21e1abcfa1d979c7c4ea667d8457381a26b08a2d71#0}
+  gasStation:io.takamaka.code.governance.GasStation = {\color{red}42a8a11aee0405aee5775514b3b0456c7740bbb015b4b8...}
+  maxCumulativeSizeOfDependencies:long = 10000000
+  maxDependencies:int = 20
+  maxErrorLength:int = 300
+  signature:java.lang.String = "ed25519"
+  skipsVerification:boolean = false
+  validators:io.takamaka.code.governance.Validators = {\color{red}42a8a11aee0405aee5775514b3b0456c7740bbb015b4b8...}
+  versions:io.takamaka.code.governance.Versions = {\color{red}42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4...}
+^ balance:java.math.BigInteger = 0 {\color{violet}(inherited from io.takamaka.code.lang.Contract)}
+^ balanceRed:java.math.BigInteger = 0 {\color{violet}(inherited from io.takamaka.code.lang.Contract)}
+^ nonce:java.math.BigInteger = 227 {\color{violet}(inherited from io.takamaka.code.lang.ExternallyOwnedAccount)}
+^ publicKey:java.lang.String = "" {\color{violet}(inherited from io.takamaka.code.lang.ExternallyOwnedAccount)}
+    \end{semiverbatim}}
+  \end{greenbox}
 
 \end{frame}
 
