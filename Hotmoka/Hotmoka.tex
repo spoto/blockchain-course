@@ -573,31 +573,6 @@ calls to @View methods consume no gas
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{How to program in Takamaka}
-
-  \begin{enumerate}
-  \item download Hotmoka
-
-    {\color{blue}\<git clone git@github.com:Hotmoka/hotmoka.git>}
-
-  \item let Maven compile and install it in your local repository
-
-    {\color{blue}\<mvn clean install -DskipTests>}
-
-  \item all Takamaka projects can now refer to this Maven dependency in their \<pom.xml>:
-\vspace*{-3ex}\begin{semiverbatim}
-{\color{blue}{
-<dependency>
-  <groupId>io.hotmoka</groupId>
-  <artifactId>io-takamaka-code</artifactId>
-  <version>1.0.0</version>
-</dependency>
-}}\end{semiverbatim}
-
-  \end{enumerate}
-
-\end{frame}
-
 \begin{frame}[fragile]\frametitle{A first example of Takamaka code}
 
   \begin{enumerate}
@@ -701,10 +676,36 @@ public class SimplePonzi {\color{red}extends Contract} \{
 
     {\color{blue}\<mvn package>}
 
-  \item the compiled jar of your project will appear inside the
-    directory \<target> of your project, ready to be installed in a
+  \item the compiled \<ponzi-0.0.1.jar> will appear inside the
+    \<target> directory of your project, ready to be installed in a
     Hotmoka node
+
+  \item install \<ponzi-0.0.1.jar> in our AWS Hotmoka node (\begin{tt}CLI install <payer> <jar>\end{tt})
   \end{enumerate}
+
+  \medskip
+
+  \begin{greenbox}{{\small\<CLI install 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 .../target/ponzi-0.0.1.jar --url ec2...>}}
+    {\scriptsize\begin{semiverbatim}
+Do you really want to spend up to 23804 gas units to install the jar [Y/N] Y
+.../target/ponzi-0.0.1.jar has been installed at
+  {\color{red}3268b296499e64d71ab3738ab5cc308cd6f8ae570f785d2a5d8998c03b476bd0}
+{\color{armygreen}total gas consumed: 3542}
+{\color{darkred}  for CPU: 252
+  for RAM: 1261
+  for storage: 2029
+  for penalty: 0}
+    \end{semiverbatim}}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{A new jar in state}
+
+  \begin{center}
+    \includegraphics[scale=0.37,clip=false]{pictures/state3.pdf}
+  \end{center}
+  
 \end{frame}
 
 \end{document}
