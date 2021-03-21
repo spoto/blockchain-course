@@ -152,6 +152,25 @@
 
 \end{frame}
 
+\begin{frame}[fragile]\frametitle{Start experimenting with Hotmoka}
+
+  \begin{enumerate}
+  \item ensure to have Java version $\ge$ 11 installed
+
+  \item ensure to have git and Maven installed
+
+  \item download Hotmoka
+
+    {\color{blue}\<git clone git@github.com:Hotmoka/hotmoka.git>}
+
+  \item let Maven compile and install it in your local Maven repository
+
+    {\color{blue}\<mvn clean install -DskipTests>}
+
+  \end{enumerate}
+
+\end{frame}
+
 % How I started the node:
 %java --module-path modules/explicit:modules/automatic --class-path "modules/unnamed/*" --module io.hotmoka.tools/io.hotmoka.tools.CLI init-tendermint 1000000000000000000000000000000000000 --open-unsigned-faucet
 
@@ -266,9 +285,138 @@ class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed a
 
 \end{frame}
 
+\begin{frame}[fragile]\frametitle{Creation of a new account}
+
+  Let us create a new account with 500000 units of coin:
+
+  \smallskip
+
+  \begin{greenbox}{{\small\<CLI create-account 500000 --payer faucet --url ec2...>}}
+    {\tiny\begin{semiverbatim}
+Free account creation will succeed only if the gamete of the node supports an open unsigned faucet
+{\color{armygreen}total gas consumed: 3791}
+{\color{darkred}  for CPU: 620
+  for RAM: 1574
+  for storage: 1597
+  for penalty: 0}
+A new account 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 has been created
+{\color{blue}The keys of the account have been saved
+  into the file 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0.keys}
+    \end{semiverbatim}}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{redbox}{Who paid for that?}
+    Gas and coins have been paid by the gamete, then provides an unsigned \emph{faucet}.
+    This is a testnet. A real network has no open unsigned faucet
+    and one must specify the address of the payer account then
+    (with \<--payer>)
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Let us have a look at our first account}
+
+    \begin{greenbox}{{\scriptsize\<CLI state 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 --url ec2...>}}
+    {\tiny\begin{semiverbatim}
+class {\color{violet}io.takamaka.code.lang.ExternallyOwnedAccount} (from jar installed at 02dfd29348abaa...)
+  nonce:java.math.BigInteger = 0
+  publicKey:java.lang.String = "MCowBQYDK2VwAyEAk45GxqvRFg88bKZqkqDGxQBHdvvZF+b9YSkl8xs28Ao="
+^ balance:java.math.BigInteger = 500000 (inherited from io.takamaka.code.lang.Contract)
+^ balanceRed:java.math.BigInteger = 0 (inherited from io.takamaka.code.lang.Contract)
+    \end{semiverbatim}}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{itemize}
+  \item the nonce starts from 0
+  \item the initial balance is actually 500000
+  \item the public key a Base64-encoded ed25519 key
+  \item the public key is stored in the object: no need to send it again at every future
+    method call (like Ethereum does)
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}\frametitle{A new object in state}
+
+  \begin{center}
+    \includegraphics[scale=0.37,clip=false]{pictures/state2.pdf}
+  \end{center}
+  
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Let us have a look at the API of our first account}
+
+    \begin{greenbox}{{\scriptsize\<CLI state 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 {\color{orange}--api} --url ec2...>}}
+    {\tiny\begin{semiverbatim}
+class {\color{violet}io.takamaka.code.lang.ExternallyOwnedAccount} (from jar installed at 02dfd29348abaa...)
+  nonce:java.math.BigInteger = 0
+  publicKey:java.lang.String = "MCowBQYDK2VwAyEAk45GxqvRFg88bKZqkqDGxQBHdvvZF+b9YSkl8xs28Ao="
+^ balance:java.math.BigInteger = 500000 (inherited from io.takamaka.code.lang.Contract)
+^ balanceRed:java.math.BigInteger = 0 (inherited from io.takamaka.code.lang.Contract)
+
+  {\color{red}@Payable @FromContract} public ExternallyOwnedAccount(java.math.BigInteger,java.lang.String)
+  {\color{red}@Payable @FromContract} public ExternallyOwnedAccount(long,java.lang.String)
+  {\color{red}@Payable @FromContract} public ExternallyOwnedAccount(int,java.lang.String)
+  public ExternallyOwnedAccount(java.lang.String)
+
+  {\color{red}@View} public final java.math.BigInteger nonce()
+  {\color{red}@View} public final java.lang.String publicKey()
+  {\color{red}@View} public java.lang.String toString()
+^ {\color{red}@View} public final java.math.BigInteger balance() (inherited from io.takamaka.code.lang.Contract)
+^ {\color{red}@View} public final java.math.BigInteger balanceGreen() (inherited from io.takamaka.code.lang.Contract)
+^ {\color{red}@View} public final java.math.BigInteger balanceRed() (inherited from io.takamaka.code.lang.Contract)
+^ public final int compareByStorageReference(io.takamaka.code.lang.Storage)
+    (inherited from io.takamaka.code.lang.Storage)
+^ public boolean equals(java.lang.Object) (inherited from java.lang.Object)
+^ public final native java.lang.Class getClass() (inherited from java.lang.Object)
+^ {\color{red}@View} public final java.lang.String getClassName() (inherited from io.takamaka.code.lang.Storage)
+^ public native int hashCode() (inherited from java.lang.Object)
+^ {\sout{public final native void notify() (inherited from java.lang.Object)}} {\color{red}X}
+^ {\sout{public final native void notifyAll() (inherited from java.lang.Object)}} {\color{red}X}
+^ {\color{red}@Payable @FromContract} public final void receive(int)
+    (inherited from io.takamaka.code.lang.PayableContract)
+^ {\color{red}@Payable @FromContract} public final void receive(java.math.BigInteger)
+    (inherited from io.takamaka.code.lang.PayableContract)
+  ...
+    \end{semiverbatim}}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Let us call \<toString()> on our first account}
+
+\begin{tt}
+CLI call <payer> <receiver> <methodName> [<args>...]
+\end{tt}
+
+\bigskip
+
+We will use our account as payer and as receiver at the same time:
+
+\bigskip
+
+\begin{greenbox}{{\small\<CLI call 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 toString --url ec2...>}}
+    {\begin{semiverbatim}
+{\color{blue}an externally owned account}
+calls to @View methods consume no gas 
+    \end{semiverbatim}}
+  \end{greenbox}
+
+\bigskip
+
+\begin{center}
+  \<toString()> in class \<ExternallyOwnedAccount> is annotated as \<@View>
+\end{center}
+
+\end{frame}
+
 \begin{frame}\frametitle{The execution of a method (or constructor)}
 
-  \begin{greenbox}{The request}
+  \begin{greenbox}{The request specifies}
     \begin{itemize}
     \item payer object, receiver object and actual arguments (\emph{input})
     \item classpath, signature of the method
@@ -287,7 +435,7 @@ class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed a
     \item at the end, identify updates to fields of objects reachable from \emph{input}
       or return value
     \item pack those updates into a response (RAM objects destroyed now)
-    \item put request/response in state
+    \item put request/response in state, expanding histories
     \end{enumerate}
   \end{greenbox}
 
@@ -317,7 +465,7 @@ class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed a
   \begin{greenbox}{The instrumented code}
     \begin{semiverbatim}
       public class C {\color{red}extends Storage} \{
-        public {\color{blue}int i, old\_i;} // alias at method start
+        public {\color{blue}int i, old\_i;} // aliased at method start
         public void foo() \{
           {\color{blue}i} = 42;
         \}
@@ -346,7 +494,7 @@ class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed a
   \end{greenbox}
 
   \begin{center}
-    This might loop for very long or even forever
+    This loop might run for very long or even forever
   \end{center}
 
 \end{frame}
