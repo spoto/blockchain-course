@@ -1078,8 +1078,8 @@ byte[] signedMessage = TransactionEncoder.signMessage
   \begin{greenbox}{The final API of the state for keys of length $L$}
     \begin{enumerate}
     \item \<value=get(address)> \hfill $O(L)$
-    \item \<put(address, value)> \hfill $O(L)$
-    \item \<h=get\_hash()> \hfill $O(L)$
+    \item \<put(address, value)> \hfill $O(L+\mathit{size}(\<value>))$
+    \item \<h=get\_hash()> \hfill $O(1)$
     \item \<checkout(h)> \hfill $O(1)$
     \end{enumerate}
   \end{greenbox}

@@ -654,7 +654,10 @@ public class SimplePonzi {\color{red}extends Contract} \{
   public {\color{violet}@Payable} {\color{armygreen}@FromContract(PayableContract.class)} void invest({\color{violet}BigInteger amount}) \{
     BigInteger minimum = currentInvestment.multiply(_11).divide(_10);
     require(amount.compareTo(minimum) >= 0, () -> "you must invest at least " + minimum);
-    currentInvestor.{\color{armygreen}receive(amount)};
+
+    if (currentInvestor != null)
+      currentInvestor.{\color{armygreen}receive(amount)};
+
     currentInvestor = {\color{armygreen}(PayableContract) caller()};
     currentInvestment = amount;
   \}
@@ -672,7 +675,7 @@ public class SimplePonzi {\color{red}extends Contract} \{
 
   \begin{enumerate}
     \setcounter{enumi}{5}
-  \item compile everything with Maven:
+  \item compile and package everything with Maven:
 
     {\color{blue}\<mvn package>}
 
@@ -687,13 +690,13 @@ public class SimplePonzi {\color{red}extends Contract} \{
 
   \begin{greenbox}{{\small\<CLI install 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 .../target/ponzi-0.0.1.jar --url ec2...>}}
     {\scriptsize\begin{semiverbatim}
-Do you really want to spend up to 23804 gas units to install the jar [Y/N] Y
+Do you really want to spend up to 23732 gas units to install the jar [Y/N] Y
 .../target/ponzi-0.0.1.jar has been installed at
-  {\color{red}3268b296499e64d71ab3738ab5cc308cd6f8ae570f785d2a5d8998c03b476bd0}
-{\color{armygreen}total gas consumed: 3542}
+  {\color{red}39f999a63555542eaf5040388d61c20193dee4fb035847a40608c494bf069765}
+{\color{armygreen}total gas consumed: 3583}
 {\color{darkred}  for CPU: 252
-  for RAM: 1261
-  for storage: 2029
+  for RAM: 1260
+  for storage: 2071
   for penalty: 0}
     \end{semiverbatim}}
   \end{greenbox}
@@ -706,6 +709,99 @@ Do you really want to spend up to 23804 gas units to install the jar [Y/N] Y
     \includegraphics[scale=0.37,clip=false]{pictures/state3.pdf}
   \end{center}
   
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Creation of a new object in state}
+
+\begin{tt}
+CLI create <payer> <className> [<args>...]
+\end{tt}
+
+\bigskip
+
+We use our account as payer and specify where \<SimplePonzi> is defined
+(the \alert{classpath}):
+
+\bigskip
+
+\begin{greenbox}{{\small\<CLI create 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 io.takamaka.ponzi.SimplePonzi
+      \newline --classpath 39f999a63555542eaf5040388d61c20193dee4fb035847a40608c494bf069765
+      --url ec2...>}}
+    {\tiny\begin{semiverbatim}
+do you really want to spend up to 10000 gas units to call {\color{red}public SimplePonzi()} ? [Y/N] Y
+the new object has been allocated at 754371b03ef2c413f546e1c3667adf86d545a3587e60f75d2c496863ef442f5c\#0
+{\color{armygreen}total gas consumed: 3107}
+{\color{darkred}  for CPU: 299
+  for RAM: 1209
+  for storage: 1599
+  for penalty: 0}
+    \end{semiverbatim}}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{A new \<SimplePonzi> in state}
+
+  \begin{center}
+    \includegraphics[scale=0.37,clip=false]{pictures/state4.pdf}
+  \end{center}
+  
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Call the \<invest> method of our contract}
+
+\begin{tt}
+CLI call <payer> <receiver> <methodName> [<args>...]
+\end{tt}
+
+\medskip
+
+We use our account as payer:
+
+\medskip
+
+\begin{greenbox}{{\small\<CLI call 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 754371b03ef2c413f546e1c3667adf86d545a3587e60f75d2c496863ef442f5c\#0 invest 40000
+      --url ec2...>}}
+    {\tiny\begin{semiverbatim}
+do you really want to spend up to 10000 gas units to call
+  {\color{red}@Payable @FromContract(PayableContract.class) public void invest(java.math.BigInteger)} ? [Y/N] Y
+{\color{armygreen}total gas consumed: 2112}
+{\color{darkred}  for CPU: 421
+  for RAM: 1349
+  for storage: 342
+  for penalty: 0}
+    \end{semiverbatim}}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Call the \<invest> method of our contract, again}
+
+\begin{tt}
+CLI call <payer> <receiver> <methodName> [<args>...]
+\end{tt}
+
+\medskip
+
+We use our account as payer:
+
+\medskip
+
+\begin{greenbox}{{\small\<CLI call 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 754371b03ef2c413f546e1c3667adf86d545a3587e60f75d2c496863ef442f5c\#0 invest 40000
+      --url ec2...>}}
+    {\tiny\begin{semiverbatim}
+do you really want to spend up to 10000 gas units to call
+  {\color{red}@Payable @FromContract(PayableContract.class) public void invest(java.math.BigInteger)} ? [Y/N] Y
+{\color{armygreen}total gas consumed: 10000}
+{\color{darkred}  for CPU: 465
+  for RAM: 1449
+  for storage: 342
+  for penalty: 7744}
+{\color{red}io.hotmoka.beans.TransactionException: io.takamaka.code.lang.RequirementViolationException:
+  you must invest at least 44000@SimplePonzi.java:18}
+\end{semiverbatim}}
+\end{greenbox}
+
 \end{frame}
 
 \end{document}
