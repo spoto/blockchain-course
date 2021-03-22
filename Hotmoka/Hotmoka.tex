@@ -804,4 +804,62 @@ do you really want to spend up to 10000 gas units to call
 
 \end{frame}
 
+\begin{frame}[fragile]\frametitle{A gradual Ponzi scheme}
+
+{\tiny\begin{semiverbatim}
+package io.hotmoka.examples.ponzi;
+
+import static io.takamaka.code.lang.Takamaka.require;
+
+import java.math.BigInteger;
+import io.takamaka.code.lang.Contract;
+import io.takamaka.code.lang.FromContract;
+import io.takamaka.code.lang.Payable;
+import io.takamaka.code.lang.PayableContract;
+import io.takamaka.code.util.StorageList;
+import io.takamaka.code.util.StorageLinkedList;
+
+public class GradualPonzi extends Contract \{
+  private final BigInteger MINIMUM = BigInteger.valueOf(1_000L);
+  private final {\color{red}StorageList<PayableContract> investors = new StorageLinkedList<>();}
+
+  public {\color{violet}@FromContract(PayableContract.class)} GradualPonzi() \{
+    investors.add({\color{violet}(PayableContract) caller()});
+  \}
+
+  public {\color{airforceblue}@Payable} {\color{violet}@FromContract(PayableContract.class)} void invest({\color{airforceblue}BigInteger amount}) \{
+    require(amount.compareTo(MINIMUM) >= 0, () -> "you must invest at least " + MINIMUM);
+    BigInteger eachInvestorGets = amount.divide(BigInteger.valueOf(investors.size()));
+    investors.stream().forEachOrdered(investor -> investor.receive(eachInvestorGets));
+    investors.add({\color{violet}(PayableContract) caller()});
+  \}
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}\frametitle{ERC20 Tokens}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/erc20_1.png}
+  \end{center}
+  
+\end{frame}
+
+\begin{frame}\frametitle{ERC20 Tokens}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/erc20_2.png}
+  \end{center}
+  
+\end{frame}
+
+\begin{frame}\frametitle{There are many\ldots}
+
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/ERC20s.png}
+  \end{center}
+  
+\end{frame}
+
 \end{document}
