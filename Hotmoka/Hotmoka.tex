@@ -656,7 +656,7 @@ public class SimplePonzi {\color{red}extends Contract} \{
     require(amount.compareTo(minimum) >= 0, () -> "you must invest at least " + minimum);
 
     if (currentInvestor != null)
-      currentInvestor.{\color{armygreen}receive(amount)};
+      currentInvestor.{\color{armygreen}receive(amount)}; {\color{red}// no risk of reentrancy}
 
     currentInvestor = {\color{armygreen}(PayableContract) caller()};
     currentInvestment = amount;
@@ -860,6 +860,185 @@ public class GradualPonzi extends Contract \{
     \includegraphics[scale=0.3,clip=false]{pictures/ERC20s.png}
   \end{center}
   
+\end{frame}
+
+\begin{frame}\frametitle{The OpenZeppelin standard}
+
+  \begin{greenbox}{We follow (in part) the implementation by OpenZeppelin}
+    \begin{center}
+      \includegraphics[scale=0.2,clip=false]{pictures/open-zeppelin.jpg}
+    \end{center}
+    \begin{center}
+      \url{https://docs.openzeppelin.com/contracts/2.x/api/token/erc20}
+    \end{center}
+  \end{greenbox}
+  
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<IERC20View> interface}
+
+  \begin{greenbox}{}
+    This interface represents the read-only part of the standard.
+    It allows one to create a \alert{snaphot} of a token, that is,
+    a fixed, immutable snapshot of its balances
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{semiverbatim}
+public interface IERC20View \{
+  {\color{red}@View} UnsignedBigInteger totalSupply();
+  {\color{red}@View} UnsignedBigInteger balanceOf(Contract account);
+  IERC20View snapshot(); // not in OpenZeppelin
+\}
+  \end{semiverbatim}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<IERC20> interface}
+
+  \begin{greenbox}{}
+    This interface represents the transfer part of the standard.
+    Methods that require to identify their caller are
+    annotated as {\color{red}\<@FromContract>}
+  \end{greenbox}
+
+  \smallskip
+
+  {\scriptsize\begin{semiverbatim}
+public interface IERC20 {\color{red}extends IERC20View} \{
+  {\color{red}@FromContract} boolean transfer(Contract recipient, UnsignedBigInteger amount);
+  {\color{red}@View} UnsignedBigInteger allowance(Contract owner, Contract spender);
+  {\color{red}@FromContract} boolean approve(Contract spender, UnsignedBigInteger amount);
+  {\color{red}@FromContract} boolean transferFrom
+      (Contract sender, Contract recipient, UnsignedBigInteger amount);
+
+  class Transfer {\color{red}extends Event} \{
+    public final Contract from, to;
+    public final UnsignedBigInteger value;
+
+    {\color{red}@FromContract} Transfer(Contract from, Contract to, UnsignedBigInteger value) \{
+      this.from = from;
+      this.to = to;
+      this.value = value;
+    \}
+  \}
+\}
+  \end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<ERC20> implementation}
+
+{\scriptsize\begin{semiverbatim}
+public class ERC20 {\color{red}extends Contract implements IERC20} \{
+  {\color{violet}private final StorageMap<Contract, UnsignedBigInteger>
+    balances = new StorageTreeMap<>();}
+
+  {\color{blue}private final StorageMap<Contract, StorageMap<Contract, UnsignedBigInteger>>
+    allowances = new StorageTreeMap<>();}
+
+  public final UnsignedBigInteger ZERO = new UnsignedBigInteger("0");
+
+  // there are public accessors to these fields (not shown)
+  private UnsignedBigInteger totalSupply = ZERO;
+  private final String name;
+  private final String symbol;
+  private short decimals;
+
+  public ERC20(String name, String symbol) \{
+    this.name = name;
+    this.symbol = symbol;
+    this.decimals = 18;
+  \}
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<ERC20> implementation}
+
+{\scriptsize\begin{semiverbatim}
+public class ERC20 {\color{red}extends Contract implements IERC20} \{
+
+  public final {\color{red}@View} UnsignedBigInteger balanceOf(Contract account) \{
+    return balances.getOrDefault(account, ZERO);
+  \}
+
+  public {\color{red}@FromContract} boolean transfer(Contract to, UnsignedBigInteger amount) \{
+    transfer(caller(), to, amount);
+    return true;
+  \}
+
+  protected void transfer(Contract from, Contract to, UnsignedBigInteger amount) \{
+    {\color{armygreen}require(from != null, "Transfer rejected: transfer from the null account");
+    require(to != null, "Transfer rejected: transfer to the null account");
+    require(amount != null, "Transfer rejected: amount cannot be null");}
+
+    beforeTokenTransfer(from, to, amount);
+    balances.put(from, balancesOf(from).subtract(amount,
+      {\color{armygreen}"Transfer rejected: transfer amount exceeds balance"}));
+    balances.put(to, balanceOf(to).add(amount));
+    {\color{red}event(new Transfer(from, to, amount));}
+  \}
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<ERC20> implementation}
+
+{\scriptsize\begin{semiverbatim}
+public class ERC20 {\color{red}extends Contract implements IERC20} \{
+
+  public {\color{red}@View} UnsignedBigInteger allowance(Contract owner, Contract spender) \{
+    return _allowances.getOrDefault(owner, StorageTreeMap::new)
+                           .getOrDefault(spender, ZERO);
+  \}
+
+  public {\color{red}@FromContract} boolean approve(Contract spender, UnsignedBigInteger amount) \{
+    approve(caller(), spender, amount);
+    return true;
+  \}
+
+  protected void approve(Contract owner, Contract spender, UnsignedBigInteger amount) \{
+    {\color{armygreen}require(owner != null, "Approve rejected: approve from the null account");
+    require(spender != null, "Approve rejected: approve to the null account");
+    require(amount != null, "Approve rejected: amount cannot be null");}
+
+    StorageMap<Contract, UnsignedBigInteger> ownerAllowances
+      = allowances.getOrDefault(owner, StorageTreeMap::new);
+    ownerAllowances.put(spender, amount);
+    allowances.put(owner, ownerAllowances);
+    {\color{red}event(new Approval(owner, spender, amount));}
+  \}
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<ERC20> implementation}
+
+{\scriptsize\begin{semiverbatim}
+public class ERC20 {\color{red}extends Contract implements IERC20} \{
+
+  public {\color{red}@FromContract} boolean transferFrom
+            (Contract from, Contract to, UnsignedBigInteger amount) \{
+
+    transferFrom(caller(), from, to, amount);
+    return true;
+  \}
+
+  protected final void transferFrom
+        (Contract caller, Contract from, Contract to, UnsignedBigInteger amount) \{
+
+    transfer(from, to, amount);
+    approve(from, caller, allowance(from, caller).subtract(amount,
+      {\color{armygreen}"Transfer Rejected: transfer amount exceeds allowance"}));
+  \}
+\}
+\end{semiverbatim}}
+
 \end{frame}
 
 \end{document}
