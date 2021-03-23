@@ -878,7 +878,7 @@ public class GradualPonzi extends Contract \{
 \begin{frame}[fragile]\frametitle{The \<IERC20View> interface}
 
   \begin{greenbox}{}
-    This interface represents the read-only part of the standard.
+    This interface$^*$ represents the read-only part of the standard.
     It allows one to create a \alert{snaphot} of a token, that is,
     a fixed, immutable snapshot of its balances
   \end{greenbox}
@@ -893,6 +893,9 @@ public interface IERC20View \{
 \}
   \end{semiverbatim}
 
+  \bigskip
+
+  {\tiny $^*$ Joint implementation with Marco Crosara}
 \end{frame}
 
 \begin{frame}[fragile]\frametitle{The \<IERC20> interface}
@@ -928,7 +931,7 @@ public interface IERC20 {\color{red}extends IERC20View} \{
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{The \<ERC20> implementation}
+\begin{frame}[fragile]\frametitle{The \<ERC20> implementation: state}
 
 {\scriptsize\begin{semiverbatim}
 public class ERC20 {\color{red}extends Contract implements IERC20} \{
@@ -956,7 +959,7 @@ public class ERC20 {\color{red}extends Contract implements IERC20} \{
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{The \<ERC20> implementation}
+\begin{frame}[fragile]\frametitle{The \<ERC20> implementation: minting}
 
 {\scriptsize\begin{semiverbatim}
 public class ERC20 {\color{red}extends Contract implements IERC20} \{
@@ -964,6 +967,27 @@ public class ERC20 {\color{red}extends Contract implements IERC20} \{
   public final {\color{red}@View} UnsignedBigInteger balanceOf(Contract account) \{
     return balances.getOrDefault(account, ZERO);
   \}
+
+  protected void mint(Contract account, UnsignedBigInteger amount) \{
+    {\color{armygreen}require(account != null, "Mint rejected: mint to the null account");
+    require(amount != null, "Mint rejected: amount cannot be null");}
+
+    beforeTokenTransfer(null, account, amount);
+    totalSupply = totalSupply.add(amount);
+    balances.put(account, balanceOf(account).add(amount));
+  \}
+
+  protected void beforeTokenTransfer
+      (Contract from, Contract to, UnsignedBigInteger amount) \{ \}
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<ERC20> implementation: transfer}
+
+{\scriptsize\begin{semiverbatim}
+public class ERC20 {\color{red}extends Contract implements IERC20} \{
 
   public {\color{red}@FromContract} boolean transfer(Contract to, UnsignedBigInteger amount) \{
     transfer(caller(), to, amount);
@@ -986,7 +1010,7 @@ public class ERC20 {\color{red}extends Contract implements IERC20} \{
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{The \<ERC20> implementation}
+\begin{frame}[fragile]\frametitle{The \<ERC20> implementation: approval}
 
 {\scriptsize\begin{semiverbatim}
 public class ERC20 {\color{red}extends Contract implements IERC20} \{
@@ -1017,7 +1041,7 @@ public class ERC20 {\color{red}extends Contract implements IERC20} \{
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{The \<ERC20> implementation}
+\begin{frame}[fragile]\frametitle{The \<ERC20> implementation: transfer from}
 
 {\scriptsize\begin{semiverbatim}
 public class ERC20 {\color{red}extends Contract implements IERC20} \{
@@ -1038,6 +1062,49 @@ public class ERC20 {\color{red}extends Contract implements IERC20} \{
   \}
 \}
 \end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Definition of a new token}
+
+{\scriptsize\begin{semiverbatim}
+public class {\color{red}CryptoBuddy extends ERC20} \{
+  private final Contract owner;
+
+  public {\color{red}@FromContract} CryptoBuddy() \{
+    super("CryptoBuddy", "CB");
+
+    owner = caller();
+    UnsignedBigInteger initialSupply = new UnsignedBigInteger("200000");
+    UnsignedBigInteger multiplier = new UnsignedBigInteger("10").pow(18);
+    mint(caller(), initialSupply.multiply(multiplier)); // 200'000 * 10 ^ 18
+  \}
+
+  public @FromContract void mint(Contract account, UnsignedBigInteger amount) \{
+    require(caller() == owner, {\color{armygreen}"Lack of permission"});
+    super.mint(account, amount);
+  \}
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}\frametitle{Exercise}
+
+  \begin{enumerate}
+  \item Define your own token
+  \item Implement the token in Takamaka (possibly using Eclipse or similar IDE)
+  \item Generate the jar of your new token
+  \item Use the Hotmoka CLI to install the jar in blockchain
+  \item Use the Hotmoka CLI to instantiate the token
+  \item Use the Hotmoka CLI to interact with the token
+  \end{enumerate}
+
+  \bigskip
+
+  \begin{center}
+    \includegraphics[scale=0.12,clip=false]{pictures/tokens.png}
+  \end{center}
 
 \end{frame}
 
