@@ -875,10 +875,22 @@ public class GradualPonzi extends Contract \{
   
 \end{frame}
 
+\begin{frame}\frametitle{The hierarchy of the implementation$^*$}
+
+  \vspace*{-3ex}
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/erc20-uml.png}
+  \end{center}
+
+  \vspace*{-2ex}
+  {\tiny $^*$ Joint implementation with Marco Crosara}
+
+\end{frame}
+
 \begin{frame}[fragile]\frametitle{The \<IERC20View> interface}
 
   \begin{greenbox}{}
-    This interface$^*$ represents the read-only part of the standard.
+    This interface represents the read-only part of the standard.
     It allows one to create a \alert{snaphot} of a token, that is,
     a fixed, immutable snapshot of its balances
   \end{greenbox}
@@ -893,9 +905,6 @@ public interface IERC20View \{
 \}
   \end{semiverbatim}
 
-  \bigskip
-
-  {\tiny $^*$ Joint implementation with Marco Crosara}
 \end{frame}
 
 \begin{frame}[fragile]\frametitle{The \<IERC20> interface}
@@ -1065,6 +1074,55 @@ public class ERC20 {\color{red}extends Contract implements IERC20} \{
 
 \end{frame}
 
+\begin{frame}[fragile]\frametitle{The \<ERC20> implementation: snapshot in O(1)}
+
+{\scriptsize\begin{semiverbatim}
+public class ERC20 {\color{red}extends Contract implements IERC20} \{
+
+  public IERC20View snapshot() \{   {\color{violet}// O(1)}
+
+    class SnapshotImpl {\color{red}extends Storage implements IERC20View} \{
+      private final UnsignedBigInteger totalSupply = ERC20.this.totalSupply;
+      private final StorageMapView<Contract, UnsignedBigInteger> balances
+        = ERC20.this.balances.snapshot(); {\color{violet}// O(1)}
+
+      public {\color{red}@View} UnsignedBigInteger totalSupply() \{
+        return totalSupply;
+      \}
+
+      public {\color{red}@View} UnsignedBigInteger balanceOf(Contract account) \{
+        return balances.getOrDefault(account, ZERO);
+      \}
+
+      public IERC20View snapshot() \{
+        return this;
+      \}
+    \}
+
+    return new SnapshotImpl();
+  \}
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}\frametitle{The view/snapshot design pattern}
+
+  \begin{center}
+    \includegraphics[scale=0.55,clip=false]{pictures/erc20-simplified-uml.png}
+  \end{center}
+
+  \begin{greenbox}{}
+    An external wallet calls \<snapshot()> to get a consistent, immutable view of
+    the token and can then access its content, while other clients are
+    modifying the original token
+    \begin{itemize}
+    \item impossible in Solidity, where maps cannot be cloned
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
 \begin{frame}[fragile]\frametitle{Definition of a new token}
 
 {\scriptsize\begin{semiverbatim}
@@ -1105,6 +1163,232 @@ public class {\color{red}CryptoBuddy extends ERC20} \{
   \begin{center}
     \includegraphics[scale=0.12,clip=false]{pictures/tokens.png}
   \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A shared entity contract}
+
+  \begin{center}
+    \includegraphics[scale=0.38,clip=false]{pictures/shares.jpg}
+  \end{center}
+
+  \begin{itemize}
+  \item the entity is initially split among \alert{shareholders},
+    each in general holding a distinct number of \alert{shares}
+  \item a shareholder can \alert{place an offer} to sell some or all of its shares
+  \item a buyer can \alert{accept} an offer and become a shareholder
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<SharedEntityView> interface}
+
+  \begin{semiverbatim}
+public interface {\color{red}SharedEntityView<S extends Contract>} \{
+  {\color{red}@View} StorageMapView<S, BigInteger> getShares();
+  Stream<S> getShareholders();
+  {\color{red}@View} BigInteger sharesOf(S shareholder);
+  SharedEntityView<S> snapshot();
+\}
+  \end{semiverbatim}
+
+  \bigskip
+
+  Generic types do not exist in Solidity
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<SharedEntity> interface: adds a market of shares}
+
+  {\scriptsize\begin{semiverbatim}
+public interface {\color{red}SharedEntity<S extends PayableContract, O extends Offer<S>>
+    extends SharedEntityView<S>} \{
+
+  {\color{red}@View} BigInteger sharesOnSaleOf(S shareholder);
+
+  {\color{red}@FromContract(PayableContract.class) @Payable} void place
+    (BigInteger ticket, O offer);
+
+  {\color{red}@FromContract(PayableContract.class) @Payable} void accept
+    (BigInteger ticket, S buyer, O offer);
+\}
+  \end{semiverbatim}}
+
+  \begin{itemize}
+  \item who sells its shares receives a payment: hence \<S> is constrained
+    to extend \<PayableContract>
+  \item Java does not allow one to write \<@FromContract(S.class)>
+  \item the interface allows implementations to ask for a ticket when offers
+    are placed and accepted
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<Offer> inner class of \<SharedEntity>}
+
+  {\tiny\begin{semiverbatim}
+public static class {\color{red}Offer<S extends PayableContract>} extends Storage \{
+  public final S seller;
+  public final BigInteger sharesOnSale;
+  public final BigInteger cost;
+  public final long expiration;
+
+  public {\color{red}@FromContract} Offer(S seller, BigInteger sharesOnSale, BigInteger cost, long duration) \{
+    {\color{armygreen}require(caller() == seller, "only the owner can sell its shares");
+    require(sharesOnSale != null && sharesOnSale.signum() > 0, "the shares on sale must be positive");
+    require(cost != null && cost.signum() >= 0, "the cost must be a non-negative big integer");
+    require(duration >= 0, "the duration cannot be negative");}
+
+    this.seller = seller;
+    this.sharesOnSale = sharesOnSale;
+    this.cost = cost;
+    this.expiration = now() + duration;
+  \}
+
+  public {\color{red}@View} boolean isOngoing() \{
+    return now() <= expiration;
+  \}
+\}
+  \end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<SimpleSharedEntity> implementation: state}
+
+  {\scriptsize\begin{semiverbatim}
+public class {\color{red}SimpleSharedEntity<S extends PayableContract, O extends Offer<S>>
+      extends PayableContract implements SharedEntity<S, O>} \{
+
+  private final StorageTreeMap<S, BigInteger> shares = new StorageTreeMap<>();
+  private final StorageSet<O> offers = new StorageTreeSet<>();
+  private StorageMapView<S, BigInteger> snapshotOfShares;
+
+  public SimpleSharedEntity(S shareholder, BigInteger share) \{ // simple case
+    shares.put(shareholder, share);
+    snapshotOfShares = shares.snapshot();
+  \}
+
+  public {\color{red}@View} final StorageMapView<S, BigInteger> getShares() \{
+    return snapshotOfShares;
+  \}
+
+  public final Stream<S> getShareholders() \{
+    return snapshotOfShares.keys();
+  \}
+
+  public final {\color{red}@View} BigInteger sharesOf(S shareholder) \{
+    return snapshotOfShares.getOrDefault(shareholder, ZERO);
+  \}
+\}
+  \end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<SimpleSharedEntity> implementation: shares on sale}
+
+  \textit{Add the shares on sale of every offer placed by the shareholder
+  and still ongoing}
+
+\bigskip
+
+{\scriptsize\begin{semiverbatim}
+public final {\color{red}@View} BigInteger sharesOnSaleOf(S shareholder) \{
+  return offers.stream()
+    .filter(offer -> offer.seller == shareholder && offer.isOngoing())
+    .map(offer -> offer.sharesOnSale)
+    .reduce(ZERO, BigInteger::add);
+\}
+  \end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<SimpleSharedEntity> implementation: place an offer}
+
+  \textit{If the offer is valid, add it to the set of offers, removing expired offers on the way}
+
+\bigskip
+
+{\scriptsize\begin{semiverbatim}
+public {\color{red}@FromContract @Payable} void place(BigInteger amount, O offer) \{
+  {\color{armygreen}require(offer.seller == caller(), "only the seller can place its own offer");
+  require(shares.containsKey(offer.seller), "the seller is not a shareholder");
+  require(sharesOf(offer.seller).subtract(sharesOnSaleOf(offer.seller))
+    .compareTo(offer.sharesOnSale) >= 0, "the seller has not enough shares");}
+  cleanUpOffers(null);
+  offers.add(offer);
+\}
+
+private void cleanUpOffers(O offerToRemove) \{
+  offers.stream()
+    .filter(offer -> offer == offerToRemove || !offer.isOngoing())
+    .forEachOrdered(offers::remove);
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<SimpleSharedEntity> implementation: accept an offer}
+
+  \textit{If the offer is valid, remove it, swap the shares and send the payment to the seller}
+
+\bigskip
+
+{\scriptsize\begin{semiverbatim}
+public {\color{red}@FromContract @Payable} void accept(BigInteger amount, S buyer, O offer) \{
+  {\color{armygreen}require(caller() == buyer, "only the future owner can buy the shares");
+  require(offers.contains(offer), "unknown offer");
+  require(offer.isOngoing(), "the sale offer is not ongoing anymore");
+  require(offer.cost.compareTo(amount) <= 0, "not enough money for the offer");}
+  cleanUpOffers(offer);
+  removeShares(offer.seller, offer.sharesOnSale);
+  addShares(buyer, offer.sharesOnSale);
+  offer.seller.receive(offer.cost);
+  snapshotOfShares = shares.snapshot();
+\}
+
+private void addShares(S shareholder, BigInteger added) \{
+  shares.update(shareholder, BigInteger.ZERO, added::add);
+\}
+
+private void removeShares(S shareholder, BigInteger removed) \{
+  ... similar
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The \<SimpleSharedEntity> implementation: snapshot}
+
+  \textit{Save the current snapshot of the shares, to answer all questions}
+
+\bigskip
+
+{\tiny\begin{semiverbatim}
+public final SharedEntityView<S> snapshot() \{
+
+  class SharedEntitySnapshotImpl implements SharedEntityView<S> \{
+    {\color{red}private final StorageMapView<S, BigInteger> snapshotOfShares = SimpleSharedEntity.this.snapshotOfShares;}
+
+    public StorageMapView<S, BigInteger> getShares() \{
+      return snapshotOfShares;
+    \}
+
+    public Stream<S> getShareholders() \{
+      return snapshotOfShares.keys();
+    \}
+
+    public BigInteger sharesOf(S shareholder) \{
+      return snapshotOfShares.getOrDefault(shareholder, ZERO);
+    \}
+
+    public SharedEntityView<S> snapshot() \{
+      return this;
+    \}
+  \};
+
+  return new SharedEntitySnapshotImpl();
+\}
+\end{semiverbatim}}
 
 \end{frame}
 
