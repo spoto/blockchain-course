@@ -152,7 +152,7 @@
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{Start experimenting with Hotmoka}
+\begin{frame}[fragile]\frametitle{Start experimenting with Hotmoka$^*$}
 
   \begin{enumerate}
   \item ensure to have Java version $\ge$ 11 installed
@@ -168,6 +168,15 @@
     {\color{blue}\<mvn clean install -DskipTests>}
 
   \end{enumerate}
+
+
+  \bigskip
+  \bigskip
+  \bigskip
+  \bigskip
+  \bigskip
+  \bigskip
+  {\tiny $^*$ The network server used in the experiment is joint work with Dinu Berinde}
 
 \end{frame}
 
@@ -862,7 +871,7 @@ public class GradualPonzi extends Contract \{
   
 \end{frame}
 
-\begin{frame}\frametitle{The OpenZeppelin standard}
+\begin{frame}\frametitle{The OpenZeppelin reference implementation}
 
   \begin{greenbox}{We follow (in part) the implementation by OpenZeppelin}
     \begin{center}
@@ -1180,14 +1189,15 @@ public class {\color{red}CryptoBuddy extends ERC20} \{
 
 \begin{frame}\frametitle{Exercise}
 
+  \begin{greenbox}{Define your own token}
   \begin{enumerate}
-  \item Define your own token
-  \item Implement the token in Takamaka (possibly using Eclipse or similar IDE)
-  \item Generate the jar of your new token
-  \item Use the Hotmoka CLI to install the jar in blockchain
-  \item Use the Hotmoka CLI to instantiate the token
-  \item Use the Hotmoka CLI to interact with the token
+  \item implement the token in Takamaka (possibly using Eclipse or similar IDE)
+  \item generate the jar of your new token
+  \item use the Hotmoka CLI to install the jar in blockchain
+  \item use the Hotmoka CLI to instantiate the token
+  \item use the Hotmoka CLI to interact with the token
   \end{enumerate}
+  \end{greenbox}
 
   \bigskip
 
@@ -1197,7 +1207,7 @@ public class {\color{red}CryptoBuddy extends ERC20} \{
 
 \end{frame}
 
-\begin{frame}\frametitle{A shared entity contract}
+\begin{frame}\frametitle{A shared entity contract for governance}
 
   \begin{center}
     \includegraphics[scale=0.38,clip=false]{pictures/shares.jpg}
@@ -1427,6 +1437,31 @@ public final SharedEntityView<S> snapshot() \{
 \}
 \end{semiverbatim}}
 
+\end{frame}
+
+\begin{frame}\frametitle{Exercise}
+
+  \begin{greenbox}{Define a lottery contract}
+  \begin{enumerate}
+  \item the creator (a payable contract)
+    specifies, at the lottery creation time, the number $N\ge 1$ of tickets to sell
+  \item payable contracts can call a \<void buy()> method of the lottery to buy a ticket
+    (possibly many times). The ticket costs $100000\cdot\left(1 + \frac{\text{number of tickets already sold}}{N-1}\right)$
+  \item when the $N$th ticket is sold, the method \<buy> computes \<now() \% N> and determines
+    the number of the winning contract
+    \begin{itemize}
+    \item it sends $90\%$ of the balance of the lottery to the winner
+    \item it sends the remaining $10\%$ of the balance of the lottery to its creator
+    \item it rejects all future calls to \<buy>
+    \end{itemize}
+  \item install the contract in blockchain and play with it by using the CLI
+  \end{enumerate}
+  \end{greenbox}
+
+  \medskip
+
+  Suggestion: keep the ticket holders inside a \<StorageTreeArray> field
+  (from the Takamaka library)
 \end{frame}
 
 \end{document}
