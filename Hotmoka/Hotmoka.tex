@@ -1074,14 +1074,62 @@ public class ERC20 {\color{red}extends Contract implements IERC20} \{
 
 \end{frame}
 
+\begin{frame}\frametitle{Inconsistent view}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/inconsistency.pdf}
+  \end{center}
+
+  \bigskip
+
+  Between a call to \<balanceOf> and the next, the state of the token might change in the database
+  because other users might call the transfer functions, concurrently
+
+\end{frame}
+
+\begin{frame}\frametitle{The view/snapshot design pattern}
+
+  \begin{center}
+    \includegraphics[scale=0.55,clip=false]{pictures/erc20-simplified-uml.png}
+  \end{center}
+
+  \begin{greenbox}{}
+    An external wallet calls \<snapshot()> to get a consistent, immutable view of
+    the token and can then access its content, while other clients can
+    modify the original token
+    \begin{itemize}
+    \item impossible in Solidity, where maps cannot be cloned
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Inconsistent view}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/consistency.pdf}
+  \end{center}
+
+  \bigskip
+
+  \begin{itemize}
+  \item all calls to \<balanceOf> refer to the same, consistent state of the token (possibly not the
+    latest)
+  \item the implementation might keep a snapshot and provide a \<@View> method
+    to read it
+  \end{itemize}
+
+\end{frame}
+
 \begin{frame}[fragile]\frametitle{The \<ERC20> implementation: snapshot in O(1)}
 
+\vspace*{-2ex}
 {\scriptsize\begin{semiverbatim}
 public class ERC20 {\color{red}extends Contract implements IERC20} \{
 
   public IERC20View snapshot() \{   {\color{violet}// O(1)}
 
-    class SnapshotImpl {\color{red}extends Storage implements IERC20View} \{
+    {\color{blue}class SnapshotImpl {\color{red}extends Storage implements IERC20View} \{
       private final UnsignedBigInteger totalSupply = ERC20.this.totalSupply;
       private final StorageMapView<Contract, UnsignedBigInteger> balances
         = ERC20.this.balances.snapshot(); {\color{violet}// O(1)}
@@ -1095,31 +1143,14 @@ public class ERC20 {\color{red}extends Contract implements IERC20} \{
       \}
 
       public IERC20View snapshot() \{
-        return this;
+        return this; {\color{violet}// a snapshot of a snapshot is the snapshot itself}
       \}
-    \}
+    \}}
 
     return new SnapshotImpl();
   \}
 \}
 \end{semiverbatim}}
-
-\end{frame}
-
-\begin{frame}\frametitle{The view/snapshot design pattern}
-
-  \begin{center}
-    \includegraphics[scale=0.55,clip=false]{pictures/erc20-simplified-uml.png}
-  \end{center}
-
-  \begin{greenbox}{}
-    An external wallet calls \<snapshot()> to get a consistent, immutable view of
-    the token and can then access its content, while other clients are
-    modifying the original token
-    \begin{itemize}
-    \item impossible in Solidity, where maps cannot be cloned
-    \end{itemize}
-  \end{greenbox}
 
 \end{frame}
 
@@ -1138,9 +1169,9 @@ public class {\color{red}CryptoBuddy extends ERC20} \{
     mint(caller(), initialSupply.multiply(multiplier)); // 200'000 * 10 ^ 18
   \}
 
-  public @FromContract void mint(Contract account, UnsignedBigInteger amount) \{
+  public @FromContract void mintFor(Contract account, UnsignedBigInteger amount) \{
     require(caller() == owner, {\color{armygreen}"Lack of permission"});
-    super.mint(account, amount);
+    mint(account, amount);
   \}
 \}
 \end{semiverbatim}}
@@ -1166,7 +1197,7 @@ public class {\color{red}CryptoBuddy extends ERC20} \{
 
 \end{frame}
 
-\begin{frame}\frametitle{A shared entity contract$^*$}
+\begin{frame}\frametitle{A shared entity contract}
 
   \begin{center}
     \includegraphics[scale=0.38,clip=false]{pictures/shares.jpg}
@@ -1179,8 +1210,17 @@ public class {\color{red}CryptoBuddy extends ERC20} \{
   \item a buyer can \alert{accept} an offer and become a shareholder
   \end{itemize}
 
-  \bigskip
+\end{frame}
+
+\begin{frame}\frametitle{The hierarchy of the implementation$^*$}
+
+  \begin{center}
+    \includegraphics[scale=0.41,clip=false]{pictures/shared-entities-uml.png}
+  \end{center}
+
+  \vspace*{-3ex}
   {\tiny $^*$ Joint work with Andrea Benini}
+
 \end{frame}
 
 \begin{frame}[fragile]\frametitle{The \<SharedEntityView> interface}
@@ -1196,7 +1236,7 @@ public interface {\color{red}SharedEntityView<S extends Contract>} \{
 
   \bigskip
 
-  Generic types do not exist in Solidity
+  Note: generic types do not exist in Solidity
 
 \end{frame}
 
@@ -1208,11 +1248,9 @@ public interface {\color{red}SharedEntity<S extends PayableContract, O extends O
 
   {\color{red}@View} BigInteger sharesOnSaleOf(S shareholder);
 
-  {\color{red}@FromContract(PayableContract.class) @Payable} void place
-    (BigInteger ticket, O offer);
+  {\color{red}@FromContract @Payable} void place(BigInteger ticket, O offer);
 
-  {\color{red}@FromContract(PayableContract.class) @Payable} void accept
-    (BigInteger ticket, S buyer, O offer);
+  {\color{red}@FromContract @Payable} void accept(BigInteger ticket, S buyer, O offer);
 \}
   \end{semiverbatim}}
 
@@ -1311,7 +1349,7 @@ public final {\color{red}@View} BigInteger sharesOnSaleOf(S shareholder) \{
 \bigskip
 
 {\scriptsize\begin{semiverbatim}
-public {\color{red}@FromContract @Payable} void place(BigInteger amount, O offer) \{
+public {\color{red}@FromContract @Payable} void place(BigInteger ticket, O offer) \{
   {\color{armygreen}require(offer.seller == caller(), "only the seller can place its own offer");
   require(shares.containsKey(offer.seller), "the seller is not a shareholder");
   require(sharesOf(offer.seller).subtract(sharesOnSaleOf(offer.seller))
@@ -1336,7 +1374,7 @@ private void cleanUpOffers(O offerToRemove) \{
 \bigskip
 
 {\scriptsize\begin{semiverbatim}
-public {\color{red}@FromContract @Payable} void accept(BigInteger amount, S buyer, O offer) \{
+public {\color{red}@FromContract @Payable} void accept(BigInteger ticket, S buyer, O offer) \{
   {\color{armygreen}require(caller() == buyer, "only the future owner can buy the shares");
   require(offers.contains(offer), "unknown offer");
   require(offer.isOngoing(), "the sale offer is not ongoing anymore");
@@ -1363,17 +1401,16 @@ private void removeShares(S shareholder, BigInteger removed) \{
 
   \textit{Save the current snapshot of the shares, to answer all questions}
 
-\bigskip
+\medskip
 
-{\tiny\begin{semiverbatim}
+{\scriptsize\begin{semiverbatim}
 public final SharedEntityView<S> snapshot() \{
 
-  class SharedEntitySnapshotImpl implements SharedEntityView<S> \{
-    {\color{red}private final StorageMapView<S, BigInteger> snapshotOfShares = SimpleSharedEntity.this.snapshotOfShares;}
+  {\color{blue}class SharedEntitySnapshotImpl implements SharedEntityView<S> \{
+    {\color{red}private final StorageMapView<S, BigInteger> snapshotOfShares
+        = SimpleSharedEntity.this.snapshotOfShares;}
 
-    public StorageMapView<S, BigInteger> getShares() \{
-      return snapshotOfShares;
-    \}
+    public StorageMapView<S, BigInteger> getShares() \{ return snapshotOfShares; \}
 
     public Stream<S> getShareholders() \{
       return snapshotOfShares.keys();
@@ -1383,10 +1420,8 @@ public final SharedEntityView<S> snapshot() \{
       return snapshotOfShares.getOrDefault(shareholder, ZERO);
     \}
 
-    public SharedEntityView<S> snapshot() \{
-      return this;
-    \}
-  \};
+    public SharedEntityView<S> snapshot() \{ return this; \}
+  \};}
 
   return new SharedEntitySnapshotImpl();
 \}
