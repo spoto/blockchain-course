@@ -296,17 +296,17 @@ class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed a
 
 \begin{frame}[fragile]\frametitle{Creation of a new account}
 
-  Let us create a new account with 500000 units of coin:
+  Let us create a new account with 50000000 units of coin:
 
   \smallskip
 
-  \begin{greenbox}{{\small\<CLI create-account 500000 --payer faucet --url ec2...>}}
+  \begin{greenbox}{{\small\<CLI create-account 50000000 --payer faucet --url ec2...>}}
     {\tiny\begin{semiverbatim}
 Free account creation will succeed only if the gamete of the node supports an open unsigned faucet
-{\color{armygreen}total gas consumed: 3791}
-{\color{darkred}  for CPU: 620
-  for RAM: 1574
-  for storage: 1597
+{\color{armygreen}total gas consumed: 49392}
+{\color{darkred}  for CPU: 601
+  for RAM: 1478
+  for storage: 47313
   for penalty: 0}
 A new account 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 has been created
 {\color{blue}The keys of the account have been saved
@@ -332,7 +332,7 @@ A new account 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#
 class {\color{violet}io.takamaka.code.lang.ExternallyOwnedAccount} (from jar installed at 02dfd29348abaa...)
   nonce:java.math.BigInteger = 0
   publicKey:java.lang.String = "MCowBQYDK2VwAyEAk45GxqvRFg88bKZqkqDGxQBHdvvZF+b9YSkl8xs28Ao="
-^ balance:java.math.BigInteger = 500000 (inherited from io.takamaka.code.lang.Contract)
+^ balance:java.math.BigInteger = 50000000 (inherited from io.takamaka.code.lang.Contract)
 ^ balanceRed:java.math.BigInteger = 0 (inherited from io.takamaka.code.lang.Contract)
     \end{semiverbatim}}
   \end{greenbox}
@@ -341,7 +341,7 @@ class {\color{violet}io.takamaka.code.lang.ExternallyOwnedAccount} (from jar ins
 
   \begin{itemize}
   \item the nonce starts from 0
-  \item the initial balance is actually 500000
+  \item the initial balance is actually 50000000
   \item the public key a Base64-encoded ed25519 key
   \item the public key is stored in the object: no need to send it again at every future
     method call (like Ethereum does)
@@ -364,7 +364,7 @@ class {\color{violet}io.takamaka.code.lang.ExternallyOwnedAccount} (from jar ins
 class {\color{violet}io.takamaka.code.lang.ExternallyOwnedAccount} (from jar installed at 02dfd29348abaa...)
   nonce:java.math.BigInteger = 0
   publicKey:java.lang.String = "MCowBQYDK2VwAyEAk45GxqvRFg88bKZqkqDGxQBHdvvZF+b9YSkl8xs28Ao="
-^ balance:java.math.BigInteger = 500000 (inherited from io.takamaka.code.lang.Contract)
+^ balance:java.math.BigInteger = 50000000 (inherited from io.takamaka.code.lang.Contract)
 ^ balanceRed:java.math.BigInteger = 0 (inherited from io.takamaka.code.lang.Contract)
 
   {\color{red}@Payable @FromContract} public ExternallyOwnedAccount(java.math.BigInteger,java.lang.String)
@@ -699,13 +699,13 @@ public class SimplePonzi {\color{red}extends Contract} \{
 
   \begin{greenbox}{{\small\<CLI install 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 .../target/ponzi-0.0.1.jar --url ec2...>}}
     {\scriptsize\begin{semiverbatim}
-Do you really want to spend up to 23732 gas units to install the jar [Y/N] Y
+Do you really want to spend up to 443300 gas units to install the jar [Y/N] Y
 .../target/ponzi-0.0.1.jar has been installed at
   {\color{red}39f999a63555542eaf5040388d61c20193dee4fb035847a40608c494bf069765}
-{\color{armygreen}total gas consumed: 3583}
-{\color{darkred}  for CPU: 252
-  for RAM: 1260
-  for storage: 2071
+{\color{armygreen}total gas consumed: 298189}
+{\color{darkred}  for CPU: 233
+  for RAM: 1164
+  for storage: 296792
   for penalty: 0}
     \end{semiverbatim}}
   \end{greenbox}
@@ -737,12 +737,12 @@ We use our account as payer and specify where \<SimplePonzi> is defined
       \newline --classpath 39f999a63555542eaf5040388d61c20193dee4fb035847a40608c494bf069765
       --url ec2...>}}
     {\tiny\begin{semiverbatim}
-do you really want to spend up to 10000 gas units to call {\color{red}public SimplePonzi()} ? [Y/N] Y
+do you really want to spend up to 500000 gas units to call {\color{red}public SimplePonzi()} ? [Y/N] Y
 the new object has been allocated at 754371b03ef2c413f546e1c3667adf86d545a3587e60f75d2c496863ef442f5c\#0
-{\color{armygreen}total gas consumed: 3107}
-{\color{darkred}  for CPU: 299
-  for RAM: 1209
-  for storage: 1599
+{\color{armygreen}total gas consumed: 42686}
+{\color{darkred}  for CPU: 280
+  for RAM: 1113
+  for storage: 41293
   for penalty: 0}
     \end{semiverbatim}}
   \end{greenbox}
@@ -772,12 +772,12 @@ We use our account as payer:
 \begin{greenbox}{{\small\<CLI call 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 754371b03ef2c413f546e1c3667adf86d545a3587e60f75d2c496863ef442f5c\#0 invest 40000
       --url ec2...>}}
     {\tiny\begin{semiverbatim}
-do you really want to spend up to 10000 gas units to call
+do you really want to spend up to 500000 gas units to call
   {\color{red}@Payable @FromContract(PayableContract.class) public void invest(java.math.BigInteger)} ? [Y/N] Y
-{\color{armygreen}total gas consumed: 2112}
-{\color{darkred}  for CPU: 421
-  for RAM: 1349
-  for storage: 342
+{\color{armygreen}total gas consumed: 10373}
+{\color{darkred}  for CPU: 402
+  for RAM: 1253
+  for storage: 8718
   for penalty: 0}
     \end{semiverbatim}}
   \end{greenbox}
@@ -799,13 +799,13 @@ We use our account as payer:
 \begin{greenbox}{{\small\<CLI call 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 754371b03ef2c413f546e1c3667adf86d545a3587e60f75d2c496863ef442f5c\#0 invest 40000
       --url ec2...>}}
     {\tiny\begin{semiverbatim}
-do you really want to spend up to 10000 gas units to call
+do you really want to spend up to 500000 gas units to call
   {\color{red}@Payable @FromContract(PayableContract.class) public void invest(java.math.BigInteger)} ? [Y/N] Y
-{\color{armygreen}total gas consumed: 10000}
-{\color{darkred}  for CPU: 465
-  for RAM: 1449
-  for storage: 342
-  for penalty: 7744}
+{\color{armygreen}total gas consumed: 500000}
+{\color{darkred}  for CPU: 446
+  for RAM: 1353
+  for storage: 8718
+  for penalty: 489483}
 {\color{red}io.hotmoka.beans.TransactionException: io.takamaka.code.lang.RequirementViolationException:
   you must invest at least 44000@SimplePonzi.java:18}
 \end{semiverbatim}}
