@@ -1272,7 +1272,7 @@ byte[] signedMessage = TransactionEncoder.signMessage
     A 20-bytes Ethereum address
 
     \begin{itemize}
-    \item it has \<balance> field
+    \item it has a \<balance> field
     \item there is no \<instanceof> operator
     \item casts never fail
     \end{itemize}
@@ -1384,7 +1384,7 @@ require(withdraw_amount <= 0.1 ether);
     \item[\<msg.data>] the data payload of the transaction
     \item[\<msg.sig>] the first four bytes of \<msg.data> (method selector)
     \item[\<tx.gasprice>] the gas price used for the transaction
-    \item[\<tx.origin>] the address of the \alert{originating} EOA
+    \item[\<tx.origin>] the address of the \alert{originating EOA}
     \end{description}
   \end{greenbox}
 
@@ -1531,7 +1531,7 @@ require(withdraw_amount <= 0.1 ether);
     \item required for calling \<send()>, \<transfer()> and \<call()>
     \item all of \<msg.sender>, \<tx.origin> and \<block.coinbase> are
       \<payable>
-    \item you can cast between \<address> and \<address payable> and casts never fails
+    \item you can cast between \<address> and \<address payable> and casts never fail
     \end{itemize}
   \end{greenbox}
 
@@ -2224,7 +2224,7 @@ require(withdraw_amount <= 0.1 ether);
     \item[\<c.transfer(amount)>] forwards $2300$ units of gas,
       \alert{currently not enough for reentrancy}; possibly
       deprecated in the future
-    \item[\<c.call.value(amount)()>] forwards all remaining units of gas,
+    \item[\<c.call.value(amount)("")>] forwards all remaining units of gas,
       typically \alert{enough for reentrancy}; programmers like it since
       it allows one to activate the complex fallback function of any
       contract, not just the default fallback function
