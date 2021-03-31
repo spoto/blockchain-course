@@ -2493,7 +2493,7 @@ require(withdraw_amount <= 0.1 ether);
     \begin{itemize}
       \item use an external trusted \alert{oracle} as a source of randomness:
         \begin{description}
-        \item[Oracle] A computer that regularly sends transactions that
+        \item[Oracle] A device that regularly sends transactions that
           store data in blockchain. For instance, it sends and stores a random number
         \end{description}
       \item if \<now> or \<block.timestamp> is used to wait for a period of time,
@@ -2613,7 +2613,7 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Issue \#10: Race conditions/front running}
 
   \begin{redbox}{}
-    Miners process transactions fromthe mempool in the order they like (if ever);
+    Miners process transactions from the mempool in the order they like (if ever);
     in general, they tend to proceed in decreasing \<gasPrice> order
   \end{redbox}
 
