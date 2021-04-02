@@ -847,6 +847,143 @@ public class GradualPonzi extends Contract \{
 
 \end{frame}
 
+\begin{frame}[fragile]\frametitle{An insurance contract}
+
+  \begin{greenbox}{The contract allows one to insure specific days of the year}
+    If it rains on those days, one will get an indemnization larger than
+    the cost of the insurance
+    \begin{itemize}
+    \item much larger in summer
+    \item just a bit larger in winter
+    \end{itemize}
+  \end{greenbox}
+
+  \medskip
+  The contract provides the following functionalities:
+
+  \begin{itemize}
+  \item construction, upon specification of the oracle:
+    \[\<Insurance(Contract oracle)>\]
+  \item purchase of an insurance for specific days:
+    \[\<{\color{violet}@FromContract(PayableContract.class)} {\color{airforceblue}@Payable} void buy>\]
+    \vspace*{-5ex}
+    \[\<({\color{airforceblue}long amount}, int day, int month, int year, int duration)>\]
+  \item notification of rain and indemnization:
+    \[\<{\color{violet}@FromContract} void itRains()>\]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{An insurance contract}
+
+  {\scriptsize\begin{semiverbatim}
+public class Insurance extends {\color{blue}Contract} \{
+  public final static long MIN = 1_000, MAX = 1_000_000_000;
+  private final {\color{blue}Contract} oracle;
+  private final {\color{blue}StorageSet}<InsuredDay> insuredDays = new {\color{blue}StorageTreeSet<>()};
+
+  public Insurance(Contract oracle) \{
+    this.oracle = oracle;
+  \}
+
+  // inner class
+  private static class InsuredDay extends {\color{blue}Storage} \{ /* shown later */ \}
+
+  public {\color{violet}@FromContract(PayableContract.class)} {\color{airforceblue}@Payable} void buy
+    ({\color{airforceblue}long amount}, int day, int month, int year, int duration) \{ /* shown later */ \}
+
+  public {\color{violet}@FromContract} void itRains() \{ /* shown later */ \}
+\}
+  \end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The inner class}
+
+\vspace{-1ex}
+{\tiny\begin{semiverbatim}
+private static class InsuredDay extends {\color{blue}Storage} \{
+  private final PayableContract payer;
+  private final long amount;
+  private final int day, month, year;
+
+  private InsuredDay(PayableContract payer, long amount, LocalDate when) \{
+    this.payer = payer;
+    this.amount = amount;
+    this.day = when.getDayOfMonth();  this.month = when.getMonthValue();  this.year = when.getYear();
+  \}
+
+  private boolean isToday() \{
+    return LocalDate.of(year, month, day).equals(today());
+  \}
+
+  private boolean isTodayOrBefore() \{
+    return !LocalDate.of(year, month, day).isAfter(today());
+  \}
+
+  private static LocalDate today() \{
+    Instant now = Instant.ofEpochMilli(Takamaka.now());
+    return LocalDate.ofInstant(now, ZoneId.of("Europe/Rome"));
+  \}
+
+  private long indemnization() \{
+    switch (Season.now()) \{  // Season is an enumeration
+      case WINTER: return amount * 12 / 10; // 120%
+      case SPRING: return amount * 18 / 10; // 180%
+      case SUMMER: return amount * 30 / 10; // 300%
+      default /* FALL */ : return amount * 13 / 10; // 130%
+    \}
+  \}
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Buy an insurance}
+
+{\scriptsize\begin{semiverbatim}
+public {\color{violet}@FromContract(PayableContract.class)} {\color{airforceblue}@Payable} void buy
+    ({\color{airforceblue}long amount}, int day, int month, int year, int duration) \{
+
+  {\color{armygreen}require(duration >= 1, "you must insure at least one day");
+  require(duration <= 7, "you cannot insure more than a week");
+  require(amount >= MIN * duration,
+    () -> "we insure a single day for at least " + MIN + " units of coin");
+  require(amount <= MAX * duration,
+    () -> "we insure a single day for up to " + MAX + " units of coin");}
+
+  // if the date is wrong, this generates an exception
+  LocalDate start = LocalDate.of(year, month, day);
+
+  PayableContract payer = (PayableContract) {\color{violet}caller()};
+  for (int offset = 0; offset < duration; offset++)
+    insuredDays.add(new InsuredDay
+                    (payer, amount / duration, start.plusDays(offset)));
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Pay the indemnization}
+
+{\scriptsize\begin{semiverbatim}
+public {\color{violet}@FromContract} void itRains() \{
+  {\color{armygreen}require({\color{violet}caller()} == oracle, "only the oracle can call this method");}
+
+  {\color{red}// pay who insured today}
+  insuredDays.stream()
+    .filter(InsuredDay::isToday)
+    .forEachOrdered(insuredDay ->
+          insuredDay.payer.{\color{blue}receive}(insuredDay.indemnization()));
+
+  {\color{red}// clean-up the set of insured days}
+  insuredDays.stream()
+    .filter(InsuredDay::isTodayOrBefore)
+    .forEachOrdered(insuredDays::remove);
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
 \begin{frame}\frametitle{ERC20 Tokens}
 
   \begin{center}
