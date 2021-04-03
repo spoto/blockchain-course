@@ -863,7 +863,7 @@ public class GradualPonzi extends Contract \{
 
   \begin{itemize}
   \item construction, upon specification of the oracle:
-    \[\<Insurance(Contract oracle)>\]
+    \[\<{\color{violet}@FromContract} {\color{airforceblue}@Payable} Insurance({\color{airforceblue}BigInteger amount}, Contract oracle)>\]
   \item purchase of an insurance for specific days:
     \[\<{\color{violet}@FromContract(PayableContract.class)} {\color{airforceblue}@Payable} void buy>\]
     \vspace*{-5ex}
@@ -881,17 +881,17 @@ public class Insurance extends {\color{blue}Contract} \{
   private final {\color{blue}Contract} oracle;
   private final {\color{blue}StorageSet}<InsuredDay> insuredDays = new {\color{blue}StorageTreeSet<>()};
 
-  public Insurance(Contract oracle) \{
+  public {\color{violet}@FromContract} {\color{airforceblue}@Payable} Insurance({\color{airforceblue}BigInteger amount}, Contract oracle) \{
     this.oracle = oracle;
   \}
 
-  // inner class
-  private static class InsuredDay extends {\color{blue}Storage} \{ /* shown later */ \}
+  {\color{red}// inner class}
+  private static class InsuredDay extends {\color{blue}Storage} \{ {\color{red}/* shown later */} \}
 
   public {\color{violet}@FromContract(PayableContract.class)} {\color{airforceblue}@Payable} void buy
-    ({\color{airforceblue}long amount}, int day, int month, int year, int duration) \{ /* shown later */ \}
+    ({\color{airforceblue}long amount}, int day, int month, int year, int duration) \{ {\color{red}/* shown later */} \}
 
-  public {\color{violet}@FromContract} void itRains() \{ /* shown later */ \}
+  public {\color{violet}@FromContract} void itRains() \{ {\color{red}/* shown later */} \}
 \}
   \end{semiverbatim}}
 
@@ -921,16 +921,16 @@ private static class InsuredDay extends {\color{blue}Storage} \{
   \}
 
   private static LocalDate today() \{
-    Instant now = Instant.ofEpochMilli(Takamaka.now());
+    Instant now = Instant.ofEpochMilli({\color{blue}Takamaka.now()});
     return LocalDate.ofInstant(now, ZoneId.of("Europe/Rome"));
   \}
 
   private long indemnization() \{
-    switch (Season.now()) \{  // Season is an enumeration
-      case WINTER: return amount * 12 / 10; // 120%
-      case SPRING: return amount * 18 / 10; // 180%
-      case SUMMER: return amount * 30 / 10; // 300%
-      default /* FALL */ : return amount * 13 / 10; // 130%
+    switch (Season.now()) \{  {\color{red}// Season is an enumeration}
+      case WINTER: return amount * 18 / 10; {\color{red}// 180%}
+      case SPRING: return amount * 30 / 10; {\color{red}// 300%}
+      case SUMMER: return amount * 50 / 10; {\color{red}// 500%}
+      default /* FALL */ : return amount * 28 / 10; {\color{red}// 280%}
     \}
   \}
 \}
@@ -981,6 +981,203 @@ public {\color{violet}@FromContract} void itRains() \{
     .forEachOrdered(insuredDays::remove);
 \}
 \end{semiverbatim}}
+
+\end{frame}
+
+%CLI install 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 target/insurance-0.0.1.jar --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+\begin{frame}[fragile]\frametitle{Installation of the jar into a remote node}
+
+\begin{tt}mvn clean package\end{tt} $\Rightarrow$ generates \<target/insurance-0.0.1.jar>
+
+\medskip
+
+\begin{tt}
+CLI install <payer> <jar>
+\end{tt}
+
+\bigskip
+
+\begin{greenbox}{We use one of our accounts as payer}
+{\scriptsize\begin{semiverbatim}
+ {\color{red}CLI install
+ \only<2>{payer}\only<3->{06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0}
+ \only<4>{jar}\only<5->{target/insurance-0.0.1.jar}
+ \onslide<6->{--url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080}}
+
+\onslide<7->{Do you really want to spend up to 853900 gas units to install the jar [Y/N] Y
+target/insurance-0.0.1.jar has been installed
+at acb76103738dc7091c867c31bf6fb351f4d07b4bae1c7972e0e3bc3fcbf9e9c3
+{\color{armygreen}total gas consumed: 779976}
+{\color{darkred}  for CPU: 255
+  for RAM: 1326
+  for storage: 778395
+  for penalty: 0}}
+\end{semiverbatim}}
+\end{greenbox}
+
+\end{frame}
+
+%CLI create 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 it.univr.insurance.Insurance 1000000000000 06a080bbc4712862f875eefad00f43dee8f7daf98aec54c984d20861e3a219e6#0 --classpath acb76103738dc7091c867c31bf6fb351f4d07b4bae1c7972e0e3bc3fcbf9e9c3 --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+\begin{frame}[fragile]\frametitle{Creation of an instance of the \<Insurance> contract}
+
+\begin{tt}
+CLI create <payer> <class> <args> --classpath <jar>
+\end{tt}
+
+\bigskip
+
+\begin{greenbox}{We use one of our accounts as payer and a previously existing oracle as argument
+for the constructor}
+{\scriptsize\begin{semiverbatim}
+ {\color{red}CLI create
+ \only<2>{payer}\only<3->{06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e}
+ \only<4>{class}\only<5->{it.univr.insurance.Insurance}
+ \only<6>{args(amount, oracle)}\only<7->{1000000000000 06a080bbc4712862f875eefad00f43dee8f7daf98aec54c984d20861e3a219e6#0}
+ \only<8>{--classpath jar}\only<9->{--classpath acb76103738dc7091c867c31bf6fb351f4d07b4bae1c7972e0e3bc3fcbf9e9c3}
+ \only<10->{--url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080}}
+
+\onslide<11->{Do you really want to spend up to 500000 gas units to call
+public Insurance(java.math.BigInteger,io.takamaka.code.lang.Contract) ? [Y/N] Y
+
+The new object has been allocated
+at ffb8b8455979777e81708e3abac85b79ad455dfe8aa6a9849b11241c9c8ad7f7#0
+{\color{armygreen}total gas consumed: 47390}
+{\color{darkred}  for CPU: 393
+  for RAM: 1315
+  for storage: 45682
+  for penalty: 0}}
+\end{semiverbatim}}
+\end{greenbox}
+
+\end{frame}
+
+%CLI call 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 ffb8b8455979777e81708e3abac85b79ad455dfe8aa6a9849b11241c9c8ad7f7#0 buy 1000000 10 4 2021 2 --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+\begin{frame}[fragile]\frametitle{Let's insure next weekend against rain}
+
+\begin{tt}
+CLI call <payer> <receiver> <methodName> <args>
+\end{tt}
+
+\bigskip
+
+\begin{greenbox}{We use one of our accounts as the buyer of the insurance}
+{\scriptsize\begin{semiverbatim}
+ {\color{red}CLI call
+ \only<2>{payer}\only<3->{06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e}
+ \only<4>{receiver}\only<5->{ffb8b8455979777e81708e3abac85b79ad455dfe8aa6a9849b11241c9c8ad7f7#0}
+ \only<6>{methodName}\only<7->{buy}
+ \only<8>{args(amount, day, month, year, duration)}\only<9->{1000000 10 4 2021 2}
+ \only<10->{--url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080}}
+
+\onslide<11->{Do you really want to spend up to 500000 gas units to call
+public void buy(long,int,int,int,int) ? [Y/N] Y
+{\color{armygreen}total gas consumed: 12340}
+{\color{darkred}  for CPU: 1587
+  for RAM: 2943
+  for storage: 7810
+  for penalty: 0}}
+\end{semiverbatim}}
+\end{greenbox}
+
+\end{frame}
+
+%CLI install 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 target/insurance-0.0.1.jar --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+\begin{frame}[fragile]\frametitle{On-chain verification: incorrect use of annotations}
+
+  \begin{redbox}{Assume that the programmer forgets the \<FromContract> annotation in \<buy>}
+  \<public {\color{green}\sout{@FromContract(PayableContract.class)}} @Payable void buy
+  (long amount, int day, int month, int year, int duration)>
+  \end{redbox}\pause
+
+  \begin{tt}mvn clean package\end{tt} $\Rightarrow$ regenerates \<target/insurance-0.0.1.jar>\pause
+
+\medskip
+
+\begin{greenbox}{Let's try to install this version of the jar}
+{\scriptsize\begin{semiverbatim}
+ {\color{red}CLI install
+ 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
+ target/insurance-0.0.1.jar
+ --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080}\pause
+
+Do you really want to spend up to 852500 gas units to install the jar [Y/N] Y
+{\color{armygreen}total gas consumed: 852500}
+{\color{darkred}  for CPU: 255
+  for RAM: 1326
+  for storage: 381762
+  for penalty: 469157     !!!!!!!}
+io.hotmoka.beans.TransactionException:
+io.takamaka.code.verification.VerificationException:
+{\color{red}it/univr/insurance/Insurance.java method buy:
+@Payable can only be applied to a @FromContract method or constructor}
+\end{semiverbatim}}
+\end{greenbox}
+
+\end{frame}
+
+%CLI install 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 target/insurance-0.0.1.jar --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+\begin{frame}[fragile]\frametitle{On-chain verification: potential non-determinism}
+
+  \begin{redbox}{Assume to use \<forEach> instead of \<forEachOrdered> in \<itRains>}
+\<insuredDays.stream().filter(InsuredDay::isToday).{\color{green}forEach}(...);>
+  \end{redbox}\pause
+
+  \begin{tt}mvn clean package\end{tt} $\Rightarrow$ regenerates \<target/insurance-0.0.1.jar>\pause
+
+\medskip
+
+\begin{greenbox}{Let's try to install this version of the jar}
+{\scriptsize\begin{semiverbatim}
+ {\color{red}CLI install
+ 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
+ target/insurance-0.0.1.jar
+ --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080}\pause
+
+Do you really want to spend up to 852500 gas units to install the jar [Y/N] Y
+{\color{armygreen}total gas consumed: 853700}
+{\color{darkred}  for CPU: 255
+  for RAM: 1326
+  for storage: 382362
+  for penalty: 469757     !!!!!!!}
+io.hotmoka.beans.TransactionException:
+io.takamaka.code.verification.VerificationException:
+{\color{red}it/univr/insurance/Insurance.java:95:
+illegal call to non-white-listed method java.util.stream.Stream.forEach}
+\end{semiverbatim}}
+\end{greenbox}
+
+\end{frame}
+
+%CLI verify target/insurance-0.0.1.jar --libs io-takamaka-code-1.0.0.jar
+\begin{frame}[fragile]\frametitle{Off-chain verification}
+
+Using the blockchain as a debugger is very expensive\ldots
+
+\medskip
+\begin{tt}
+CLI verify <jar> --libs dependencies
+\end{tt}\pause
+
+\medskip
+
+\begin{greenbox}{We verify the jar off-chain, to find all errors}
+{\scriptsize\begin{semiverbatim}
+ {\color{red}CLI verify
+ \only<3>{jar}\only<4->{target/insurance-0.0.1.jar}
+ \only<5>{--libs dependencies}\only<6->{--libs io-takamaka-code-1.0.0.jar}}
+\onslide<7->{
+{\color{red}
+it/univr/insurance/Insurance.java method buy:
+  @Payable can only be applied to a @FromContract method or constructor
+it/univr/insurance/Insurance.java:46:
+  caller() can only be used inside a @FromContract method or constructor
+it/univr/insurance/Insurance.java:95:
+  illegal call to non-white-listed method java.util.stream.Stream.forEach
+it/univr/insurance/Insurance.java:99:
+  illegal call to non-white-listed method java.util.stream.Stream.forEach
+}}
+\end{semiverbatim}}
+\end{greenbox}
 
 \end{frame}
 
