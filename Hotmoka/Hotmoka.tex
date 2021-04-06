@@ -65,9 +65,10 @@
 
   \begin{greenbox}{Requests are OO-based}
     \begin{itemize}
+    \item install code in the node
     \item create an object
     \item call a method of an object
-    \item methods are implemented in a subset of Java
+    \item methods are implemented in Takamaka (subset of Java)
     \end{itemize}
   \end{greenbox}
 
@@ -344,7 +345,7 @@ class {\color{violet}io.takamaka.code.lang.ExternallyOwnedAccount} (from jar ins
   \item the initial balance is actually 50000000
   \item the public key a Base64-encoded ed25519 key
   \item the public key is stored in the object: no need to send it again at every future
-    method call (like Ethereum does)
+    method call (like Ethereum does instead)
   \end{itemize}
 
 \end{frame}
@@ -438,7 +439,7 @@ calls to @View methods consume no gas
 
   \begin{greenbox}{The computation of the response (ie, the execution of the request)}
     \begin{enumerate}
-    \item find the jar(s) in state for the classpath
+    \item create a classloader form the jar(s) in state for the classpath
     \item reconstruct, from the state, RAM objects for \emph{input}
     \item execute the method on a normal Java Virtual Machine (in RAM)
     \item at the end, identify updates to fields of objects reachable from \emph{input}
@@ -697,7 +698,16 @@ public class SimplePonzi {\color{red}extends Contract} \{
 
   \medskip
 
-  \begin{greenbox}{{\small\<CLI install 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 .../target/ponzi-0.0.1.jar --url ec2...>}}
+  \begin{greenbox}{}
+    {\color{armygreen}\scriptsize{\begin{tt}
+          CLI install
+
+          06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
+
+          .../target/ponzi-0.0.1.jar
+
+          --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+    \end{tt}}}
     {\scriptsize\begin{semiverbatim}
 Do you really want to spend up to 443300 gas units to install the jar [Y/N] Y
 .../target/ponzi-0.0.1.jar has been installed at
@@ -733,9 +743,18 @@ We use our account as payer and specify where \<SimplePonzi> is defined
 
 \bigskip
 
-\begin{greenbox}{{\small\<CLI create 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 io.takamaka.ponzi.SimplePonzi
-      \newline --classpath 39f999a63555542eaf5040388d61c20193dee4fb035847a40608c494bf069765
-      --url ec2...>}}
+\begin{greenbox}{}
+    {\color{armygreen}\scriptsize{\begin{tt}
+          CLI create
+
+          06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
+
+          io.takamaka.ponzi.SimplePonzi
+
+          --classpath 39f999a63555542eaf5040388d61c20193dee4fb035847a40608c494bf069765
+
+          --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+    \end{tt}}}
     {\tiny\begin{semiverbatim}
 do you really want to spend up to 500000 gas units to call {\color{red}public SimplePonzi()} ? [Y/N] Y
 the new object has been allocated at 754371b03ef2c413f546e1c3667adf86d545a3587e60f75d2c496863ef442f5c\#0
@@ -769,10 +788,22 @@ We use our account as payer:
 
 \medskip
 
-\begin{greenbox}{{\small\<CLI call 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 754371b03ef2c413f546e1c3667adf86d545a3587e60f75d2c496863ef442f5c\#0 invest 40000
-      --url ec2...>}}
-    {\tiny\begin{semiverbatim}
-do you really want to spend up to 500000 gas units to call
+\begin{greenbox}{}
+ {\color{armygreen}\scriptsize{\begin{tt}
+          CLI call
+
+          06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
+
+          754371b03ef2c413f546e1c3667adf86d545a3587e60f75d2c496863ef442f5c\#0
+
+          invest
+
+          40000
+
+          --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+ \end{tt}}}
+ {\tiny\begin{semiverbatim}
+Do you really want to spend up to 500000 gas units to call
   {\color{red}@Payable @FromContract(PayableContract.class) public void invest(java.math.BigInteger)} ? [Y/N] Y
 {\color{armygreen}total gas consumed: 10373}
 {\color{darkred}  for CPU: 402
@@ -796,10 +827,22 @@ We use our account as payer:
 
 \medskip
 
-\begin{greenbox}{{\small\<CLI call 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 754371b03ef2c413f546e1c3667adf86d545a3587e60f75d2c496863ef442f5c\#0 invest 40000
-      --url ec2...>}}
+\begin{greenbox}{}
+ {\color{armygreen}\scriptsize{\begin{tt}
+          CLI call
+
+          06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
+
+          754371b03ef2c413f546e1c3667adf86d545a3587e60f75d2c496863ef442f5c\#0
+
+          invest
+
+          40000
+
+          --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+ \end{tt}}}
     {\tiny\begin{semiverbatim}
-do you really want to spend up to 500000 gas units to call
+Do you really want to spend up to 500000 gas units to call
   {\color{red}@Payable @FromContract(PayableContract.class) public void invest(java.math.BigInteger)} ? [Y/N] Y
 {\color{armygreen}total gas consumed: 500000}
 {\color{darkred}  for CPU: 446
@@ -1794,7 +1837,7 @@ public final SharedEntityView<S> snapshot() \{
 
   \medskip
 
-  Suggestion: keep the ticket holders inside a \<StorageTreeArray> field
+  Suggestion: keep the ticket holders inside a \<io.takamaka.code.util.StorageTreeArray> field
   (from the Takamaka library)
 \end{frame}
 
