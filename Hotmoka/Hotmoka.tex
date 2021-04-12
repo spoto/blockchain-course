@@ -162,7 +162,7 @@
 
   \item download Hotmoka
 
-    {\color{blue}\<git clone git@github.com:Hotmoka/hotmoka.git -b univr>}
+    {\color{blue}\<git clone https://github.com/Hotmoka/hotmoka.git -b univr>}
 
   \item let Maven compile and install it in your local Maven repository
 
@@ -343,7 +343,7 @@ class {\color{violet}io.takamaka.code.lang.ExternallyOwnedAccount} (from jar ins
   \begin{itemize}
   \item the nonce starts from 0
   \item the initial balance is actually 50000000
-  \item the public key a Base64-encoded ed25519 key
+  \item the public key is a Base64-encoded ed25519 key
   \item the public key is stored in the object: no need to send it again at every future
     method call (like Ethereum does instead)
   \end{itemize}
@@ -1363,7 +1363,7 @@ public class ERC20 {\color{red}extends Contract implements IERC20} \{
     return balances.getOrDefault(account, ZERO);
   \}
 
-  protected void mint(Contract account, UnsignedBigInteger amount) \{
+  protected void _mint(Contract account, UnsignedBigInteger amount) \{
     {\color{armygreen}require(account != null, "Mint rejected: mint to the null account");
     require(amount != null, "Mint rejected: amount cannot be null");}
 
@@ -1552,12 +1552,12 @@ public class {\color{red}CryptoBuddy extends ERC20} \{
     owner = caller();
     UnsignedBigInteger initialSupply = new UnsignedBigInteger("200000");
     UnsignedBigInteger multiplier = new UnsignedBigInteger("10").pow(18);
-    mint(caller(), initialSupply.multiply(multiplier)); // 200'000 * 10 ^ 18
+    _mint(caller(), initialSupply.multiply(multiplier)); // 200'000 * 10 ^ 18
   \}
 
   public @FromContract void mintFor(Contract account, UnsignedBigInteger amount) \{
     require(caller() == owner, {\color{armygreen}"Lack of permission"});
-    mint(account, amount);
+    _mint(account, amount);
   \}
 \}
 \end{semiverbatim}}
