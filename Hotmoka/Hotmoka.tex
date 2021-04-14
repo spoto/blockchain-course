@@ -1765,7 +1765,7 @@ public {\color{red}@FromContract @Payable} void accept(BigInteger ticket, S buye
   {\color{armygreen}require(caller() == buyer, "only the future owner can buy the shares");
   require(offers.contains(offer), "unknown offer");
   require(offer.isOngoing(), "the sale offer is not ongoing anymore");
-  require(offer.cost.compareTo(amount) <= 0, "not enough money for the offer");}
+  require(offer.cost.compareTo(ticket) <= 0, "not enough money for the offer");}
   cleanUpOffers(offer);
   removeShares(offer.seller, offer.sharesOnSale);
   addShares(buyer, offer.sharesOnSale);
@@ -1821,7 +1821,7 @@ public final SharedEntityView<S> snapshot() \{
   \begin{greenbox}{Define a lottery contract}
   \begin{enumerate}
   \item the creator (a payable contract)
-    specifies, at the lottery creation time, the number $N\ge 1$ of tickets to sell
+    specifies, at the lottery creation time, the number $N\ge 2$ of tickets to sell
   \item payable contracts can call a \<void buy()> method of the lottery to buy a ticket
     (possibly many times). The ticket costs $100000\cdot\left(1 + \frac{\text{number of tickets already sold}}{N-1}\right)$
   \item when the $N$th ticket is sold, the method \<buy> computes \<now() \% N> and determines
