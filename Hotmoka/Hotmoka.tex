@@ -195,7 +195,7 @@
 java {\color{red}--module-path modules/explicit:modules/automatic
      --class-path "modules/unnamed/*"}
      {\color{blue}--module io.hotmoka.tools/io.hotmoka.tools.Moka} info
-     --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+     --url panarea.hotmoka.io
     \end{semiverbatim}}
   \end{greenbox}
 
@@ -212,12 +212,12 @@ alias Moka='java --module-path modules/explicit:modules/automatic
   \medskip
 
   \begin{greenbox}{Use the alias instead}
-{\small\<Moka info --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080>}
+{\small\<Moka info --url panarea.hotmoka.io>}
   \end{greenbox}
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{\<Moka info --url ec2....>}
+\begin{frame}[fragile]\frametitle{\<Moka info --url panarea.hotmoka.io>}
 
 {\tiny\begin{semiverbatim}
  {\color{red}takamakaCode:} 02dfd29348abaa44f720525179fa170f26063c973fd40c3ff368a9402551882c
@@ -271,7 +271,7 @@ alias Moka='java --module-path modules/explicit:modules/automatic
 
   \bigskip
 
-  \begin{greenbox}{{\scriptsize\<Moka state 42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4776e6e4add7668\#0 --url ec2...>}}
+  \begin{greenbox}{{\scriptsize\<Moka state 42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4776e6e4add7668\#0 --url panarea.hotmoka.io>}}
     {\tiny\begin{semiverbatim}
 class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed at 02dfd29348abaa44f7205251...)
   allowsSelfCharged:boolean = false
@@ -301,7 +301,7 @@ class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed a
 
   \smallskip
 
-  \begin{greenbox}{{\small\<Moka create-account 50000000 --payer faucet --url ec2...>}}
+  \begin{greenbox}{{\small\<Moka create-account 50000000 --payer faucet --url panarea.hotmoka.io>}}
     {\tiny\begin{semiverbatim}
 Free account creation will succeed only if the gamete of the node supports an open unsigned faucet
 {\color{armygreen}total gas consumed: 49392}
@@ -328,7 +328,7 @@ A new account 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#
 
 \begin{frame}[fragile]\frametitle{Let us have a look at our first account}
 
-    \begin{greenbox}{{\scriptsize\<Moka state 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 --url ec2...>}}
+    \begin{greenbox}{{\scriptsize\<Moka state 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 --url panarea.hotmoka.io>}}
     {\tiny\begin{semiverbatim}
 class {\color{violet}io.takamaka.code.lang.ExternallyOwnedAccount} (from jar installed at 02dfd29348abaa...)
   nonce:java.math.BigInteger = 0
@@ -360,7 +360,7 @@ class {\color{violet}io.takamaka.code.lang.ExternallyOwnedAccount} (from jar ins
 
 \begin{frame}[fragile]\frametitle{Let us have a look at the API of our first account}
 
-    \begin{greenbox}{{\scriptsize\<Moka state 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 {\color{orange}--api} --url ec2...>}}
+    \begin{greenbox}{{\scriptsize\<Moka state 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 {\color{orange}--api} --url panarea.hotmoka.io>}}
     {\tiny\begin{semiverbatim}
 class {\color{violet}io.takamaka.code.lang.ExternallyOwnedAccount} (from jar installed at 02dfd29348abaa...)
   nonce:java.math.BigInteger = 0
@@ -409,7 +409,7 @@ We will use our account as payer and as receiver at the same time:
 
 \bigskip
 
-\begin{greenbox}{{\small\<Moka call 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 toString --url ec2...>}}
+\begin{greenbox}{{\small\<Moka call 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0 toString --url panarea.hotmoka.io>}}
     {\begin{semiverbatim}
 {\color{blue}an externally owned account}
 calls to @View methods consume no gas 
@@ -706,7 +706,7 @@ public class SimplePonzi {\color{red}extends Contract} \{
 
           .../target/ponzi-0.0.1.jar
 
-          --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+          --url panarea.hotmoka.io
     \end{tt}}}
     {\scriptsize\begin{semiverbatim}
 Do you really want to spend up to 443300 gas units to install the jar [Y/N] Y
@@ -753,7 +753,7 @@ We use our account as payer and specify where \<SimplePonzi> is defined
 
           --classpath 39f999a63555542eaf5040388d61c20193dee4fb035847a40608c494bf069765
 
-          --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+          --url panarea.hotmoka.io
     \end{tt}}}
     {\tiny\begin{semiverbatim}
 do you really want to spend up to 500000 gas units to call {\color{red}public SimplePonzi()} ? [Y/N] Y
@@ -800,7 +800,7 @@ We use our account as payer:
 
           40000
 
-          --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+          --url panarea.hotmoka.io
  \end{tt}}}
  {\tiny\begin{semiverbatim}
 Do you really want to spend up to 500000 gas units to call
@@ -839,7 +839,7 @@ We use our account as payer:
 
           40000
 
-          --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+          --url panarea.hotmoka.io
  \end{tt}}}
     {\tiny\begin{semiverbatim}
 Do you really want to spend up to 500000 gas units to call
@@ -1027,7 +1027,7 @@ public {\color{violet}@FromContract} void itRains() \{
 
 \end{frame}
 
-%Moka install 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 target/insurance-0.0.1.jar --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+%Moka install 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 target/insurance-0.0.1.jar --url panarea.hotmoka.io
 \begin{frame}[fragile]\frametitle{Installation of the jar into a remote node}
 
 \begin{tt}mvn clean package\end{tt} $\Rightarrow$ generates \<target/insurance-0.0.1.jar>
@@ -1045,7 +1045,7 @@ Moka install <payer> <jar>
  {\color{red}Moka install
  \only<2>{payer}\only<3->{06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0}
  \only<4>{jar}\only<5->{target/insurance-0.0.1.jar}
- \onslide<6->{--url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080}}
+ \onslide<6->{--url panarea.hotmoka.io}}
 
 \onslide<7->{Do you really want to spend up to 853900 gas units to install the jar [Y/N] Y
 target/insurance-0.0.1.jar has been installed
@@ -1060,7 +1060,7 @@ at acb76103738dc7091c867c31bf6fb351f4d07b4bae1c7972e0e3bc3fcbf9e9c3
 
 \end{frame}
 
-%Moka create 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 it.univr.insurance.Insurance 1000000000000 06a080bbc4712862f875eefad00f43dee8f7daf98aec54c984d20861e3a219e6#0 --classpath acb76103738dc7091c867c31bf6fb351f4d07b4bae1c7972e0e3bc3fcbf9e9c3 --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+%Moka create 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 it.univr.insurance.Insurance 1000000000000 06a080bbc4712862f875eefad00f43dee8f7daf98aec54c984d20861e3a219e6#0 --classpath acb76103738dc7091c867c31bf6fb351f4d07b4bae1c7972e0e3bc3fcbf9e9c3 --url panarea.hotmoka.io
 \begin{frame}[fragile]\frametitle{Creation of an instance of the \<Insurance> contract}
 
 \begin{tt}
@@ -1077,7 +1077,7 @@ for the constructor}
  \only<4>{class}\only<5->{it.univr.insurance.Insurance}
  \only<6>{args(amount, oracle)}\only<7->{1000000000000 06a080bbc4712862f875eefad00f43dee8f7daf98aec54c984d20861e3a219e6#0}
  \only<8>{--classpath jar}\only<9->{--classpath acb76103738dc7091c867c31bf6fb351f4d07b4bae1c7972e0e3bc3fcbf9e9c3}
- \only<10->{--url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080}}
+ \only<10->{--url panarea.hotmoka.io}}
 
 \onslide<11->{Do you really want to spend up to 500000 gas units to call
 public Insurance(java.math.BigInteger,io.takamaka.code.lang.Contract) ? [Y/N] Y
@@ -1094,7 +1094,7 @@ at ffb8b8455979777e81708e3abac85b79ad455dfe8aa6a9849b11241c9c8ad7f7#0
 
 \end{frame}
 
-%Moka call 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 ffb8b8455979777e81708e3abac85b79ad455dfe8aa6a9849b11241c9c8ad7f7#0 buy 1000000 10 4 2021 2 --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+%Moka call 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 ffb8b8455979777e81708e3abac85b79ad455dfe8aa6a9849b11241c9c8ad7f7#0 buy 1000000 10 4 2021 2 --url panarea.hotmoka.io
 \begin{frame}[fragile]\frametitle{Let's insure next weekend against rain}
 
 \begin{tt}
@@ -1110,7 +1110,7 @@ Moka call <payer> <receiver> <methodName> <args>
  \only<4>{receiver}\only<5->{ffb8b8455979777e81708e3abac85b79ad455dfe8aa6a9849b11241c9c8ad7f7#0}
  \only<6>{methodName}\only<7->{buy}
  \only<8>{args(amount, day, month, year, duration)}\only<9->{1000000 10 4 2021 2}
- \only<10->{--url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080}}
+ \only<10->{--url panarea.hotmoka.io}}
 
 \onslide<11->{Do you really want to spend up to 500000 gas units to call
 public void buy(long,int,int,int,int) ? [Y/N] Y
@@ -1124,7 +1124,7 @@ public void buy(long,int,int,int,int) ? [Y/N] Y
 
 \end{frame}
 
-%Moka install 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 target/insurance-0.0.1.jar --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+%Moka install 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 target/insurance-0.0.1.jar --url panarea.hotmoka.io
 \begin{frame}[fragile]\frametitle{On-chain verification: incorrect use of annotations}
 
   \begin{redbox}{Assume that the programmer forgets the \<FromContract> annotation in \<buy>}
@@ -1141,7 +1141,7 @@ public void buy(long,int,int,int,int) ? [Y/N] Y
  {\color{red}Moka install
  06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
  target/insurance-0.0.1.jar
- --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080}\pause
+ --url panarea.hotmoka.io}\pause
 
 Do you really want to spend up to 852500 gas units to install the jar [Y/N] Y
 {\color{armygreen}total gas consumed: 852500}
@@ -1158,7 +1158,7 @@ io.takamaka.code.verification.VerificationException:
 
 \end{frame}
 
-%Moka install 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 target/insurance-0.0.1.jar --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080
+%Moka install 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 target/insurance-0.0.1.jar --url panarea.hotmoka.io
 \begin{frame}[fragile]\frametitle{On-chain verification: potential non-determinism}
 
   \begin{redbox}{Assume to use \<forEach> instead of \<forEachOrdered> in \<itRains>}
@@ -1174,7 +1174,7 @@ io.takamaka.code.verification.VerificationException:
  {\color{red}Moka install
  06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
  target/insurance-0.0.1.jar
- --url ec2-54-194-239-91.eu-west-1.compute.amazonaws.com:8080}\pause
+ --url panarea.hotmoka.io}\pause
 
 Do you really want to spend up to 852500 gas units to install the jar [Y/N] Y
 {\color{armygreen}total gas consumed: 853700}
