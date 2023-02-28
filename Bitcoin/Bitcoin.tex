@@ -130,12 +130,11 @@
   from/to that address are tracked:
 
   \begin{center}
-    \includegraphics[scale=0.2,clip=false]{pictures/bitcoin-wallet.png}
+    \includegraphics[scale=0.27,clip=false]{pictures/bitcoin-wallet.png}
   \end{center}
 
-  The \alert{address} can be seen as our IBAN. Note that its creation
-  is a local operation that does not do anything on the network and is consequently
-  completely anonymous
+  The \alert{address} can be seen as our IBAN. Its creation
+  is a local operation that does not do anything on the network: fully anonymous
 
 \end{frame}
 
@@ -186,7 +185,7 @@
 
 \begin{frame}\frametitle{Alice charges her wallet}
   \begin{itemize}
-  \item she asks a friend to sell for you bitcoins at your address
+  \item she asks a friend to send bitcoins at her address
   \item meets a bitcoin seller in person
   \item earns bitcoin by working
   \item uses a bitcoin ATM
@@ -262,7 +261,7 @@
 \begin{frame}\frametitle{The transaction}
 
   \begin{center}
-    \includegraphics[scale=0.21,clip=false]{pictures/bitcoin-spend.png}
+    \includegraphics[scale=0.23,clip=false]{pictures/bitcoin-spend.png}
   \end{center}
 
 \end{frame}
@@ -322,7 +321,7 @@
     \end{itemize}
   \item the wallet specifies an output for the destination address of the transaction
     and the $\mathit{amount}\ge 0$ sent to that output
-  \item the wallet specifies a second output, for Alice's address itself, and the
+  \item the wallet specifies a second output, normally Alice's address itself, and the
     $\mathit{change}\ge 0$ sent back to Alice
   \item the difference
     \[
@@ -339,7 +338,7 @@
   \item Alice's wallet sends the bytes of the transaction to a node of the
     bitcoin p2p network
     \begin{itemize}
-    \item or it can store it on removable memory support and another device
+    \item or it can store it on a removable memory support and another device
       will send it
     \end{itemize}
   \item the transaction gets forwarded among all peers (flooding)
@@ -354,7 +353,7 @@
   \end{enumerate}
 
   Merchants can wait for 3, 4 or 5 before handling over the good,
-  dependening on the relevance of the transaction
+  depending on the relevance of the transaction
 
 \end{frame}
 
@@ -403,7 +402,7 @@
       temporary area called mempool
     \item when enough new transactions are available in the mempool, it selects some of them
       \begin{itemize}
-      \item typically, it selects those with the largest fees, but any other choice is fine
+      \item typically, it selects those with the largest fees, but any other choice is fine: different miners can use different strategies
       \end{itemize}
     \item it builds a new block (\alert{mining}):
       \begin{itemize}
@@ -413,7 +412,7 @@
       \item it tags the block with a reference to the previous block
       \item it tags the block with its own miner's address $\mu$
       \item it tags the block with a nonce computed by solving an expensive puzzle
-      \item if no other peer has been faster, it forwards the new block to all its peers
+      \item if no other miner has been faster, it forwards the new block to all its peers
       \end{itemize}
   \end{enumerate}
 \end{frame}
@@ -427,12 +426,12 @@
   \bigskip
   \begin{greenbox}{For example}
     \begin{itemize}
-    \item if I want a transaction processed in one hour at most, I must offer $0.0000009$ BTC per byte
+    \item if I want a transaction processed in one hour at most, I must offer $90$ Satoshis ($0.0000009$ BTC) per byte
     \item a simple transaction is in average $250$ bytes long
-    \item a BTC is $42780$ euros worth (as of today)
+    \item a BTC is $21000$ euros worth (as of today)
     \end{itemize}
     \begin{center}
-      $\Rightarrow$ I must offer $0.0000009 * 250 * 42780=9.6255$ euros as fee
+      $\Rightarrow$ I must offer $0.0000009 * 250 * 21000=4.72$ euros as fee
     \end{center}
   \end{greenbox}
 
@@ -459,9 +458,9 @@
     \begin{description}
       \item[Hashing]
         \begin{itemize}
-        \item as synthetic representation of very long information (compaction)
-        \item as machine-independent pointers to data structures (reference)
-        \item to solve a mathematical puzzle (mining)
+        \item for synthetic represention of very long information (compaction)
+        \item for machine-independent pointers to data structures (reference)
+        \item for solving a mathematical puzzle (mining)
         \end{itemize}
         \bigskip
       \item[Signature]
