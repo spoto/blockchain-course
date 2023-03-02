@@ -1412,7 +1412,8 @@ tx = \{
     \begin{greenbox}{If a miner receives from its peers a block $b$ at height $H$
         while it's building that same block}
       It verifies the validity of $b$. If $b$ is valid,
-      it stops working at the block at height $H$, adds $b$ to the blockchain
+      it stops working at the block at height $H$, adds $b$ to the blockchain,
+      considers the inputs of the transactions in $b$ as spent,
       and immediately starts working at block at height $H+1$ on top of $b$. In this sense,
       the miner \emph{votes} for $b$
     \end{greenbox}
@@ -1422,7 +1423,7 @@ tx = \{
 \begin{frame}\frametitle{Whom should I trust?}
 
   \begin{redbox}{The construction of a new block is too easy!}
-    Just a small fraction of second
+    Just a small fraction of a second
 
     \begin{itemize}
     \item[$\Rightarrow$] each miner can build as many blocks as it wants
