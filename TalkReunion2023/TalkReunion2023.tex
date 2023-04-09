@@ -18,6 +18,7 @@
 
 \usepackage{mathtools}
 \usepackage{relsize}
+\usepackage[normalem]{ulem}
 
 \mode<article>
 {
@@ -195,23 +196,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Future trends}
-
-  \begin{itemize}
-  \item \alert{\url{https://ipfs.io}}: decentralized file storage
-  \item \alert{\url{https://identity.foundation}}: decentralized identity
-  \item \alert{\url{https://defipulse.com}}: decentralized finance (DeFi)
-  \item \alert{\url{https://pkt.cash}}: decentralized internet service providers
-  \item integration with the internet of things
-  \end{itemize}
-
-  \begin{center}
-    \includegraphics[scale=0.16,clip=false]{pictures/did.png}
-  \end{center}
-
-\end{frame}
-
-\section{Bitcoin (proof of work)}
+\section{Bitcoin}
 
 \begin{frame}
   \frametitle{The internet of money}
@@ -373,14 +358,6 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{The transaction}
-
-  \begin{center}
-    \includegraphics[scale=0.23,clip=false]{pictures/bitcoin-spend.png}
-  \end{center}
-
-\end{frame}
-
 \begin{frame}\frametitle{Transactions form a chain, outputs can be change}
 
   \begin{center}
@@ -536,15 +513,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{The transaction, again}
-
-  \begin{center}
-    \includegraphics[scale=0.23,clip=false]{pictures/bitcoin-spend.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}[fragile]\frametitle{The real transaction}
+\begin{frame}[fragile]\frametitle{The transaction}
 
   \begin{center}
     no coins, no senders, no recipients, no balances, no accounts, no addresses
@@ -976,6 +945,16 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
 
 \end{frame}
 
+\begin{frame}\frametitle{Properties of Buitcoin's transactions}
+
+  \begin{itemize}
+  \item Script programs are only used to check the validity of the transactions
+  \item Script programs never modify the state of the system
+  \item Transactions undo is very easy (they just move money around)
+  \end{itemize}
+
+\end{frame}
+
 \begin{frame}\frametitle{Headers, blocks and blockchain, genesis block}
 
   \begin{center}
@@ -1004,6 +983,8 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
   \end{greenbox}
 
 \end{frame}
+
+\section{Proof of work}
 
 \begin{frame}\frametitle{Mining}
 
@@ -1093,7 +1074,7 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
   \begin{itemize}
   \item the header of the resulting block is the PoW
   \item the time to solve this puzzle is inversely proportional to $\mathit{difficulty}$
-  \item the algorithm can be easily run in parallel
+  \item the algorithm can be easily run in parallel, GPU, ASIC
   \end{itemize}
 
 \end{frame}
@@ -1169,6 +1150,19 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
 
 \end{frame}
 
+\begin{frame}\frametitle{State update in case of history change}
+
+    \begin{center}
+      \includegraphics[width=\textwidth,clip=false]{pictures/longest.png}
+    \end{center}
+
+    \begin{enumerate}
+    \item the transactions in the discarded must be undone (easy in Bitcoin)
+    \item the transactions in the longest chain must be done (easy)
+    \end{enumerate}
+    
+\end{frame}
+
 \begin{frame}\frametitle{Difficulty over time}
 
   \begin{center}
@@ -1215,7 +1209,696 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
 
 \end{frame}
 
-\section{Ethereum (smart contracts)}
+\section{Ethereum}
+
+\begin{frame}
+  \frametitle{Thw world computer}
+
+  \begin{greenbox}{}
+    An open source, globally \alert{decentralized computing infrastructure}
+    that executes programs called \alert{smart contracts}, written
+    in a \alert{Turing-complete} programming language, translated into
+    bytecode and run on a \alert{virtual machine}. It uses a
+    \alert{blockchain} to synchronize and store the system's \alert{singleton state} changes
+    (key/value tuples), along
+    with a cryptocurrency called \alert{ether} to \alert{meter and constrain}
+    execution resource costs. It enables developers to build
+    \alert{decentralized applications} with \alert{built-in economic functions}
+  \end{greenbox}
+
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/world-computer.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{DApps}
+
+  \begin{greenbox}{DApps = smart contracts (Solidity) + web3 frontend (JavaScript\ldots)}
+    \begin{center}
+      \includegraphics[scale=0.43,clip=false]{pictures/dapps.png}
+    \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{People behind Ethereum}
+
+  \begin{center}
+  \begin{tabular}{c@{\hskip 1.5cm}c}
+    \includegraphics[scale=.3,clip=false]{pictures/vitalik_buterin.jpg} &
+    \includegraphics[scale=.247,clip=false]{pictures/gavin_wood.jpg} \\
+    Vitalik Buterin & Gavin Wood
+  \end{tabular}
+  \end{center}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Suggested references}
+
+  \begin{center}
+    Yellow Paper: \url{https://ethereum.github.io/yellowpaper/paper.pdf}\\
+    \mbox{}\\
+    \begin{tabular}{c@{\hskip 1cm}c@{\hskip 1cm}c}
+      \includegraphics[scale=.25,clip=false]{pictures/mastering-ethereum.jpg} &
+      \includegraphics[scale=.25,clip=false]{pictures/building-games.jpg} &
+      \includegraphics[scale=.25,clip=false]{pictures/hands-on.jpg}
+    \end{tabular}
+  \end{center}
+
+  \begin{center}
+    The leftmost: \url{https://github.com/ethereumbook/ethereumbook}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Deterministic (infinite) state machine}
+
+  \begin{greenbox}{A very abstract view of blockchain}
+    A blockchain is a distributed ledger of transaction requests, aggregated in blocks
+    \begin{itemize}
+    \item[] \hspace*{-3ex}\alert{Bitcoin:} transaction requests require a change of the set of UTXOs
+    \item[] \hspace*{-3ex}\alert{Ethereum:} transaction requests require a change of a
+      map $\mathit{key}\to\mathit{value}$
+    \end{itemize}
+    The change must be \alert{deterministic} otherwise consensus cannot be reached!
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Ethereum forks}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/ethereum-forks.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Externally owned accounts (EOA) and contracts}
+
+  \begin{greenbox}{}
+    EOAs have keys, contracts have code, both have an address
+  \end{greenbox}
+  
+  \begin{center}
+    \includegraphics[scale=0.35,clip=false]{pictures/eoa-contract.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Ethereum transactions}
+
+  \begin{greenbox}{}
+    A transaction is a signed message originated by an EOA, transmitted
+    by the Ethereum network, and recorded on the Ethereum blockchain:
+    \begin{itemize}
+    \item nonce: sequence number per each originating EOA
+    \item gas price: maximum willing to pay
+    \item gas limit: maximum willing to consume
+    \item to: recipient (destination address)
+    \item value: ether sent to destination
+    \item data: generic payload (method name, parameters, contract code\ldots)
+    \item signature: ECDSA signature of the originating EOA
+    \end{itemize}
+  \end{greenbox}
+
+  \begin{center}
+    The address of the originating EOA is implied by the signature
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Many kinds of transactions}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/many-transactions.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The nonce}
+
+  \begin{greenbox}{The nonce of an EOA}
+    A scalar value equal to the number of transactions sent from the EOA
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Wallets keep track of nonces}
+    They increase it and attach to each transaction they create per
+    originating EOA
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Nodes check nonces}
+    They count the number $n$ of transactions originated
+    by the EOA. If the nonce is smaller than $n+1$, the
+    transaction is rejected. If the nonce is greater than $n+1$,
+    the transaction is delayed and not yet executed:
+    \begin{itemize}
+    \item this guarantees transaction ordering
+    \item and avoids transaction replaying
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Why Ethereum's transactions have a nonce?}
+
+  \begin{greenbox}{Bitcoin's transactions can only transform UTXOs into TXOs}
+    It is not possible to spend a UTXO again, inside the same history:
+    it would be against the consensus rules
+    \begin{itemize}
+    \item[$\Rightarrow$] Executing a valid transaction today makes it invalid tomorrow
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+  \bigskip
+
+  \begin{greenbox}{Ethereum's transactions can induce any state change or fail}
+    A valid (syntactically correct) transaction can always be executed in Ethereum
+    \begin{itemize}
+    \item[$\Rightarrow$] Executing a valid transaction today doesn't make it invalid tomorrow
+      \alert{(without a nonce)}
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The state of Ethereum}
+
+  \begin{center}
+    The state of Ethereum is a global singleton map {\color{magenta}$\sigma:\mathit{key}\to\mathit{value}$}
+  \end{center}
+
+  \bigskip
+
+  \begin{redbox}{The state is not in blockchain!}
+    Each node keeps and maintains its own copy in a private database
+  \end{redbox}
+
+  \bigskip
+
+  \begin{greenbox}{API of the state}
+    \begin{enumerate}
+    \item \<value=get(address)>
+    \item \<put(address, value)>
+    \end{enumerate}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Encoding data into the state}
+
+  \begin{greenbox}{Store the balance of an EOA}
+    \begin{center}
+      \<put(address\_of\_EOA, balance)>
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Read the balance of an EOA}
+    \begin{center}
+      \<get(address\_of\_EOA)>
+    \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Encoding data into the state}
+
+  \begin{greenbox}{EOA installs a smart contract}
+    \begin{center}
+      \<put(>{\color{blue}$\underbrace{\<hash(address\_of\_EOA, nonce\_of\_EOA)>}_{\mathit{address\ of\ the\ new\ smart\ contract}}$}\<, bytecode\_of\_smart\_contract)>
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{A smart contract writes $v$ into its $n$th instance variable (field)}
+    \begin{center}
+      \<put(>{\color{blue}$\underbrace{\<hash(address\_of\_smart\_contract, n)>}_{\mathit{address\ of\ the\ n-th\ field}}$}\<, v)>
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{A smart contract reads from its $n$th instance variable (field)}
+    \begin{center}
+      \<get(>{\color{blue}$\underbrace{\<hash(address\_of\_smart\_contract, n)>}_{\mathit{address\ of\ the\ n-th\ field}}$}\<)>
+    \end{center}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The hash of the state}
+
+  \begin{greenbox}{In \alert{Bitcoin}, the header of a block contains the hash \alert{of the transactions} in the block}
+    That is, the head of the Merkle tree of transactions. Miners must execute
+    the transactions to validate them, since invalid transactions would make the whole block invalid,
+    which would make the miner lose money
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{In \alert{Ethereum}, the header of a block contains the hash \alert{of the state} at the end of the execution of the transactions in the block}
+    Since syntactically correct transactions are always valid, this obliges the miners to execute the transactions
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{API of the state}
+    \begin{enumerate}
+    \item \<value=get(address)>
+    \item \<put(address, value)>
+    \item \<h=get\_hash()>
+    \end{enumerate}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The state of a node must change across different views}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/longest.png}
+  \end{center}
+
+  \begin{enumerate}
+  \item the transactions in the discarded must be undone (hard in Ethereum)
+  \item the transactions in the longest chain must be done (easy)
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}\frametitle{Ethereum = Bitcoin + Git}
+
+  \begin{greenbox}{Undo of state updates, up to the state at the end of an old block}
+    \begin{center}
+      \<checkout(old\_block.header.state\_hash)>\\
+      (possible through a Merkle-Patricia trie)
+    \end{center}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{The final API of the state}
+    \begin{enumerate}
+    \item \<value=get(address)>
+    \item \<put(address, value)>
+    \item \<h=get\_hash()>
+    \item \<checkout(h)>
+    \end{enumerate}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Merkle-Patricia tries}
+
+  \begin{enumerate}
+  \item a compact representation by difference from a previous state
+  \item fast recomputation of its hash once the state is updated
+  \item fast access to the value bound to each given key
+  \item fast change of view
+  \end{enumerate}
+
+  \medskip
+  Traditional data structures such as hashmaps only satisfy~3
+  (and~2, but only for trivial hashing functions, which is not
+  acceptable for blockchains)
+
+  \bigskip
+
+  \begin{greenbox}{The final API of the state for addresses of length $L$}
+    \begin{enumerate}
+    \item \<value=get(address)> \hfill $O(L)$
+    \item \<put(address, value)> \hfill $O(L+\mathit{size}(\<value>))$
+    \item \<h=get\_hash()> \hfill $O(1)$
+    \item \<checkout(h)> \hfill $O(1)$
+    \end{enumerate}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Patricia trie: compact representation by difference}
+
+  \begin{center}
+    \includegraphics[scale=0.55,clip=false]{pictures/trie-update.jpg}
+  \end{center}
+
+\end{frame}
+
+\section{Smart contracts}
+
+\begin{frame}\frametitle{A smart contract is\ldots}
+
+  \begin{itemize}
+  \item a computer program (not \emph{smart} nor \emph{a contract})
+  \item immutable
+  \item deterministic
+  \item operating on restricted data
+  \item running on a decentralized world computer
+  \end{itemize}
+
+  In Ethereum:
+  \begin{itemize}
+  \item compiled into EVM bytecode
+  \item installed in blockchain
+  \item has no keys
+  \item its installer gets no automatic privileges
+  \item runs after a transaction initiated by an EOA
+    \begin{itemize}
+    \item or a chain of transactions initiated by an EOA
+    \item no parallelism, no background processing
+    \end{itemize}
+  \item transactions are atomic
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Gavin Wood's Solidity}
+
+  \begin{greenbox}{}
+    There are many programming languages for Ethereum smart contracts,
+    but Solidity is the de facto standard:
+    \begin{itemize}
+    \item imperative
+    \item vaguely object-oriented
+    \item in continuous evolution
+    \item \alert{non}-strongly-typed
+    \item unorthogonal features
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{}
+    \begin{itemize}
+    \item[{\includegraphics[scale=0.03]{pictures/check.png}}] sequence
+    \item[{\includegraphics[scale=0.03]{pictures/check.png}}] conditional
+    \item[{\includegraphics[scale=0.03]{pictures/check.png}}] repetition
+    \end{itemize}
+
+    \begin{center}
+      \alert{$\Rightarrow$ Turing complete (bug or feature?)}
+    \end{center}
+
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{A simple Solidity example}
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/faucet_sol.png}
+  \end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Basic Solidity types}
+  \begin{greenbox}{\<bool>}
+    with constants \<true> and \<false> and usual operators
+  \end{greenbox}
+  \bigskip
+  \begin{greenbox}{\<int>, \<unint>}
+    signed or unsigned, with usual operators, in increments of 8 bit size:
+    \<uint8>, \<uint16>, \<int24>\ldots. Without specification, they stand for
+    \<int256> and \<unint256>, respectively
+  \end{greenbox}
+  \bigskip
+  \begin{greenbox}{\<fixed>$M\times N$, \<ufixed>$M\times N$}
+    fixed point arithmetic, signed or unsigned, $M$ bits, $N$ decimals
+    after the point: \alert{currently not implemented}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Basic Solidity types}
+
+  \begin{greenbox}{\<bytes>$N$}
+    fixed-size array of bytes, of length $N$
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{\<bytes> or \<string>}
+    variable-sized arrays of bytes
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Arrays}
+    \<uint32[][5]> is a fixed size array of five dynamic
+    arrays of $32$ bits unsigned integers
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Enumerations}
+\begin{verbatim}
+enum NAME { A, B, ... }
+\end{verbatim}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Basic Solidity types}
+
+  \begin{greenbox}{Structures}
+\begin{verbatim}
+struct pair {
+  int16 x;
+  unint8 y;
+}
+\end{verbatim}
+  \end{greenbox}
+
+  \medskip
+
+  \begin{greenbox}{Mappings}
+\begin{verbatim}
+mapping(address => unint256) balances;
+\end{verbatim}
+
+A field of type mapping spreads its values into the state through hashing:
+\<balances[k]=v> executes
+\<put(>{{\color{blue}$\underbrace{\<hash(balances,k)>}_{\mathit{address\ of\ \<balances[k]>}}$}}\<, v)>
+
+\begin{itemize}
+\item[$\Rightarrow$] mappings default to $0$
+\item[$\Rightarrow$] there is no \<containsKey> (you need a sentinel value)
+\item[$\Rightarrow$] it is not possible to compute the key set or value set of a mapping
+\item[$\Rightarrow$] it is not possible to iterate on a mapping
+\end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Back to C's \<void *>}
+
+  \begin{greenbox}{\<address>}
+    A 20-bytes Ethereum address
+
+    \begin{itemize}
+    \item it has a \<balance> field
+    \item there is no \<instanceof> operator
+    \item casts never fail
+    \end{itemize}
+
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{center}
+    \includegraphics[scale=0.25,clip=false]{pictures/frog-princess.png}
+  \end{center}
+
+  \begin{redbox}{}
+    \begin{itemize}
+    \item you can dress a frog as a princess, but it will remain a frog
+    \item you can dress a princess as a frog, but it will remain a princess
+    \item you will understand the difference when you kiss it
+    \end{itemize}
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Transaction information}
+
+  \begin{greenbox}{Structures \<msg> and \<tx> are derived from the transaction request}
+    \begin{description}
+    \item[\<msg.sender>] the address of the \alert{caller EOA or contract}
+    \item[\<msg.value>] the ether sent along the transaction
+    \item[\<msg.gasleft>] what remains to consume of the gas limit
+    \item[\<msg.data>] the data payload of the transaction
+    \item[\<msg.sig>] the first four bytes of \<msg.data> (method selector)
+    \item[\<tx.gasprice>] the gas price used for the transaction
+    \item[\<tx.origin>] the address of the \alert{originating EOA}
+    \end{description}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{\<msg.sender> vs \<tx.origin>}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/sender-origin.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A simple Ponzi scheme}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/simple-ponzi.png}
+  \end{center}
+
+  \begin{center}
+    The first investment will be burned to address \<0x0>
+  \end{center}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Gas consumption}
+
+  \begin{greenbox}{Each bytecode instruction and transaction type has a gas cost}
+    \begin{itemize}
+    \item it is possible to compute in advance the gas cost \alert{of simple functions}
+      (use \<estimateGas> in the web3 library for instance)
+    \item \alert{the result is wrong in the presence of loops or recursion!}
+      \begin{itemize}
+      \item obvious, since gas cost computation is harder than complexity analysis
+        which can be used to decide termination of programs
+        \begin{itemize}
+        \item[$\Rightarrow$] an algorithm for computing gas costs in advance cannot exist
+        \end{itemize}
+      \end{itemize}
+    \item in general, it is important to know which operations (might) cost much gas, and avoid them
+      \begin{itemize}
+      \item loops over unbounded dynamic arrays
+      \item calls to unknown contracts
+      \end{itemize}
+    \end{itemize}
+  \end{greenbox}
+\end{frame}
+
+\begin{frame}\frametitle{A gradual Ponzi scheme}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/gradual-ponzi.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A simple lottery (1)}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/simple-lottery-1.png}
+  \end{center}
+
+  \begin{center}
+    \<now> is the timestamp of the block where the transaction is mined
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A simple lottery (2)}
+
+  \begin{center}
+    \includegraphics[scale=0.45,clip=false]{pictures/simple-lottery-2.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A simple lottery (3)}
+
+  \begin{center}
+    \includegraphics[scale=0.45,clip=false]{pictures/simple-lottery-3.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{A simple lottery (4)}
+
+  \begin{center}
+    \includegraphics[scale=0.45,clip=false]{pictures/simple-lottery-4.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Solidity is \alert{not} strongly-typed}
+
+  \begin{enumerate}
+  \item casts are not checked
+  \item parameter types are just Christmas decorations
+  \end{enumerate}
+
+  \bigskip
+
+  \begin{redbox}{}
+    A function declaring a formal parameter of type
+    \<address> or explicitly \<C> can actually receive any value, of any
+    type, also completely unrelated to \<C>. No run-time error occurs.
+    Callers can inject malicious code through such parameters!
+    \begin{center}
+      \textbf{Never talk to strangers!}
+    \end{center}
+  \end{redbox}
+
+  \begin{center}
+    \includegraphics[scale=0.22,clip=false]{pictures/frightened-cat.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The DAO attack (2016): they talked to strangers\ldots}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/re-entrancy.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The DAO attack (2016)}
+
+  \begin{greenbox}{The most famous reentrancy exploit}
+    \begin{itemize}
+    \item the DAO was a contract for autonomous decentralized organizations
+    \item the attacker used reentrancy to steal $50\text{M}\$$ equivalent of ETH
+    \item the Ethereum team decided to make the consensus rules more restrictive in order
+      to make such transactions illegal and get some of that money back
+    \item some node maintainers didn't accept the change and continued
+      operating with the old rules and another chain id, leading to a network hard fork known as
+      Ethereum Classic
+    \end{itemize}
+  \end{greenbox}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/ethereum-vs-ethereum-classic.jpg}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Security best practice}
+
+  \begin{itemize}
+  \item Minimalism: the simpler, the better
+  \item Code reuse: DRY, use well-known libraries
+  \item Study: be aware of well-known issues and solutions
+  \item Readability: simpler audit
+  \item Test: try corner cases
+  \item Analysis: static or dynamic, still in infancy
+  \end{itemize}
+
+  \bigskip
+
+  \begin{redbox}{}
+    Considering the importance of security for smart contracts,
+    it is questionable to have invented Solidity (hard, new, weakly-typed,
+    complex low-level semantics) for writing such delicate pieces of software
+  \end{redbox}
+
+\end{frame}
 
 \section{Tendermint (BFT, proof of stake)}
 
