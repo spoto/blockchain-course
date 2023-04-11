@@ -80,15 +80,15 @@
 \begin{frame}\frametitle{History}
 
   \begin{itemize}
-  \item[1988] proof-of-work (Dwork \& Naor)
+  \item[1988] proof of work (Dwork \& Naor)
   \item[1991] a cryptographically secure chain of blocks (Haber \& Stornetta)
   \item[199x] smart contracts (Szabo)
   \item[2008] Bitcoin (Nakamoto)
-  \item[2012] proof-of-stake (Peercoin)
+  \item[2012] proof of stake (Peercoin)
   \item[2013] Ethereum (Buterin \& Wood)
-  \item[2014] proof-of-space (Burstcoin/Signum)
-  \item[2014] Tendermint generic proof-of-stake engine (Kwon)
-  \item[2022] Ethereum 2.0 adopts the proof-of-stake
+  \item[2014] proof of space (Burstcoin/Signum)
+  \item[2014] Tendermint generic proof of stake engine (Kwon)
+  \item[2022] Ethereum 2.0 moves to proof of stake
   \end{itemize}
   
 \end{frame}
@@ -301,7 +301,7 @@
 
 \begin{frame}\frametitle{Alice charges her wallet}
   \begin{itemize}
-  \item she asks a friend to send bitcoins at her address
+  \item she asks a friend to send bitcoins to her address
   \item meets a bitcoin seller in person
   \item earns bitcoin by working
   \item uses a bitcoin ATM
@@ -334,27 +334,6 @@
     Alice's address as destination and updates the balance on the screen
     accordingly (\alert{confirmation})
   \end{enumerate}
-
-\end{frame}
-
-\begin{frame}\frametitle{The spend transaction}
-
-  Alice's wallet is charged now and she wants to buy a coffee at Bob's coffee shop:
-
-  \begin{enumerate}
-  \item Alice's wallet signs, with her private key, a transaction
-    (a sequence of bits) stating: \emph{``I acknowledge to send Y bitcoins from Alice's address
-    to Bob's destination address''} (some metadata can be added)
-  \item the transaction is broadcast to one (or more) nodes of the
-    bitcoin network and eventually cleared
-  \item Alice's wallet polls the bitcoin network for a transaction having
-    her address as source and updates the balance on the screen
-    accordingly (\alert{confirmation})
-  \end{enumerate}
-
-  \medskip
-  See it online:
-  {\scriptsize\url{https://explorer.btc.com/btc/transaction/0627052b6f28912f2703066a912ea577f2ce4da4caa5a5fbd8a57286c345c2f2}}
 
 \end{frame}
 
@@ -498,8 +477,6 @@
       \item it adds a special \alert{coinbase transaction} with no inputs, whose only output is $\mu$
         and whose amount is $\iota+\sum_{i=1}^n\phi_i$
       \item it tags the block with a reference to the previous block
-      \item it tags the block with its own miner's address $\mu$
-      \item it tags the block with a nonce computed by solving an expensive puzzle
       \item if no other miner has been faster, it forwards the new block to all its peers
       \end{itemize}
   \end{enumerate}
@@ -793,7 +770,7 @@
     \end{enumerate}
 
     \begin{center}
-      denial-of-service attacks are impossible \emph{at language level}
+      denial of service attacks are impossible \emph{at language level}
     \end{center}
 
   \end{greenbox}
@@ -945,7 +922,7 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
 
 \end{frame}
 
-\begin{frame}\frametitle{Properties of Buitcoin's transactions}
+\begin{frame}\frametitle{Properties of Bitcoin's transactions}
 
   \begin{itemize}
   \item Script programs are only used to check the validity of the transactions
@@ -955,15 +932,7 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
 
 \end{frame}
 
-\begin{frame}\frametitle{Headers, blocks and blockchain, genesis block}
-
-  \begin{center}
-    \includegraphics[scale=0.2,clip=false]{pictures/bitcoin-blocks.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{The header contains the hash of all transactions in the block (Merkle root)}
+\begin{frame}\frametitle{Block headers contain the hash of all transactions in the block (Merkle root)}
 
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/mbc2_0902.png}
@@ -1050,7 +1019,7 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
 
 \end{frame}
 
-\begin{frame}\frametitle{Proof-of-work (PoW)}
+\begin{frame}\frametitle{Proof of work (PoW)}
 
   \begin{greenbox}{Add the following consensus rule}
     The hash of valid blocks is smaller than
@@ -1135,6 +1104,19 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
 
 \end{frame}
 
+\begin{frame}\frametitle{State update in case of history change}
+
+    \begin{center}
+      \includegraphics[width=\textwidth,clip=false]{pictures/longest.png}
+    \end{center}
+
+    \begin{enumerate}
+    \item the transactions in the discarded chain must be undone (easy in Bitcoin)
+    \item the transactions in the longest chain must be done (easy)
+    \end{enumerate}
+    
+\end{frame}
+
 \begin{frame}\frametitle{The magic behind PoW}
 
   \begin{greenbox}{}
@@ -1148,19 +1130,6 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
     \end{itemize}
   \end{greenbox}
 
-\end{frame}
-
-\begin{frame}\frametitle{State update in case of history change}
-
-    \begin{center}
-      \includegraphics[width=\textwidth,clip=false]{pictures/longest.png}
-    \end{center}
-
-    \begin{enumerate}
-    \item the transactions in the discarded must be undone (easy in Bitcoin)
-    \item the transactions in the longest chain must be done (easy)
-    \end{enumerate}
-    
 \end{frame}
 
 \begin{frame}\frametitle{Difficulty over time}
@@ -1187,7 +1156,7 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
   \begin{greenbox}{Two main categories}
     \begin{enumerate}
     \item history change (for the topmost few blocks)
-    \item denial-of-service (against specific transactions or accounts)
+    \item denial of service (against specific transactions or accounts)
     \end{enumerate}
   \end{greenbox}
 
@@ -1212,7 +1181,7 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
 \section{Ethereum}
 
 \begin{frame}
-  \frametitle{Thw world computer}
+  \frametitle{The world computer}
 
   \begin{greenbox}{}
     An open source, globally \alert{decentralized computing infrastructure}
@@ -1283,14 +1252,6 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
     \end{itemize}
     The change must be \alert{deterministic} otherwise consensus cannot be reached!
   \end{greenbox}
-
-\end{frame}
-
-\begin{frame}\frametitle{Ethereum forks}
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/ethereum-forks.jpg}
-  \end{center}
 
 \end{frame}
 
@@ -1390,7 +1351,7 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
 \begin{frame}\frametitle{The state of Ethereum}
 
   \begin{center}
-    The state of Ethereum is a global singleton map {\color{magenta}$\sigma:\mathit{key}\to\mathit{value}$}
+    The state of Ethereum is a global singleton map {\color{blue}$\sigma:\mathit{key}\to\mathit{value}$}
   \end{center}
 
   \bigskip
@@ -1487,7 +1448,7 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
   \end{center}
 
   \begin{enumerate}
-  \item the transactions in the discarded must be undone (hard in Ethereum)
+  \item the transactions in the discarded chain must be undone (hard in Ethereum)
   \item the transactions in the longest chain must be done (easy)
   \end{enumerate}
 
@@ -1539,14 +1500,6 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
     \item \<checkout(h)> \hfill $O(1)$
     \end{enumerate}
   \end{greenbox}
-
-\end{frame}
-
-\begin{frame}\frametitle{Patricia trie: compact representation by difference}
-
-  \begin{center}
-    \includegraphics[scale=0.55,clip=false]{pictures/trie-update.jpg}
-  \end{center}
 
 \end{frame}
 
@@ -1723,30 +1676,6 @@ A field of type mapping spreads its values into the state through hashing:
 
 \end{frame}
 
-\begin{frame}\frametitle{Transaction information}
-
-  \begin{greenbox}{Structures \<msg> and \<tx> are derived from the transaction request}
-    \begin{description}
-    \item[\<msg.sender>] the address of the \alert{caller EOA or contract}
-    \item[\<msg.value>] the ether sent along the transaction
-    \item[\<msg.gasleft>] what remains to consume of the gas limit
-    \item[\<msg.data>] the data payload of the transaction
-    \item[\<msg.sig>] the first four bytes of \<msg.data> (method selector)
-    \item[\<tx.gasprice>] the gas price used for the transaction
-    \item[\<tx.origin>] the address of the \alert{originating EOA}
-    \end{description}
-  \end{greenbox}
-
-\end{frame}
-
-\begin{frame}\frametitle{\<msg.sender> vs \<tx.origin>}
-
-  \begin{center}
-    \includegraphics[scale=0.4,clip=false]{pictures/sender-origin.png}
-  \end{center}
-
-\end{frame}
-
 \begin{frame}\frametitle{A simple Ponzi scheme}
 
   \begin{center}
@@ -1786,42 +1715,6 @@ A field of type mapping spreads its values into the state through hashing:
 
   \begin{center}
     \includegraphics[scale=0.4,clip=false]{pictures/gradual-ponzi.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{A simple lottery (1)}
-
-  \begin{center}
-    \includegraphics[scale=0.4,clip=false]{pictures/simple-lottery-1.png}
-  \end{center}
-
-  \begin{center}
-    \<now> is the timestamp of the block where the transaction is mined
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{A simple lottery (2)}
-
-  \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/simple-lottery-2.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{A simple lottery (3)}
-
-  \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/simple-lottery-3.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{A simple lottery (4)}
-
-  \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/simple-lottery-4.png}
   \end{center}
 
 \end{frame}
@@ -1911,11 +1804,11 @@ A field of type mapping spreads its values into the state through hashing:
 
   \bigskip
 
-  \begin{greenbox}{Proof-of-work [PoW] is expensive}
+  \begin{greenbox}{Proof of work [PoW] is expensive}
     \begin{itemize}
-    \item proof-of-stake [PoS] (who committed more money)
-    \item proof-of-space (who committed more disk space)
-    \item proof-of-authority (who has more authority)
+    \item proof of stake [PoS] (who committed more money)
+    \item proof of space (who committed more disk space)
+    \item proof of authority (who has more authority)
     \item \ldots
     \end{itemize}
   \end{greenbox}
@@ -1986,7 +1879,7 @@ A field of type mapping spreads its values into the state through hashing:
     \item validators are afraid of having a machine always connected and open to the internet
     \item validators find it expensive to maintain and update their machine
     \item validators lose cryptocurrency if a blackout or network failure isolate their machine
-    \item please ask this question: ``How many validators has this blockchain project, where are they and who maintains such machines'' (spoiler: very few, in the same room, all maintained by a single person)
+    \item please ask this question: ``How many validators your blockchain project has, where are they and who maintains such machines'' (spoiler: very few, in the same room, all maintained by a single person)
     \end{itemize}
   \end{redbox}
 
@@ -2001,31 +1894,6 @@ A field of type mapping spreads its values into the state through hashing:
   \begin{center}
     ABCI: Application BlockChain Interface
   \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{The application layer}
-
-  \begin{center}
-    \includegraphics[scale=.15,clip=false]{pictures/tendermint-core.jpg}
-  \end{center}
-  
-  \begin{greenbox}{The application layer is not part of Tendermint Core}
-    Programmers can write their own application layer
-    \begin{itemize}
-    \item connected to Tendermint Core via ABCI using sockets
-    \item possibly on a different machine than Tendermint Core
-    \item in any programming language
-    \end{itemize}
-  \end{greenbox}
-
-  \bigskip
-
-  \begin{redbox}{}
-    \begin{center}
-      The application layer must be deterministic!
-    \end{center}
-  \end{redbox}
 
 \end{frame}
 
@@ -2102,38 +1970,7 @@ A field of type mapping spreads its values into the state through hashing:
 
 \end{frame}
 
-\begin{frame}\frametitle{The application state of Cosmos}
-
-  \begin{greenbox}{Cosmos keeps data inside \alert{keepers}}
-    They are maps $\mathit{key}\to\mathit{value}$. Programmers must store
-    persistent data inside a keeper: all other data is lost if the node
-    is turned off and on again
-  \end{greenbox}
-
-  \bigskip
-
-  \begin{greenbox}{Golang}
-    Cosmos can be expanded with arbitrary Golang code, but:
-    \begin{itemize}
-    \item it must be deterministic
-    \item it must store persistent data in a keeper
-    \item it must count gas consumption explicitly
-    \end{itemize}
-  \end{greenbox}
-
-  \bigskip
-
-  \begin{greenbox}{Smart contracts?}
-    There are no smart contracts in Cosmos, really. The system as a whole
-    is a big (fixed) smart contract
-    \begin{itemize}
-    \item[$\Rightarrow$] maintenance issue
-    \end{itemize}
-  \end{greenbox}
-
-\end{frame}
-
-\section{Takamaka + Hotmoka}
+\section{Hotmoka + Takamaka}
 
 \begin{frame}
   \frametitle{Hotmoka (Fausto Spoto, 2019--2021): \url{www.hotmoka.io}}
@@ -2189,7 +2026,7 @@ A field of type mapping spreads its values into the state through hashing:
 
 \end{frame}
 
-\begin{frame}\frametitle{Nodes can be Tendermint applications}
+\begin{frame}\frametitle{Hotmoka nodes \underline{can} be Tendermint applications}
 
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/tendermint-databases.png}
@@ -2340,6 +2177,7 @@ class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed a
     \item fields of \<Storage> classes get duplicated
     \item gas metering is weaved into the code
     \item code annotations get implemented \emph{by magic}
+    \item \<caller()> is given semantics
     \item \ldots
     \end{itemize}
   \end{enumerate}
@@ -2369,67 +2207,8 @@ class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed a
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{An example of Takamaka code}
+\begin{frame}[fragile]\frametitle{An example of a Takamaka smart contract}
 
-  \begin{enumerate}
-  \item create a new Java Maven project (skip archetype selection)
-  \item edit the Maven configuration file \<pom.xml> as follows:
-\vspace*{-1ex}{\tiny\begin{semiverbatim}
-{\color{blue}{
-<project ...>
-  <modelVersion>4.0.0</modelVersion>
-
-  {\color{armygreen}<groupId>io.hotmoka</groupId>
-  <artifactId>ponzi</artifactId>
-  <version>0.0.1</version>}
-
-  {\color{violet}{<properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <failOnMissingWebXml>false</failOnMissingWebXml>
-  </properties>}}
-
-  {\color{red}{<dependencies> <dependency>
-      <groupId>io.hotmoka</groupId>
-      <artifactId>io-takamaka-code</artifactId>
-      <version>1.0.0</version>
-  </dependency> </dependencies>}}
-
-  {\color{violet}{<build> <plugins> <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration> <release>11</release> </configuration>
-  </plugin> </plugins> </build>}}
-
-</project>
-}}\end{semiverbatim}}
-  \end{enumerate}
-
-\end{frame}
-
-\begin{frame}[fragile]\frametitle{An example of Takamaka code}
-
-  \begin{enumerate}
-    \setcounter{enumi}{2}
-  \item create a source package \<io.takamaka.ponzi> inside \<src/main/java>
-  \item create a \<module-info.java> in the \<src/main/java> directory:
-    \vspace*{-3ex}\begin{semiverbatim}
-{\color{blue}{
-module ponzi \{
-  requires io.takamaka.code;
-\}
-}}\end{semiverbatim}
-  \end{enumerate}
-
-\end{frame}
-
-\begin{frame}[fragile]\frametitle{An example of Takamaka code}
-
-  \begin{enumerate}
-    \setcounter{enumi}{4}
-      \item add the following class in package \<io.takamaka.ponzi>
 \vspace*{-1ex}{\tiny\begin{semiverbatim}
 {\color{darkblue}{
 package io.takamaka.ponzi;
@@ -2463,52 +2242,10 @@ public class SimplePonzi {\color{red}extends Contract} \{
   \}
 \}
 }}\end{semiverbatim}}
-  \end{enumerate}
 
 \end{frame}
 
-\begin{frame}[fragile]\frametitle{An example of Takamaka code}
-
-  \begin{enumerate}
-    \setcounter{enumi}{5}
-  \item compile and package everything with Maven:
-
-    {\color{blue}\<mvn package>}
-
-  \item the compiled \<ponzi-0.0.1.jar> will appear inside the
-    \<target> directory of your project, ready to be installed in a
-    Hotmoka node
-
-  \item install \<ponzi-0.0.1.jar> in our AWS Hotmoka node (\begin{tt}moka install <payer> <jar>\end{tt})
-  \end{enumerate}
-
-  \medskip
-
-  \begin{greenbox}{}
-    {\color{armygreen}\scriptsize{\begin{tt}
-          moka install
-
-          06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
-
-          .../target/ponzi-0.0.1.jar
-
-          --url panarea.hotmoka.io
-    \end{tt}}}
-    {\scriptsize\begin{semiverbatim}
-Do you really want to spend up to 443300 gas units to install the jar [Y/N] Y
-.../target/ponzi-0.0.1.jar has been installed at
-  {\color{red}39f999a63555542eaf5040388d61c20193dee4fb035847a40608c494bf069765}
-{\color{armygreen}total gas consumed: 298189}
-{\color{darkred}  for CPU: 233
-  for RAM: 1164
-  for storage: 296792
-  for penalty: 0}
-    \end{semiverbatim}}
-  \end{greenbox}
-
-\end{frame}
-
-\begin{frame}[fragile]\frametitle{An insurance contract}
+\begin{frame}[fragile]\frametitle{An insurance smart contract in Takamaka}
 
   \begin{greenbox}{The contract allows one to insure specific days of the year}
     If it rains on those days, one will get an indemnization larger than
@@ -2832,14 +2569,14 @@ it/univr/insurance/Insurance.java:99:
 
   \begin{itemize}
   \item proof of work is too expensive and polluting
-  \item proof of stake makes it hard to have many really independent validators
+  \item proof of stake is complex and makes it hard to have many really independent validators
   \end{itemize}
 
   \medskip
 
   \begin{greenbox}{Proof of space}
     In 2014, Burstcoin (later Signum) implemented a mining algorithm
-    where the miners must solve a puzzle to gain the right to mine a new block:
+    where miners must solve a puzzle to gain the right to mine a new block:
     \begin{itemize}
     \item the puzzle is too hard to be computed for each new block
     \item the puzzle becomes very simple if some information is precomputed and stored on disk
@@ -2855,6 +2592,7 @@ it/univr/insurance/Insurance.java:99:
   Signum is a monolithic, non-commented, Java 5, undocumented piece of code
 
   \bigskip
+  \bigskip
 
   \begin{greenbox}{The idea of Mokamint (Fausto Spoto 2023, work in progress)}
     \begin{itemize}
@@ -2868,7 +2606,7 @@ it/univr/insurance/Insurance.java:99:
 
   \bigskip
 
-  Attach Hotmoka on top of Mokamint, as an example of application
+  Later attach Hotmoka on top of Mokamint, as an application instance
 
 \end{frame}
 
