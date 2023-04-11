@@ -1900,8 +1900,976 @@ A field of type mapping spreads its values into the state through hashing:
 
 \end{frame}
 
-\section{Tendermint (BFT, proof of stake)}
+\section{Tendermint}
+
+\begin{frame}
+  \frametitle{Proof of\ldots}
+
+  \begin{center}
+    Who decides the next block?
+  \end{center}
+
+  \bigskip
+
+  \begin{greenbox}{Proof-of-work [PoW] is expensive}
+    \begin{itemize}
+    \item proof-of-stake [PoS] (who committed more money)
+    \item proof-of-space (who committed more disk space)
+    \item proof-of-authority (who has more authority)
+    \item \ldots
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{PoS is a variant of Practical Byzantine Fault Tolerance (BFT)}
+    Miguel Castro and Barbara Liskov.
+    \emph{Practical Byzantine Fault Tolerance and Proactive Recovery}.
+    ACM Trans.\ Comput.\ Syst., 20(4):398–461, November 2002
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Tendermint (now Ignite): \url{ignite.com}}
+
+  \begin{greenbox}{Jae Kwon. \emph{Tendermint: Consensus without Mining}, 2014.\\
+    \url{https://tendermint.com/static/docs/tendermint.pdf}}
+    \begin{itemize}
+    \item a dynamic set $V$ of validators decides the next block
+    \item $V$ might be different for each block
+      \begin{itemize}
+      \item but deterministically computed from the previous history
+      \end{itemize}
+    \item at each height $H$, each validator $v\in V$:
+      \begin{enumerate}
+      \item identifies (deterministically) a validator $p\in V$ that
+        is expected to aggregate some transactions and that \alert{proposes} a next block $b$
+      \item if $v$ considers $b$ valid, it \alert{pre-votes} $b$
+      \item $v$ counts how many validators pre-voted $b$
+      \item if $v$ counted at least $\frac{2}{3}$ pre-votes, $v$ \alert{pre-commits} $b$
+      \item $v$ counts how many validators pre-committed $b$
+      \item if $v$ counted at least $\frac{2}{3}$ pre-commits, $v$ \alert{commits} $b$ and increases $H$
+      \item $v$ goes back to step~1
+      \end{enumerate}
+    \end{itemize}
+  \end{greenbox}
+
+  \smallskip
+
+  \begin{center}
+    Tendermint is BFT. If step~1 or rewards are based on stakes, then it is PoS
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Inside a Tendermint block}
+
+  \begin{center}
+    \includegraphics[scale=.38,clip=false]{pictures/tendermint-block.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Proof of stake: can we trust it?}
+
+  \begin{greenbox}{Yes we can: Ethereum successfully moved from PoW to PoS}
+    \begin{itemize}
+    \item it's a special case, whose coin is very valuable: validators are a serious form of investment
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+  
+  \begin{redbox}{No we can't: all new blockchain projects use PoS nowadays}
+    \begin{itemize}
+    \item validators have no interest in being validators (the coin has no value)
+    \item validators are afraid of having a machine always connected and open to the internet
+    \item validators find it expensive to maintain and update their machine
+    \item validators lose cryptocurrency if a blackout or network failure isolate their machine
+    \item please ask this question: ``How many validators has this blockchain project, where are they and who maintains such machines'' (spoiler: very few, in the same room, all maintained by a single person)
+    \end{itemize}
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{A layered implementation in Golang}
+
+  \begin{center}
+    \includegraphics[scale=.45,clip=false]{pictures/tendermint-core.jpg}
+  \end{center}
+
+  \begin{center}
+    ABCI: Application BlockChain Interface
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The application layer}
+
+  \begin{center}
+    \includegraphics[scale=.15,clip=false]{pictures/tendermint-core.jpg}
+  \end{center}
+  
+  \begin{greenbox}{The application layer is not part of Tendermint Core}
+    Programmers can write their own application layer
+    \begin{itemize}
+    \item connected to Tendermint Core via ABCI using sockets
+    \item possibly on a different machine than Tendermint Core
+    \item in any programming language
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{redbox}{}
+    \begin{center}
+      The application layer must be deterministic!
+    \end{center}
+  \end{redbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The ABCI}
+
+  \begin{center}
+    \url{https://docs.tendermint.com/master/spec/abci/abci.html}
+  \end{center}
+
+  \begin{itemize}
+  \item[] \alert{\<checkTx>}: called before entering the mempool and to verify blocks
+    \begin{itemize}
+    \item[$\Rightarrow$] only transactions that satisfy \<checkTx> are added in blocks
+    \item[{\includegraphics[scale=0.0135]{pictures/uncheck.png}}] must not modify the state of the application
+    \end{itemize}
+    \hrule
+  \item[] \alert{\<beginBlock>}: called at the beginning of a block; receives information
+    about the validator set of the previous block and which of them signed the previous block
+  \item[] \alert{\<deliverTx>}: called for each transaction added to a block: it executes
+    the transaction by modifying the state of the application
+  \item[] \alert{\<endBlock>}: called at the end of a block; provides information
+    about the validator set for the next block
+  \item[] \alert{\<commit>}: called when a block is being committed; provides the hash of
+    the state of the application
+    \hrule
+  \item[] \alert{\<query>}: called when the user wants to read data from the blockchain
+  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{The database of blocks and the application state}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/tendermint-databases.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The application state}
+
+  \begin{greenbox}{It must have a function to compute its hash}
+    Only that hash is reported in blockchain, for consensus
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{It must allow transactional, atomic updates}
+    Between \<beginBlock> and \<commit>
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{The API of the state}
+    Tendermint enjoys finality: there are no forks
+    \begin{itemize}
+      \item[$\Rightarrow$] one never needs to come
+        back in time to the state of a previous block
+    \end{itemize}
+
+    \begin{enumerate}
+    \item get data
+    \item put data
+    \item \<h=get\_hash()>
+    \item \sout{\<checkout(h)>} $\Rightarrow$ big opportunity for garbage collection!
+    \end{enumerate}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Cosmos: a Tendermint application in Golang}
+
+  \begin{center}
+    \includegraphics[scale=0.2,clip=false]{pictures/cosmos.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{The application state of Cosmos}
+
+  \begin{greenbox}{Cosmos keeps data inside \alert{keepers}}
+    They are maps $\mathit{key}\to\mathit{value}$. Programmers must store
+    persistent data inside a keeper: all other data is lost if the node
+    is turned off and on again
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Golang}
+    Cosmos can be expanded with arbitrary Golang code, but:
+    \begin{itemize}
+    \item it must be deterministic
+    \item it must store persistent data in a keeper
+    \item it must count gas consumption explicitly
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Smart contracts?}
+    There are no smart contracts in Cosmos, really. The system as a whole
+    is a big (fixed) smart contract
+    \begin{itemize}
+    \item[$\Rightarrow$] maintenance issue
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
 
 \section{Takamaka + Hotmoka}
+
+\begin{frame}
+  \frametitle{Hotmoka (Fausto Spoto, 2019--2021): \url{www.hotmoka.io}}
+
+  \begin{center}
+    \includegraphics[scale=0.2,clip=false]{pictures/hotmoka_logo.png}
+  \end{center}
+  
+  \begin{greenbox}{}
+    An open-source implementation of a network of nodes:
+    \begin{itemize}
+    \item nodes of a blockchain
+    \item IoT devices
+    \item computers in the cloud
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Requests are OO-based}
+    \begin{itemize}
+    \item install code in the node
+    \item create an object
+    \item call a method of an object
+    \item methods are implemented in Takamaka (subset of Java)
+    \end{itemize}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{The API of a Hotmoka node}
+
+  \begin{itemize}
+  \item \<[add|post]JarStore(request):TransactionReference>
+  \item \<[add|post]ConstructorCall(request):StorageReference>
+  \item \<[add|post|run]InstanceMethodCall(request):StorageValue>
+  \item \<[add|post|run]StaticMethodCall(request):StorageValue>
+  \item \<subscribeToEvents(key):Subscription>
+  \item \<getState(StorageReference):State>
+  \end{itemize}
+
+  \bigskip
+
+  \begin{greenbox}{}
+    \<add> calls are synchronous (wait for the result)
+
+    \smallskip
+    \<post> calls are asynchronous (yield a future)
+
+    \smallskip
+    \<run> calls are synchronous and only for read-only methods
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{Nodes can be Tendermint applications}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/tendermint-databases.png}
+  \end{center}
+    
+\end{frame}
+
+\begin{frame}\frametitle{An OO state (hash is sha256)}
+
+  \begin{center}
+    \includegraphics[width=\textwidth,clip=false]{pictures/hotmoka-structure.pdf}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The state contains actual Java objects}
+
+  {\scriptsize
+    \texttt{manifest:} $\underbrace{{\color{red}\mathtt{42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4776e6e4add7668\#0}}}_{\text{machine-independent memory address of an object}}$
+  }
+
+  \bigskip
+
+  \begin{greenbox}{{\scriptsize\<moka state 42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4776e6e4add7668\#0 --url panarea.hotmoka.io>}}
+    {\tiny\begin{semiverbatim}
+class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed at 02dfd29348abaa44f7205251...)
+  allowsSelfCharged:boolean = false
+  allowsUnsignedFaucet:boolean = true
+  chainId:java.lang.String = "chain-ASdWiN"
+  gamete:io.takamaka.code.lang.Account = {\color{red}4f7d7ca1fbea152d8f323c21e1abcfa1d979c7c4ea667d8457381a26b08a2d71#0}
+  gasStation:io.takamaka.code.governance.GasStation = {\color{red}42a8a11aee0405aee5775514b3b0456c7740bbb015b4b8...}
+  maxCumulativeSizeOfDependencies:long = 10000000
+  maxDependencies:int = 20
+  maxErrorLength:int = 300
+  signature:java.lang.String = "ed25519"
+  skipsVerification:boolean = false
+  validators:io.takamaka.code.governance.Validators = {\color{red}42a8a11aee0405aee5775514b3b0456c7740bbb015b4b8...}
+  versions:io.takamaka.code.governance.Versions = {\color{red}42a8a11aee0405aee5775514b3b0456c7740bbb015b4b87df4...}
+^ balance:java.math.BigInteger = 0 {\color{violet}(inherited from io.takamaka.code.lang.Contract)}
+^ balanceRed:java.math.BigInteger = 0 {\color{violet}(inherited from io.takamaka.code.lang.Contract)}
+^ nonce:java.math.BigInteger = 227 {\color{violet}(inherited from io.takamaka.code.lang.ExternallyOwnedAccount)}
+^ publicKey:java.lang.String = "" {\color{violet}(inherited from io.takamaka.code.lang.ExternallyOwnedAccount)}
+    \end{semiverbatim}}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{How can Hotmoka identify updates to fields of objects?}
+
+  \begin{greenbox}{The original code}
+    \begin{semiverbatim}
+      public class C \{
+        public {\color{blue}int i;}
+        public void foo() \{
+          {\color{blue}i} = 42;
+        \}
+      \}
+    \end{semiverbatim}
+  \end{greenbox}
+
+  \begin{center}
+    No way to know if \<i> changed its value during the execution of \<foo()>
+  \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{How can Hotmoka identify updates to fields of objects?}
+
+  \begin{greenbox}{The instrumented code}
+    \begin{semiverbatim}
+      public class C {\color{red}extends Storage} \{
+        public {\color{blue}int i, old\_i;} // aliased at method start
+        public void foo() \{
+          {\color{blue}i} = 42;
+        \}
+      \}
+    \end{semiverbatim}
+  \end{greenbox}
+
+  \begin{center}
+    \<i> changed its value during the execution of \<foo()> iff at the end \<i>$\not=$\<old\_i>
+  \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{How can Hotmoka enforce gas limits?}
+
+  \begin{greenbox}{The original code}
+    \begin{semiverbatim}
+      public class C \{
+        public void foo() \{
+          while (...) \{
+            ...
+          \}
+        \}
+      \}
+    \end{semiverbatim}
+  \end{greenbox}
+
+  \begin{center}
+    This loop might run for very long or even forever
+  \end{center}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{How can Hotmoka enforce gas limits?}
+
+  \begin{greenbox}{The instrumented code}
+    \begin{semiverbatim}
+      {\color{blue}static long counter;}
+      public class C \{
+        public void foo() \{
+          while (...) \{
+            {\color{blue}if (counter++ >= gaslimit)
+              throw new OutOfGasError();}
+            ...
+          \}
+        \}
+      \}
+    \end{semiverbatim}
+  \end{greenbox}
+
+  \begin{center}
+    Actual gas costs are more fine-grained
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Verification and instrumentation of jars in state}
+
+  Each jar that gets installed in a Hotmoka node undergoes two processes:
+
+  \begin{enumerate}
+  \item Verification: absence of frequent errors
+    \begin{itemize}
+    \item objects stored in state extend \<Storage>
+    \item non-deterministic or non-terminating library code is not used
+    \item no synchronization
+    \item no native code
+    \item no \emph{dangerous} bytecodes
+    \item no finalizers
+    \item no static fields (mostly)
+    \item code annotations are used correctly
+    \item \ldots
+    \end{itemize}
+  \item Instrumentation
+    \begin{itemize}
+    \item fields of \<Storage> classes get duplicated
+    \item gas metering is weaved into the code
+    \item code annotations get implemented \emph{by magic}
+    \item \ldots
+    \end{itemize}
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}\frametitle{The Takamaka programming language}
+
+  Takamaka is the subset of Java that passes the verification
+  of a Hotmoka node. It uses code annotations to implement contract-based aspects:
+
+  \begin{itemize}
+  \item {\color{blue}\<@FromContract>} annotates something that can only be called by a contract,
+    not by any other code; hence, it has a {\color{blue}\<caller()>}
+  \item {\color{blue}\<@Payable>} annotates something whose execution requires to pay some
+    cryptocurrency units
+  \item {\color{blue}\<@View>} annotates something whose execution can be run for free,
+    without paying for its gas: it must not generate any update at its end
+    (\emph{pure} code)
+  \end{itemize}
+
+  \bigskip
+  Takamaka comes equipped with a {\color{blue}support library}
+  (\<io-takamaka-code>) that defines such annotations and
+  other typical classes that are useful
+  for programming smart contracts (tokens, NFTs, DAOs)
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{An example of Takamaka code}
+
+  \begin{enumerate}
+  \item create a new Java Maven project (skip archetype selection)
+  \item edit the Maven configuration file \<pom.xml> as follows:
+\vspace*{-1ex}{\tiny\begin{semiverbatim}
+{\color{blue}{
+<project ...>
+  <modelVersion>4.0.0</modelVersion>
+
+  {\color{armygreen}<groupId>io.hotmoka</groupId>
+  <artifactId>ponzi</artifactId>
+  <version>0.0.1</version>}
+
+  {\color{violet}{<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+  </properties>}}
+
+  {\color{red}{<dependencies> <dependency>
+      <groupId>io.hotmoka</groupId>
+      <artifactId>io-takamaka-code</artifactId>
+      <version>1.0.0</version>
+  </dependency> </dependencies>}}
+
+  {\color{violet}{<build> <plugins> <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration> <release>11</release> </configuration>
+  </plugin> </plugins> </build>}}
+
+</project>
+}}\end{semiverbatim}}
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{An example of Takamaka code}
+
+  \begin{enumerate}
+    \setcounter{enumi}{2}
+  \item create a source package \<io.takamaka.ponzi> inside \<src/main/java>
+  \item create a \<module-info.java> in the \<src/main/java> directory:
+    \vspace*{-3ex}\begin{semiverbatim}
+{\color{blue}{
+module ponzi \{
+  requires io.takamaka.code;
+\}
+}}\end{semiverbatim}
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{An example of Takamaka code}
+
+  \begin{enumerate}
+    \setcounter{enumi}{4}
+      \item add the following class in package \<io.takamaka.ponzi>
+\vspace*{-1ex}{\tiny\begin{semiverbatim}
+{\color{darkblue}{
+package io.takamaka.ponzi;
+
+import static io.takamaka.code.lang.Takamaka.require;
+import java.math.BigInteger;
+import io.takamaka.code.lang.Contract;
+import io.takamaka.code.lang.FromContract;
+import io.takamaka.code.lang.Payable;
+import io.takamaka.code.lang.PayableContract;
+import io.takamaka.code.lang.View;
+
+public class SimplePonzi {\color{red}extends Contract} \{
+  private final BigInteger _10 = BigInteger.valueOf(10L), _11 = BigInteger.valueOf(11L);
+  private {\color{armygreen}PayableContract} currentInvestor;
+  private BigInteger currentInvestment = BigInteger.ZERO;
+
+  public {\color{violet}@Payable} {\color{armygreen}@FromContract(PayableContract.class)} void invest({\color{violet}BigInteger amount}) \{
+    BigInteger minimum = currentInvestment.multiply(_11).divide(_10);
+    require(amount.compareTo(minimum) >= 0, () -> "you must invest at least " + minimum);
+
+    if (currentInvestor != null)
+      currentInvestor.{\color{armygreen}receive(amount)}; {\color{red}// no risk of reentrancy}
+
+    currentInvestor = {\color{armygreen}(PayableContract) caller()};
+    currentInvestment = amount;
+  \}
+
+  public {\color{red}@View} BigInteger getCurrentInvestment() \{
+    return currentInvestment;
+  \}
+\}
+}}\end{semiverbatim}}
+  \end{enumerate}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{An example of Takamaka code}
+
+  \begin{enumerate}
+    \setcounter{enumi}{5}
+  \item compile and package everything with Maven:
+
+    {\color{blue}\<mvn package>}
+
+  \item the compiled \<ponzi-0.0.1.jar> will appear inside the
+    \<target> directory of your project, ready to be installed in a
+    Hotmoka node
+
+  \item install \<ponzi-0.0.1.jar> in our AWS Hotmoka node (\begin{tt}moka install <payer> <jar>\end{tt})
+  \end{enumerate}
+
+  \medskip
+
+  \begin{greenbox}{}
+    {\color{armygreen}\scriptsize{\begin{tt}
+          moka install
+
+          06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
+
+          .../target/ponzi-0.0.1.jar
+
+          --url panarea.hotmoka.io
+    \end{tt}}}
+    {\scriptsize\begin{semiverbatim}
+Do you really want to spend up to 443300 gas units to install the jar [Y/N] Y
+.../target/ponzi-0.0.1.jar has been installed at
+  {\color{red}39f999a63555542eaf5040388d61c20193dee4fb035847a40608c494bf069765}
+{\color{armygreen}total gas consumed: 298189}
+{\color{darkred}  for CPU: 233
+  for RAM: 1164
+  for storage: 296792
+  for penalty: 0}
+    \end{semiverbatim}}
+  \end{greenbox}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{An insurance contract}
+
+  \begin{greenbox}{The contract allows one to insure specific days of the year}
+    If it rains on those days, one will get an indemnization larger than
+    the cost of the insurance
+    \begin{itemize}
+    \item much larger in summer
+    \item just a bit larger in winter
+    \end{itemize}
+  \end{greenbox}
+
+  \medskip
+  The contract provides the following functionalities:
+
+  \begin{itemize}
+  \item construction, upon specification of the oracle:
+    \[\<{\color{violet}@FromContract} {\color{airforceblue}@Payable} Insurance({\color{airforceblue}BigInteger amount}, Contract oracle)>\]
+  \item purchase of an insurance for specific days:
+    \[\<{\color{violet}@FromContract(PayableContract.class)} {\color{airforceblue}@Payable} void buy>\]
+    \vspace*{-5ex}
+    \[\<({\color{airforceblue}long amount}, int day, int month, int year, int duration)>\]
+  \item notification of rain and indemnization:
+    \[\<{\color{violet}@FromContract} void itRains()>\]
+  \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{An insurance contract}
+
+  {\scriptsize\begin{semiverbatim}
+public class Insurance extends {\color{blue}Contract} \{
+  public final static long MIN = 1_000, MAX = 1_000_000_000;
+  private final {\color{blue}Contract} oracle;
+  private final {\color{blue}StorageSet}<InsuredDay> insuredDays = new {\color{blue}StorageTreeSet<>()};
+
+  public {\color{violet}@FromContract} {\color{airforceblue}@Payable} Insurance({\color{airforceblue}BigInteger amount}, Contract oracle) \{
+    this.oracle = oracle;
+  \}
+
+  {\color{red}// inner class}
+  private static class InsuredDay extends {\color{blue}Storage} \{ {\color{red}/* shown later */} \}
+
+  public {\color{violet}@FromContract(PayableContract.class)} {\color{airforceblue}@Payable} void buy
+    ({\color{airforceblue}long amount}, int day, int month, int year, int duration) \{ {\color{red}/* shown later */} \}
+
+  public {\color{violet}@FromContract} void itRains() \{ {\color{red}/* shown later */} \}
+\}
+  \end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{The inner class}
+
+\vspace{-1ex}
+{\tiny\begin{semiverbatim}
+private static class InsuredDay extends {\color{blue}Storage} \{
+  private final PayableContract payer;
+  private final long amount;
+  private final int day, month, year;
+
+  private InsuredDay(PayableContract payer, long amount, LocalDate when) \{
+    this.payer = payer;
+    this.amount = amount;
+    this.day = when.getDayOfMonth();  this.month = when.getMonthValue();  this.year = when.getYear();
+  \}
+
+  private boolean isToday() \{
+    return LocalDate.of(year, month, day).equals(today());
+  \}
+
+  private boolean isTodayOrBefore() \{
+    return !LocalDate.of(year, month, day).isAfter(today());
+  \}
+
+  private static LocalDate today() \{
+    Instant now = Instant.ofEpochMilli({\color{blue}Takamaka.now()});
+    return LocalDate.ofInstant(now, ZoneId.of("Europe/Rome"));
+  \}
+
+  private long indemnization() \{
+    switch (Season.now()) \{  {\color{red}// Season is an enumeration}
+      case WINTER: return amount * 18 / 10; {\color{red}// 180%}
+      case SPRING: return amount * 30 / 10; {\color{red}// 300%}
+      case SUMMER: return amount * 50 / 10; {\color{red}// 500%}
+      default /* FALL */ : return amount * 28 / 10; {\color{red}// 280%}
+    \}
+  \}
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Buy an insurance}
+
+{\scriptsize\begin{semiverbatim}
+public {\color{violet}@FromContract(PayableContract.class)} {\color{airforceblue}@Payable} void buy
+    ({\color{airforceblue}long amount}, int day, int month, int year, int duration) \{
+
+  {\color{armygreen}require(duration >= 1, "you must insure at least one day");
+  require(duration <= 7, "you cannot insure more than a week");
+  require(amount >= MIN * duration,
+    () -> "we insure a single day for at least " + MIN + " units of coin");
+  require(amount <= MAX * duration,
+    () -> "we insure a single day for up to " + MAX + " units of coin");}
+
+  // if the date is wrong, this generates an exception
+  LocalDate start = LocalDate.of(year, month, day);
+
+  PayableContract payer = (PayableContract) {\color{violet}caller()};
+  for (int offset = 0; offset < duration; offset++)
+    insuredDays.add(new InsuredDay
+                    (payer, amount / duration, start.plusDays(offset)));
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Pay the indemnization}
+
+{\scriptsize\begin{semiverbatim}
+public {\color{violet}@FromContract} void itRains() \{
+  {\color{armygreen}require({\color{violet}caller()} == oracle, "only the oracle can call this method");}
+
+  {\color{red}// pay who insured today}
+  insuredDays.stream()
+    .filter(InsuredDay::isToday)
+    .forEachOrdered(insuredDay ->
+          insuredDay.payer.{\color{blue}receive}(insuredDay.indemnization()));
+
+  {\color{red}// clean-up the set of insured days}
+  insuredDays.stream()
+    .filter(InsuredDay::isTodayOrBefore)
+    .forEachOrdered(insuredDays::remove);
+\}
+\end{semiverbatim}}
+
+\end{frame}
+
+%moka install 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 target/insurance-0.0.1.jar --url panarea.hotmoka.io
+\begin{frame}[fragile]\frametitle{On-chain verification: incorrect use of annotations}
+
+  \begin{redbox}{Assume that the programmer forgets the \<FromContract> annotation in \<buy>}
+  \<public {\color{green}\sout{@FromContract(PayableContract.class)}} @Payable void buy
+  (long amount, int day, int month, int year, int duration)>
+  \end{redbox}\pause
+
+  \begin{tt}mvn clean package\end{tt} $\Rightarrow$ regenerates \<target/insurance-0.0.1.jar>\pause
+
+\medskip
+
+\begin{greenbox}{Let's try to install this version of the jar}
+{\scriptsize\begin{semiverbatim}
+ {\color{red}moka install
+ 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
+ target/insurance-0.0.1.jar
+ --url panarea.hotmoka.io}\pause
+
+Do you really want to spend up to 852500 gas units to install the jar [Y/N] Y
+{\color{armygreen}total gas consumed: 852500}
+{\color{darkred}  for CPU: 255
+  for RAM: 1326
+  for storage: 381762
+  for penalty: 469157     !!!!!!!}
+io.hotmoka.beans.TransactionException:
+io.takamaka.code.verification.VerificationException:
+{\color{red}it/univr/insurance/Insurance.java method buy:
+@Payable can only be applied to a @FromContract method or constructor}
+\end{semiverbatim}}
+\end{greenbox}
+
+\end{frame}
+
+%moka install 251bfca0a37c0cc2611f3a5caee95fedb972e820609c6a0912d2527af53f59bb#0 target/insurance-0.0.1.jar --url panarea.hotmoka.io
+\begin{frame}[fragile]\frametitle{On-chain verification: potential non-determinism}
+
+  \begin{redbox}{Assume to use \<forEach> instead of \<forEachOrdered> in \<itRains>}
+\<insuredDays.stream().filter(InsuredDay::isToday).{\color{green}forEach}(...);>
+  \end{redbox}\pause
+
+  \begin{tt}mvn clean package\end{tt} $\Rightarrow$ regenerates \<target/insurance-0.0.1.jar>\pause
+
+\medskip
+
+\begin{greenbox}{Let's try to install this version of the jar}
+{\scriptsize\begin{semiverbatim}
+ {\color{red}moka install
+ 06aa6a1afabc82c7161ffcdc2391a2136101aaeb94f64edd53a1d0d1436d610e\#0
+ target/insurance-0.0.1.jar
+ --url panarea.hotmoka.io}\pause
+
+Do you really want to spend up to 852500 gas units to install the jar [Y/N] Y
+{\color{armygreen}total gas consumed: 853700}
+{\color{darkred}  for CPU: 255
+  for RAM: 1326
+  for storage: 382362
+  for penalty: 469757     !!!!!!!}
+io.hotmoka.beans.TransactionException:
+io.takamaka.code.verification.VerificationException:
+{\color{red}it/univr/insurance/Insurance.java:95:
+illegal call to non-white-listed method java.util.stream.Stream.forEach}
+\end{semiverbatim}}
+\end{greenbox}
+
+\end{frame}
+
+%moka verify target/insurance-0.0.1.jar --libs io-takamaka-code-1.0.0.jar
+\begin{frame}[fragile]\frametitle{Off-chain verification}
+
+Using the blockchain as a debugger is very expensive\ldots
+
+\medskip
+\begin{tt}
+moka verify <jar> --libs dependencies
+\end{tt}\pause
+
+\medskip
+
+\begin{greenbox}{We verify the jar off-chain, to find all errors}
+{\scriptsize\begin{semiverbatim}
+ {\color{red}moka verify
+ \only<3>{jar}\only<4->{target/insurance-0.0.1.jar}
+ \only<5>{--libs dependencies}\only<6->{--libs io-takamaka-code-1.0.0.jar}}
+\onslide<7->{
+{\color{red}
+it/univr/insurance/Insurance.java method buy:
+  @Payable can only be applied to a @FromContract method or constructor
+it/univr/insurance/Insurance.java:46:
+  caller() can only be used inside a @FromContract method or constructor
+it/univr/insurance/Insurance.java:95:
+  illegal call to non-white-listed method java.util.stream.Stream.forEach
+it/univr/insurance/Insurance.java:99:
+  illegal call to non-white-listed method java.util.stream.Stream.forEach
+}}
+\end{semiverbatim}}
+\end{greenbox}
+
+\end{frame}
+
+\begin{frame}\frametitle{ERC20 Tokens}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/erc20_1.png}
+  \end{center}
+  
+\end{frame}
+
+\begin{frame}\frametitle{ERC20 Tokens}
+
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/erc20_2.png}
+  \end{center}
+  
+\end{frame}
+
+\begin{frame}\frametitle{The OpenZeppelin reference implementation}
+
+  \begin{greenbox}{We follow (in part) the implementation by OpenZeppelin}
+    \begin{center}
+      \includegraphics[scale=0.2,clip=false]{pictures/open-zeppelin.jpg}
+    \end{center}
+    \begin{center}
+      \url{https://docs.openzeppelin.com/contracts/2.x/api/token/erc20}
+    \end{center}
+  \end{greenbox}
+  
+\end{frame}
+
+\begin{frame}\frametitle{The hierarchy of the implementation}
+
+  \vspace*{-3ex}
+  \begin{center}
+    \includegraphics[scale=0.4,clip=false]{pictures/erc20-uml.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Inconsistent view}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/inconsistency.pdf}
+  \end{center}
+
+  \bigskip
+
+  Between a call to \<balanceOf> and the next, the state of the token might change in the database
+  because other users might call the transfer functions, concurrently
+
+\end{frame}
+
+\begin{frame}\frametitle{Consistent view}
+
+  \begin{center}
+    \includegraphics[scale=0.5,clip=false]{pictures/consistency.pdf}
+  \end{center}
+
+  \bigskip
+
+  \begin{itemize}
+  \item \<snapshot()> works in $O(1)$
+  \item all calls to \<balanceOf> refer to the same, consistent state of the token (possibly not the
+    latest)
+  \item impossible in Solidity, where maps cannot be cloned
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{References}
+  \begin{itemize}
+  \item Fausto Spoto:
+\emph{A Java Framework for Smart Contracts}. Financial Cryptography Workshops 2019: 122-137
+  \item Fausto Spoto:
+\emph{Enforcing Determinism of Java Smart Contracts}. Financial Cryptography Workshops 2020: 568-583
+  \item Luca Olivieri, Fausto Spoto, Fabio Tagliaferro:
+\emph{On-Chain Smart Contract Verification over Tendermint}. Financial Cryptography Workshops 2021: 333-347
+  \item Marco Crosara, Luca Olivieri, Fausto Spoto, Fabio Tagliaferro:
+\emph{Re-engineering ERC-20 Smart Contracts with Efficient Snapshots for the Java Virtual Machine}. BCCA 2021: 187-194, to appear in Cluster Computing
+  \item Andrea Benini, Mauro Gambini, Sara Migliorini, Fausto Spoto:
+\emph{Power and Pitfalls of Generic Smart Contracts}. BCCA 2021: 179-186, to appear in Cluster Computing
+  \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Proof of space}
+
+  \begin{itemize}
+  \item proof of work is too expensive and polluting
+  \item proof of stake makes it hard to have many really independent validators
+  \end{itemize}
+
+  \medskip
+
+  \begin{greenbox}{Proof of space}
+    In 2014, Burstcoin (later Signum) implemented a mining algorithm
+    where the miners must solve a puzzle to gain the right to mine a new block:
+    \begin{itemize}
+    \item the puzzle is too hard to be computed for each new block
+    \item the puzzle becomes very simple if some information is precomputed and stored on disk
+    \item the CPU of the miners remains largely idle: no electricity cost
+    \item the more precomputation, the more disk is committed, the higher the probability of solving the puzzle and mining a new block
+    \end{itemize}
+  \end{greenbox}
+  
+\end{frame}
+
+\begin{frame}{Mokamint (\url{www.mokamint.io})}
+
+  Signum is a monolithic, non-commented, Java 5, undocumented piece of code
+
+  \bigskip
+
+  \begin{greenbox}{The idea of Mokamint (Fausto Spoto 2023, work in progress)}
+    \begin{itemize}
+    \item Tendermint: a generic blockchain engine based on proof of stake
+    \item Mokamint: a generic blockchain engine based on proof of space
+      \begin{center}
+        \includegraphics[scale=0.1,clip=false]{pictures/mokamint_colors.jpg}
+      \end{center}
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  Attach Hotmoka on top of Mokamint, as an example of application
+
+\end{frame}
 
 \end{document}
