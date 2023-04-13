@@ -129,19 +129,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Bitcoin transactions}
-
-  \begin{center}
-    \includegraphics[scale=0.7,clip=false]{pictures/bitcoin-daily.png}
-  \end{center}
-
-  \begin{center}
-    Around 300,000 transactions per day
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Credit cards transactions (billions, 2018)}
+\begin{frame}\frametitle{Credit cards transactions (billions, 2018) vs Bitcoin}
 
   \begin{center}
     \includegraphics[scale=0.3,clip=false]{pictures/credit-cards.png}
@@ -299,7 +287,7 @@
   \end{enumerate}
 \end{frame}
 
-\begin{frame}\frametitle{Alice charges her wallet}
+\begin{frame}\frametitle{Alice charges her wallet with a transaction}
   \begin{itemize}
   \item she asks a friend to send bitcoins to her address
   \item meets a bitcoin seller in person
@@ -315,25 +303,6 @@
     agreement, the average of the last sell operations.
     You can look online for it
   \end{greenbox}
-
-\end{frame}
-
-\begin{frame}\frametitle{The charge transaction}
-
-  \begin{enumerate}
-  \item Joe (the seller) specifies in his wallet Alice's bitcoin address
-    as destination (or scans Alice's QR code with his mobile)
-  \item Joe signs a transaction (a sequence of bits),
-    with his private key, stating: \emph{``I acknowledge
-    to send X bitcoins from my address to Alice's destination address''}
-  \item Joe's wallet broadcasts the signed transactions
-    to one (or more) servers of the bitcoin network
-  \item the network spreads the information and eventually the transaction is cleared
-    (in $10$ minutes or more)
-  \item Alice's wallet polls the bitcoin network for a transaction having
-    Alice's address as destination and updates the balance on the screen
-    accordingly (\alert{confirmation})
-  \end{enumerate}
 
 \end{frame}
 
@@ -995,7 +964,7 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
 
   \begin{redbox}{}
     \begin{center}
-      But what about fairness?
+      But what about fairness and progress?
     \end{center}
   \end{redbox}
 
@@ -1046,22 +1015,6 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
   \item the algorithm can be easily run in parallel, GPU, ASIC
   \end{itemize}
 
-\end{frame}
-
-\begin{frame}\frametitle{The blockchain grows}
-
-  \begin{itemize}
-  \item the miner creates a new block on top of the main history
-  \item the miner receives a valid new block from a peer
-    \begin{itemize}
-    \item whose parent is the top of the main history, or
-    \item whose parent is another block of the blockchain (fork), or
-    \item whose parent is unknown to the miner (orphan block)
-    \end{itemize}
-  \item in case of fork, the main history is the longest one, but the miner keeps all histories,
-    in case they might become the new main history in the future
-  \end{itemize}
-  
 \end{frame}
 
 \begin{frame}\frametitle{Fork: all nodes start with the same vision}
@@ -1476,33 +1429,6 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
 
 \end{frame}
 
-\begin{frame}\frametitle{Merkle-Patricia tries}
-
-  \begin{enumerate}
-  \item a compact representation by difference from a previous state
-  \item fast recomputation of its hash once the state is updated
-  \item fast access to the value bound to each given key
-  \item fast change of view
-  \end{enumerate}
-
-  \medskip
-  Traditional data structures such as hashmaps only satisfy~3
-  (and~2, but only for trivial hashing functions, which is not
-  acceptable for blockchains)
-
-  \bigskip
-
-  \begin{greenbox}{The final API of the state for addresses of length $L$}
-    \begin{enumerate}
-    \item \<value=get(address)> \hfill $O(L)$
-    \item \<put(address, value)> \hfill $O(L+\mathit{size}(\<value>))$
-    \item \<h=get\_hash()> \hfill $O(1)$
-    \item \<checkout(h)> \hfill $O(1)$
-    \end{enumerate}
-  \end{greenbox}
-
-\end{frame}
-
 \section{Smart contracts}
 
 \begin{frame}\frametitle{A smart contract is\ldots}
@@ -1573,10 +1499,10 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
     with constants \<true> and \<false> and usual operators
   \end{greenbox}
   \bigskip
-  \begin{greenbox}{\<int>, \<unint>}
+  \begin{greenbox}{\<int>, \<uint>}
     signed or unsigned, with usual operators, in increments of 8 bit size:
     \<uint8>, \<uint16>, \<int24>\ldots. Without specification, they stand for
-    \<int256> and \<unint256>, respectively
+    \<int256> and \<uint256>, respectively
   \end{greenbox}
   \bigskip
   \begin{greenbox}{\<fixed>$M\times N$, \<ufixed>$M\times N$}
@@ -1621,7 +1547,7 @@ enum NAME { A, B, ... }
 \begin{verbatim}
 struct pair {
   int16 x;
-  unint8 y;
+  uint8 y;
 }
 \end{verbatim}
   \end{greenbox}
@@ -1630,7 +1556,7 @@ struct pair {
 
   \begin{greenbox}{Mappings}
 \begin{verbatim}
-mapping(address => unint256) balances;
+mapping(address => uint256) balances;
 \end{verbatim}
 
 A field of type mapping spreads its values into the state through hashing:
@@ -1644,35 +1570,6 @@ A field of type mapping spreads its values into the state through hashing:
 \item[$\Rightarrow$] it is not possible to iterate on a mapping
 \end{itemize}
   \end{greenbox}
-
-\end{frame}
-
-\begin{frame}\frametitle{Back to C's \<void *>}
-
-  \begin{greenbox}{\<address>}
-    A 20-bytes Ethereum address
-
-    \begin{itemize}
-    \item it has a \<balance> field
-    \item there is no \<instanceof> operator
-    \item casts never fail
-    \end{itemize}
-
-  \end{greenbox}
-
-  \bigskip
-
-  \begin{center}
-    \includegraphics[scale=0.25,clip=false]{pictures/frog-princess.png}
-  \end{center}
-
-  \begin{redbox}{}
-    \begin{itemize}
-    \item you can dress a frog as a princess, but it will remain a frog
-    \item you can dress a princess as a frog, but it will remain a princess
-    \item you will understand the difference when you kiss it
-    \end{itemize}
-  \end{redbox}
 
 \end{frame}
 
@@ -1719,7 +1616,7 @@ A field of type mapping spreads its values into the state through hashing:
 
 \end{frame}
 
-\begin{frame}\frametitle{Solidity is \alert{not} strongly-typed}
+\begin{frame}\frametitle{Type \<address>: Solidity is \alert{not} strongly-typed}
 
   \begin{enumerate}
   \item casts are not checked
@@ -1804,10 +1701,11 @@ A field of type mapping spreads its values into the state through hashing:
 
   \bigskip
 
-  \begin{greenbox}{Proof of work [PoW] is expensive}
+  \begin{greenbox}{}
     \begin{itemize}
-    \item proof of stake [PoS] (who committed more money)
-    \item proof of space (who committed more disk space)
+    \item Proof of work [PoW] (who works harder and is lucky)
+    \item proof of stake [PoS] (who commits more money)
+    \item proof of space (who commits more disk space)
     \item proof of authority (who has more authority)
     \item \ldots
     \end{itemize}
@@ -2001,31 +1899,6 @@ A field of type mapping spreads its values into the state through hashing:
 
 \end{frame}
 
-\begin{frame}\frametitle{The API of a Hotmoka node}
-
-  \begin{itemize}
-  \item \<[add|post]JarStore(request):TransactionReference>
-  \item \<[add|post]ConstructorCall(request):StorageReference>
-  \item \<[add|post|run]InstanceMethodCall(request):StorageValue>
-  \item \<[add|post|run]StaticMethodCall(request):StorageValue>
-  \item \<subscribeToEvents(key):Subscription>
-  \item \<getState(StorageReference):State>
-  \end{itemize}
-
-  \bigskip
-
-  \begin{greenbox}{}
-    \<add> calls are synchronous (wait for the result)
-
-    \smallskip
-    \<post> calls are asynchronous (yield a future)
-
-    \smallskip
-    \<run> calls are synchronous and only for read-only methods
-  \end{greenbox}
-
-\end{frame}
-
 \begin{frame}\frametitle{Hotmoka nodes \underline{can} be Tendermint applications}
 
   \begin{center}
@@ -2211,8 +2084,6 @@ class {\color{violet}io.takamaka.code.governance.Manifest} (from jar installed a
 
 \vspace*{-1ex}{\tiny\begin{semiverbatim}
 {\color{darkblue}{
-package io.takamaka.ponzi;
-
 import static io.takamaka.code.lang.Takamaka.require;
 import java.math.BigInteger;
 import io.takamaka.code.lang.Contract;
@@ -2284,7 +2155,7 @@ public class Insurance extends {\color{blue}Contract} \{
   \}
 
   {\color{red}// inner class}
-  private static class InsuredDay extends {\color{blue}Storage} \{ {\color{red}/* shown later */} \}
+  private static class InsuredDay extends {\color{blue}Storage} \{ {\color{red}/* not shown */} \}
 
   public {\color{violet}@FromContract(PayableContract.class)} {\color{airforceblue}@Payable} void buy
     ({\color{airforceblue}long amount}, int day, int month, int year, int duration) \{ {\color{red}/* shown later */} \}
@@ -2292,47 +2163,6 @@ public class Insurance extends {\color{blue}Contract} \{
   public {\color{violet}@FromContract} void itRains() \{ {\color{red}/* shown later */} \}
 \}
   \end{semiverbatim}}
-
-\end{frame}
-
-\begin{frame}[fragile]\frametitle{The inner class}
-
-\vspace{-1ex}
-{\tiny\begin{semiverbatim}
-private static class InsuredDay extends {\color{blue}Storage} \{
-  private final PayableContract payer;
-  private final long amount;
-  private final int day, month, year;
-
-  private InsuredDay(PayableContract payer, long amount, LocalDate when) \{
-    this.payer = payer;
-    this.amount = amount;
-    this.day = when.getDayOfMonth();  this.month = when.getMonthValue();  this.year = when.getYear();
-  \}
-
-  private boolean isToday() \{
-    return LocalDate.of(year, month, day).equals(today());
-  \}
-
-  private boolean isTodayOrBefore() \{
-    return !LocalDate.of(year, month, day).isAfter(today());
-  \}
-
-  private static LocalDate today() \{
-    Instant now = Instant.ofEpochMilli({\color{blue}Takamaka.now()});
-    return LocalDate.ofInstant(now, ZoneId.of("Europe/Rome"));
-  \}
-
-  private long indemnization() \{
-    switch (Season.now()) \{  {\color{red}// Season is an enumeration}
-      case WINTER: return amount * 18 / 10; {\color{red}// 180%}
-      case SPRING: return amount * 30 / 10; {\color{red}// 300%}
-      case SUMMER: return amount * 50 / 10; {\color{red}// 500%}
-      default /* FALL */ : return amount * 28 / 10; {\color{red}// 280%}
-    \}
-  \}
-\}
-\end{semiverbatim}}
 
 \end{frame}
 
@@ -2589,7 +2419,7 @@ it/univr/insurance/Insurance.java:99:
 
 \begin{frame}{Mokamint (\url{www.mokamint.io})}
 
-  Signum is a monolithic, non-commented, Java 5, undocumented piece of code
+  Signum is monolithic, non-commented, Java 5, undocumented code
 
   \bigskip
   \bigskip
