@@ -33,7 +33,7 @@
   \usefonttheme[onlysmall]{structurebold}
 }
 
-\subtitle{S\~ao Luis, Brasil, 18/6/2024}
+\subtitle{S\~ao Luis, Brazil, 18/6/2024}
 \title{Blockchain and its Energy Cost}
 \institute{Universit\`a di Verona, Italy}
 \date{June 2024}
@@ -131,7 +131,7 @@
   \begin{itemize}
   \item[1991] a cryptographically secure chain of blocks (Haber \& Stornetta)
   \item[1992] proof of work (Dwork \& Naor)
-  \item[2008] the sum of the above two becomes Bitcoin (Nakamoto)
+  \item[2008] the sum of the two above becomes Bitcoin (Nakamoto)
   \end{itemize}
 
   \bigskip
@@ -139,7 +139,7 @@
   \begin{greenbox}{Why did it take so long?}
     \begin{itemize}
     \item because researchers live in isolated bubbles
-    \item because the implementation was complicated
+    \item because the implementation was hard
     \end{itemize}
   \end{greenbox}
 
@@ -179,7 +179,7 @@
 
   \bigskip
 
-  The email client will accept the email only if the hash starts with at least 7 (or more) zeros
+  The email client will accept the email only if the hash starts with at least seven (or more) zeros
 
   \bigskip
 
@@ -300,7 +300,7 @@
   \end{center}
 
   \begin{redbox}{}
-    Send one bitcoin to this account and your data will be decrypted for you
+    Send one bitcoin to this account if you want your data decrypted!
   \end{redbox}
 
 \end{frame}
@@ -308,7 +308,7 @@
 \begin{frame}\frametitle{Blockhains are used to circumvent international rules or bans}
 
   \begin{center}
-    \includegraphics[scale=0.5, clip=false]{pictures/send-money.jpg}
+    \includegraphics[scale=1, clip=false]{pictures/send-money.jpg}
   \end{center}
 
 \end{frame}
@@ -409,63 +409,11 @@
 
 \end{frame}
 
-\begin{frame}
-  \frametitle{Hotmoka (Fausto Spoto, 2019--2021): \url{www.hotmoka.io}}
-
-  \begin{center}
-    \includegraphics[scale=0.2,clip=false]{pictures/hotmoka_logo.png}
-  \end{center}
-  
-  \begin{greenbox}{}
-    An open-source implementation of a network of nodes:
-    \begin{itemize}
-    \item nodes of a blockchain
-    \item IoT devices
-    \item computers in the cloud
-    \end{itemize}
-  \end{greenbox}
-
-  \bigskip
-
-  \begin{greenbox}{Requests are OO-based}
-    \begin{itemize}
-    \item install code in the node
-    \item create an object
-    \item call a method of an object
-    \item methods are implemented in Takamaka (subset of Java)
-    \end{itemize}
-  \end{greenbox}
-
-\end{frame}
-
-\begin{frame}\frametitle{Hotmoka nodes \underline{can} be Tendermint applications}
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/tendermint-databases.png}
-  \end{center}
-    
-\end{frame}
-
-\begin{frame}{References}
-  \begin{itemize}
-  \item Fausto Spoto:
-\emph{A Java Framework for Smart Contracts}. Financial Cryptography Workshops 2019: 122-137
-  \item Fausto Spoto:
-\emph{Enforcing Determinism of Java Smart Contracts}. Financial Cryptography Workshops 2020: 568-583
-  \item Luca Olivieri, Fausto Spoto, Fabio Tagliaferro:
-\emph{On-Chain Smart Contract Verification over Tendermint}. Financial Cryptography Workshops 2021: 333-347
-  \item Marco Crosara, Luca Olivieri, Fausto Spoto, Fabio Tagliaferro:
-\emph{Re-engineering ERC-20 Smart Contracts with Efficient Snapshots for the Java Virtual Machine}. BCCA 2021: 187-194, to appear in Cluster Computing
-  \item Andrea Benini, Mauro Gambini, Sara Migliorini, Fausto Spoto:
-\emph{Power and Pitfalls of Generic Smart Contracts}. BCCA 2021: 179-186, to appear in Cluster Computing
-  \end{itemize}
-\end{frame}
-
 \begin{frame}\frametitle{Proof of space}
 
   \begin{itemize}
   \item proof of work is too expensive and polluting
-  \item proof of stake is complex and makes it hard to have many really independent validators
+  \item proof of stake is rather centralized and hard to maintain
   \end{itemize}
 
   \medskip
@@ -477,7 +425,7 @@
     \item the puzzle is too hard to be computed for each new block
     \item the puzzle becomes very simple if some information is precomputed and stored on disk
     \item the CPU of the miners remains largely idle: no electricity cost
-    \item the more precomputation, the more disk is committed, the higher the probability of solving the puzzle and mining a new block
+    \item the more precomputation, the more disk is committed, the higher the probability of solving the puzzle with a smaller \emph{deadline} and mining a new block
     \end{itemize}
   \end{greenbox}
   
@@ -485,24 +433,21 @@
 
 \begin{frame}{Mokamint (\url{www.mokamint.io})}
 
-  Signum is monolithic, non-commented, Java 5, undocumented code
+  Signum is monolithic, uncommented, Java 5, undocumented code
 
   \bigskip
   \bigskip
 
-  \begin{greenbox}{The idea of Mokamint (Fausto Spoto 2023, work in progress)}
+  \begin{greenbox}{The idea of Mokamint (Fausto Spoto 2023\ldots today, work in progress)}
     \begin{itemize}
     \item Tendermint: a generic blockchain engine based on proof of stake
     \item Mokamint: a generic blockchain engine based on proof of space
       \begin{center}
         \includegraphics[scale=0.1,clip=false]{pictures/mokamint_colors.jpg}
       \end{center}
+    \item \url{https://github.com/Mokamint-chain/mokamint}
     \end{itemize}
   \end{greenbox}
-
-  \bigskip
-
-  Later attach Hotmoka on top of Mokamint, as an application instance
 
 \end{frame}
 
