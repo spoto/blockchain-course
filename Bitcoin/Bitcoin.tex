@@ -183,13 +183,13 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Alice charges her wallet}
+\begin{frame}\frametitle{Alice recharges her wallet}
   \begin{itemize}
   \item she asks a friend to send bitcoins at her address
-  \item meets a bitcoin seller in person
-  \item earns bitcoin by working
-  \item uses a bitcoin ATM
-  \item uses a bitcoin currency exchange company
+  \item or meets a bitcoin seller in person
+  \item or earns bitcoin by working
+  \item or uses a bitcoin ATM
+  \item or uses a bitcoin currency exchange company
   \end{itemize}
 
   \bigskip
@@ -202,7 +202,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{The charge transaction}
+\begin{frame}\frametitle{The recharge transaction}
 
   \begin{enumerate}
   \item Joe (the seller) specifies in his wallet Alice's bitcoin address
@@ -223,7 +223,7 @@
 
 \begin{frame}\frametitle{The spend transaction}
 
-  Alice's wallet is charged now and she wants to buy a coffee at Bob's coffee shop:
+  Alice's wallet is now recharged and she wants to buy a coffee at Bob's coffee shop:
 
   \begin{enumerate}
   \item Alice's wallet signs, with her private key, a transaction
@@ -420,18 +420,18 @@
 \begin{frame}\frametitle{Fees}
 
   \begin{center}
-    \url{https://bitcoinfees.earn.com/}
+    \url{https://bitcoinfees.net}
   \end{center}
 
   \bigskip
   \begin{greenbox}{For example}
     \begin{itemize}
-    \item if I want a transaction processed in one hour at most, I must offer $90$ Satoshis ($0.0000009$ BTC) per byte
-    \item a simple transaction is in average $250$ bytes long
-    \item a BTC is $21000$ euros worth (as of today)
+    \item if I want a transaction processed in one hour at most, I must offer $5.41$ Satoshis per virtual byte
+    \item a simple transaction is in average $140$ virtual bytes long
+    \item a BTC is $60000$ euros worth (as of today)
     \end{itemize}
     \begin{center}
-      $\Rightarrow$ I must offer $0.0000009 * 250 * 21000=4.72$ euros as fee
+      $\Rightarrow$ I must offer $\frac{5.41 \cdot 140 \cdot 60000}{10^7}=0.45$ euros as fee
     \end{center}
   \end{greenbox}
 
@@ -510,7 +510,15 @@
   Ellyptic Curve Multiplication (ECM) is an abstraction or hashing algorithm
   
   \begin{center}
-    \includegraphics[scale=0.5,clip=false]{pictures/asymmetric-encryption.png}
+    \includegraphics[scale=0.26,clip=false]{pictures/asymmetric-encryption.png}
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{But the keys can be swapped!}
+
+  \begin{center}
+    \includegraphics[scale=0.3,clip=false]{pictures/asymmetric-encryption-swapped.png}
   \end{center}
 
 \end{frame}
@@ -562,7 +570,7 @@
 \begin{frame}\frametitle{Base58Check adds a checksum}
 
   \begin{center}
-    Base58 addresses are too easy to spell wrong!
+    Base58 addresses are too easy to spell wrongly!
   \end{center}
 
   \begin{center}
@@ -649,19 +657,6 @@
       \includegraphics[scale=0.45,clip=false]{pictures/mbc2_0501.png}
     \end{center}
     Hard to backup!
-  \end{greenbox}
-
-\end{frame}
-
-\begin{frame}\frametitle{Nondeterministic wallets}
-
-  \begin{greenbox}{Password stretching}
-    To make dictionary attacks harder, nondeterministic
-    wallets repeatedly apply a hash function
-    to each password, using the hash result as the actual encryption password
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/key-derivation-function.png}
-  \end{center}
   \end{greenbox}
 
 \end{frame}
@@ -1455,7 +1450,7 @@ tx = \{
 
   \bigskip
 
-  \begin{greenbox}{Each miner does work}
+  \begin{greenbox}{Each miner does some work}
     \begin{enumerate}
     \item build a new block
     \item set the nonce field of its header to a random value
@@ -1468,7 +1463,7 @@ tx = \{
   \bigskip
 
   \begin{itemize}
-  \item the header of the resulting block is the PoW
+  \item the nonec in the header of the resulting block is the PoW
   \item the time to solve this puzzle is inversely proportional to $\mathit{difficulty}$
   \item the algorithm can be easily run in parallel
   \end{itemize}
@@ -1485,10 +1480,13 @@ tx = \{
     \item whose parent is another block of the blockchain (fork), or
     \item whose parent is unknown to the miner (orphan block)
     \end{itemize}
-  \item in case of fork, the main history is the longest one, but the miner keeps all histories,
+  \item in case of fork, the main history is the longest one (actually: the most powerful one), but the miner keeps all histories,
     in case they might become the new main history in the future
   \end{itemize}
-  
+
+  \[
+  \mathit{power}(\mathit{chain})=\sum_{\mathit{block}\in\mathit{chain}}\frac{2^{8\cdot 32}}{\mathit{block}.\mathit{nonce}+1}
+  \]
 \end{frame}
 
 \begin{frame}\frametitle{Fork: all nodes start with the same vision}
