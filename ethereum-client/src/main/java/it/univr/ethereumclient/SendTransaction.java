@@ -19,10 +19,12 @@ public abstract class SendTransaction {
 	protected final static String ME = "0xb2B68C5E29C4267A24BB92daC5579D93f9A74812";
 	private final static String ME_PRIVATE_KEY = "E2426EF4CE6F5E19B275082D29CC77EFD0D78B8396834FED395AD3879221ACCF";
 	private final static Credentials credentials = Credentials.create(ME_PRIVATE_KEY);
-	protected final Web3j web3 = Web3j.build(new HttpService("https://ropsten.infura.io/v3/05550caa054f4fec80ff94136edf2944"));
+	protected final Web3j web3 = Web3j.build
+		(new HttpService("https://sepolia.infura.io/v3/05550caa054f4fec80ff94136edf2944"));
 
 	public BigInteger transactionCount() throws InterruptedException, ExecutionException {
-		EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount(ME, DefaultBlockParameterName.LATEST).sendAsync().get();
+		EthGetTransactionCount ethGetTransactionCount = web3.ethGetTransactionCount
+			(ME, DefaultBlockParameterName.LATEST).sendAsync().get();
 		return ethGetTransactionCount.getTransactionCount();
 	}
 

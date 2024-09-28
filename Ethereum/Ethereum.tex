@@ -51,7 +51,7 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Thw world computer}
+  \frametitle{The world computer}
 
   \begin{greenbox}{}
     An open source, globally \alert{decentralized computing infrastructure}
@@ -135,7 +135,7 @@
 \begin{frame}\frametitle{Ether (ETH) price over the years}
 
   \begin{center}
-    \includegraphics[scale=0.29,clip=false]{pictures/ether-chart.png}
+    \includegraphics[scale=0.185,clip=false]{pictures/ether-chart.png}
   \end{center}
 
 \end{frame}
@@ -143,7 +143,7 @@
 \begin{frame}\frametitle{Ethereum Classic Ether (ETC) price over the years}
 
   \begin{center}
-    \includegraphics[scale=0.29,clip=false]{pictures/ether-classic-chart.png}
+    \includegraphics[scale=0.185,clip=false]{pictures/ether-classic-chart.png}
   \end{center}
 
 \end{frame}
@@ -180,23 +180,17 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{MetaMask: connect to the faucet}
+\begin{frame}\frametitle{Receive tokens from the faucet of the Sepolia testnet}
+
+  \url{https://cloud.google.com/application/web3/faucet/ethereum/sepolia}
 
   \begin{center}
-    \includegraphics[scale=0.3,clip=false]{pictures/metamask-faucet.png}
+    \includegraphics[scale=0.4,clip=false]{pictures/sepolia-faucet.png}
   \end{center}
 
 \end{frame}
 
-\begin{frame}\frametitle{MetaMask: transaction for getting 1 ETH}
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/metamask-faucet-transaction.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{MetaMask: detail of the transaction}
+\begin{frame}\frametitle{Metamask: Detail of the transaction}
 
   \begin{center}
     \includegraphics[scale=0.4,clip=false]{pictures/metamask-faucet-transaction-details.png}
@@ -227,7 +221,7 @@
 \begin{frame}\frametitle{A web IDE for Solidity: \url{https://remix.ethereum.org}}
 
   \begin{center}
-    \includegraphics[scale=0.47,clip=false]{pictures/faucet_sol.png}
+    \includegraphics[scale=0.35,clip=false]{pictures/faucet_sol.png}
   \end{center}
 
 \end{frame}
@@ -239,7 +233,7 @@
   \end{greenbox}
 
   \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/deploy-faucet.png}
+    \includegraphics[scale=0.4,clip=false]{pictures/deploy-faucet.png}
   \end{center}
 
 \end{frame}
@@ -255,7 +249,7 @@
 \begin{frame}\frametitle{Check the outcome on Etherscan}
 
   \begin{greenbox}{}
-    \url{https://ropsten.etherscan.io}
+    \url{https://sepolia.etherscan.io}
   \end{greenbox}
 
   \begin{center}
@@ -269,7 +263,7 @@
   This corresponds to calling the default payable function.
   
   \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/faucet-etherscan2.png}
+    \includegraphics[scale=0.43,clip=false]{pictures/metamask-send-to-faucet.png}
   \end{center}
 
 \end{frame}
@@ -280,10 +274,6 @@
     \includegraphics[width=\textwidth,clip=false]{pictures/faucet-withdraw.png}
   \end{center}
 
-  \begin{center}
-    $17$ zero's
-  \end{center}
-  
 \end{frame}
 
 \begin{frame}\frametitle{Check again on Etherscan}
@@ -303,7 +293,7 @@
   \end{center}
 
   \begin{center}
-    \<msg.sender.transfer(withdraw\_amount)>
+    \<payable(msg.sender).transfer(withdraw\_amount)>
   \end{center}
 
 \end{frame}
@@ -338,11 +328,11 @@
 \begin{frame}\frametitle{Too big to fail?}
 
   \begin{center}
-    \includegraphics[scale=0.25,clip=false]{pictures/ethereum-size.png}
+    \includegraphics[scale=0.15,clip=false]{pictures/ethereum-size.png}
   \end{center}
 
   \begin{center}
-    An 8TB SSD unit costs 160€ (2021)
+    A 20TB SSD unit costs 1500€ (2024)
   \end{center}
 
 \end{frame}
@@ -350,7 +340,7 @@
 \begin{frame}\frametitle{Client types}
 
   \begin{greenbox}{Full nodes}
-    A full node stores the whole blockchain ($\sim$6TB) and
+    A full node stores the whole blockchain ($\sim$20TB including the state) and
     takes part in mining. Very slow to synchronize.
     It can query the blockchain offline and
     without letting a third party know the information that it's reading
@@ -395,10 +385,10 @@ $ \alert{curl https://mainnet.infura.io/v3/05550caa054f4fec80ff...
   -d '\{"jsonrpc":"2.0","method":"web3_clientVersion",
   "params": [],"id":1\}'}
 {\color{blue}\{"jsonrpc":"2.0","id":1,
-  "result":"Geth/v1.9.25-omnibus-331c5f09
-            /linux-amd64/go1.15.6"\}}
+  "result":"Geth/v1.14.8-stable-a9523b64
+            /linux-amd64/go1.22.6"\}}
 \end{semiverbatim}
-
+    
 \end{greenbox}
 
 \end{frame}
@@ -414,10 +404,10 @@ $ \alert{curl https://mainnet.infura.io/v3/05550caa054f4fec80ff...
   -H "Content-Type: application/json"
   -d '\{"jsonrpc":"2.0","method":"eth_gasPrice",
        "params": [],"id":1\}'}
-{\color{blue}\{"jsonrpc":"2.0","id":1,"result":"{\color{black}0x248dede201}"\}}
+{\color{blue}\{"jsonrpc":"2.0","id":1,"result":"{\color{black}0x16c597762}"\}}
 
-$ \alert{echo $(({\color{black}0x248dede201}))}
-{\color{blue}157000000001}
+$ \alert{echo $(({\color{black}0x16c597762}))}
+{\color{blue}6112769890}
 \end{semiverbatim}
 
   \end{greenbox}
@@ -435,19 +425,22 @@ $ \alert{echo $(({\color{black}0x248dede201}))}
 \begin{frame}[fragile]\frametitle{A Java client that connects to Infura}
 
   \begin{greenbox}{Import project \<ethereum-client> as an existing Maven project}
-{\scriptsize\begin{alltt}
+{\tiny\begin{alltt}
 <project xmlns="http://maven.apache.org/POM/4.0.0"...>
   <modelVersion>4.0.0</modelVersion>
   {\color{violet}{<groupId>it.univr</groupId>
   <artifactId>it.univr.ethereumclient</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>Ethereum Client</name>}}
-  {\color{red}{<build>
+  {\color{red}{<properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.release>17</maven.compiler.release>
+  </properties>
+  <build>
     <plugins><plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
-        <configuration><release>11</release></configuration>
+        <version>3.11.0</version>
     </plugin></plugins>
   </build>}}
   {\color{blue}{<dependencies>
@@ -633,7 +626,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
   \bigskip
 
   \begin{greenbox}{Wallets keep track of nonces}
-    They increase it and attach to each transaction they create per
+    They increase it and attach it to each transaction they create per
     originating EOA
   \end{greenbox}
 
@@ -696,7 +689,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
 
   \medskip
 
-  \begin{greenbox}{\url{https://ethgasstation.info/}}
+  \begin{greenbox}{\url{https://etherscan.io/gastracker}}
     \begin{center}
       \includegraphics[width=\textwidth,clip=false]{pictures/ethgasstation.png}
     \end{center}
@@ -716,7 +709,7 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
 
   \begin{redbox}{Example: a small transaction requires 21000 units of gas}
     \begin{center}
-      $\mathit{fees} = 151\times 21000\times 0.00000162$€$=5.137$€
+      $\mathit{fees} = 7.892\times 21000\times 0.000002378$€$=0.39$€
     \end{center}
   \end{redbox}
   
@@ -724,9 +717,9 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
 
 \begin{frame}\frametitle{Average fees chart}
 
-  \begin{greenbox}{\url{https://blockchair.com/}}
+  \begin{greenbox}{\url{https://etherscan.io/chart/transactionfee}}
     \begin{center}
-      \includegraphics[width=\textwidth,clip=false]{pictures/ethereum-fees-chart.png}
+      \includegraphics[scale=0.16,clip=false]{pictures/ethereum-fees-chart.png}
     \end{center}
   \end{greenbox}
 
@@ -779,32 +772,32 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
 
 \end{frame}
 
-\begin{frame}\frametitle{Transactions with value (\emph{payments})}
+%\begin{frame}\frametitle{Transactions with value (\emph{payments})}
 
-  \begin{itemize}
-  \item the recipient is an EOA (data will be kept in blockchain, but not used):
-    \begin{itemize}
-    \item the EOA existed already: its balance gets increased by value
-    \item the EOA didn't exist before: its balance is set to value
-    \end{itemize}
-  \item the recipient is a contract:
-    \begin{itemize}
-    \item there is data:
-      \begin{itemize}
-      \item there is a \alert{payable} method specified by the data: it will be  executed, after increasing the contract's balance by value
-      \item there is no such method or it is not payable: the transaction fails
-      \end{itemize}
-    \item there is no data:
-      \begin{itemize}
-      \item there is a \alert{payable \emph{fallback} function}: it will be executed after
-        increasing the contract's balance by value
-      \item there is no fallback function: the balance of the contract gets increased by value
-      \item there is a fallback function, but it is not payable: the transaction fails
-      \end{itemize}
-    \end{itemize}
-  \end{itemize}
+%  \begin{itemize}
+%  \item the recipient is an EOA (data will be kept in blockchain, but not used):
+%    \begin{itemize}
+%    \item the EOA existed already: its balance gets increased by value
+%    \item the EOA didn't exist before: its balance is set to value
+%    \end{itemize}
+%  \item the recipient is a contract:
+%    \begin{itemize}
+%    \item there is data:
+%      \begin{itemize}
+%      \item there is a \alert{payable} method specified by the data: it will be  executed, after increasing the contract's balance by value
+%      \item there is no such method or it is not payable: the transaction fails
+%      \end{itemize}
+%    \item there is no data:
+%      \begin{itemize}
+%      \item there is a \alert{payable \emph{fallback} function}: it will be executed after
+%        increasing the contract's balance by value
+%      \item there is no fallback function: the balance of the contract gets increased by value
+%      \item there is a fallback function, but it is not payable: the transaction fails
+%      \end{itemize}
+%    \end{itemize}
+%  \end{itemize}
 
-\end{frame}
+%\end{frame}
 
 \begin{frame}\frametitle{Transactions targetting contract methods}
 
