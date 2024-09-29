@@ -16,29 +16,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Compile Introduction slides
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@v3
         with:
           root_file: Introduction.tex
           working_directory: Introduction/
       - name: Compile Bitcoin slides
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@v3
         with:
           root_file: Bitcoin.tex
           working_directory: Bitcoin/
       - name: Compile Ethereum slides
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@v3
         with:
           root_file: Ethereum.tex
           working_directory: Ethereum/
       - name: Compile Tendermint slides
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@v3
         with:
           root_file: Tendermint.tex
           working_directory: Tendermint/
       - name: Compile Hotmoka slides
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@v3
         with:
           root_file: Hotmoka.tex
           working_directory: Hotmoka/
@@ -50,7 +50,7 @@ jobs:
           file Tendermint/Tendermint.pdf | grep -q ' PDF '
           file Hotmoka/Hotmoka.pdf | grep -q ' PDF '
       - name: Upload
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: blockchain-course
           path: |
