@@ -220,6 +220,7 @@
 
 \begin{frame}\frametitle{A web IDE for Solidity: \url{https://remix.ethereum.org}}
 
+  \<Faucet.sol>
   \begin{center}
     \includegraphics[scale=0.35,clip=false]{pictures/faucet_sol.png}
   \end{center}
@@ -1199,7 +1200,7 @@ byte[] signedMessage = TransactionEncoder.signMessage
 
 \end{frame}
 
-\begin{frame}\frametitle{Back to our first Solidity example}
+\begin{frame}\frametitle{Back to our first Solidity example (\<Faucet.sol>)}
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/faucet_sol.png}
   \end{center}
@@ -1532,7 +1533,7 @@ require(withdraw_amount <= 0.1 ether);
 
 \end{frame}
 
-\begin{frame}\frametitle{Modifiers}
+\begin{frame}\frametitle{Modifiers (\<Faucet2.sol>)}
 
   \begin{greenbox}{They can be used to weave aspects into code}
     \begin{center}
@@ -1552,7 +1553,7 @@ require(withdraw_amount <= 0.1 ether);
 
 \end{frame}
 
-\begin{frame}\frametitle{Contract extension and inheritance (also multiple)}
+\begin{frame}\frametitle{Inheritance (also multiple) (\<Faucet3.sol>)}
 
   \begin{greenbox}{}
     \begin{center}
@@ -1624,9 +1625,9 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{greenbox}{\<o.foo(pars)> can be decorated}
     \begin{itemize}
-    \item \<o.foo.value(v)(pars)>
-    \item \<o.foo.gas(g)(pars)>
-    \item \<o.foo.gas(g).value(v)(pars)>
+    \item \<o.foo\{value:v\}(pars)>
+    \item \<o.foo\{gas:g\}(pars)>
+    \item \<o.foo\{value:v,gas:g\}(pars)>
     \end{itemize}
   \end{greenbox}
 
@@ -1634,15 +1635,15 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{greenbox}{\<new C(pars)> can be decorated}
     \begin{itemize}
-    \item \<(new C).value(v)(pars)>
-    \item \<(new C).gas(g)(pars)>
-    \item \<(new C).gas(g).value(v)(pars)>
+    \item \<(new C)\{value:v\}(pars)>
+    \item \<(new C)\{gas:g\}(pars)>
+    \item \<(new C)\{value:v,gas:g\}(pars)>
     \end{itemize}
   \end{greenbox}
 
 \end{frame}
 
-\begin{frame}\frametitle{Contract creation and function calls}
+\begin{frame}\frametitle{Contract creation and function calls (\<Faucet4.sol>)}
 
   \begin{greenbox}{}
     \begin{center}
@@ -1658,23 +1659,7 @@ require(withdraw_amount <= 0.1 ether);
 
 \end{frame}
 
-\begin{frame}\frametitle{Contract creation with payable constructor}
-
-  \begin{greenbox}{If the constructor of \<Faucet> were made \<payable>}
-    \begin{center}
-      \includegraphics[scale=0.5,clip=false]{pictures/new-contract-payable.png}
-    \end{center}
-  \end{greenbox}
-
-  \bigskip
-
-  \begin{center}
-    Also in this case, we know what gets called with \<faucet.destroy()>
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Casts do not fail in Solidity}
+\begin{frame}\frametitle{Casts do not fail in Solidity (\<Casts.sol>)}
 
   \begin{center}
     \includegraphics[scale=0.45,clip=false]{pictures/cast-does-not-fail.png}
@@ -1682,10 +1667,10 @@ require(withdraw_amount <= 0.1 ether);
 
   Calling \<d.callFoo(c)>, where \<c> is a \<C>,
   does not fail but calls \<C>'s
-  fallback function and transfers $100$ wei to \<c>!
+  receive function and transfers $100$ wei to \<c>!
 \end{frame}
 
-\begin{frame}\frametitle{Parameter contract types are just casts}
+\begin{frame}\frametitle{Parameter contract types are just casts (\<Casts2.sol>)}
 
   \begin{center}
     \includegraphics[scale=0.45,clip=false]{pictures/cast-does-not-fail2.png}
@@ -1693,7 +1678,7 @@ require(withdraw_amount <= 0.1 ether);
 
   Calling \<d.callFoo(c)>, where \<c> is a \<C>,
   does not fail but calls \<C>'s
-  fallback function and transfers $100$ wei to \<c>!
+  receive function and transfers $100$ wei to \<c>!
 \end{frame}
 
 \begin{frame}\frametitle{Solidity is \alert{not} strongly-typed}
@@ -1735,7 +1720,7 @@ require(withdraw_amount <= 0.1 ether);
   
 \end{frame}
 
-\begin{frame}\frametitle{Example of function call}
+\begin{frame}\frametitle{Example of function call (\<NormalCall.sol>)}
   \begin{center}
     \includegraphics[scale=0.35,clip=false]{pictures/normal-call.png}
   \end{center}
@@ -1748,7 +1733,7 @@ require(withdraw_amount <= 0.1 ether);
   \end{itemize}
 \end{frame}
 
-\begin{frame}\frametitle{The previous example is actually compiled into this}
+\begin{frame}\frametitle{The previous example is compiled into this (\<Call.sol>)}
 
   \begin{center}
     \includegraphics[scale=0.35,clip=false]{pictures/call.png}
@@ -1778,7 +1763,7 @@ require(withdraw_amount <= 0.1 ether);
   
 %\end{frame}
 
-\begin{frame}\frametitle{Example of low-level \<callcode>}
+\begin{frame}\frametitle{Example of low-level \<callcode> (\<CallCode.sol>)}
 
   \begin{center}
     \includegraphics[scale=0.35,clip=false]{pictures/callcode.png}
@@ -1793,10 +1778,10 @@ require(withdraw_amount <= 0.1 ether);
   
 \end{frame}
 
-\begin{frame}\frametitle{Example of low-level \<delegatecall>}
+\begin{frame}\frametitle{Example of low-level \<delegatecall> (\<DelegateCall.sol>)}
 
   \begin{center}
-    \includegraphics[scale=0.3,clip=false]{pictures/delegatecall.png}
+    \includegraphics[scale=0.27,clip=false]{pictures/delegatecall.png}
   \end{center}
 
   Calling \<c.foo(d, e, 42)> where \<d> is a \<D> and \<e> is a \<E>:
