@@ -58,7 +58,7 @@
     that executes programs called \alert{smart contracts}, written
     in a \alert{Turing-complete} programming language, translated into
     bytecode and run on a \alert{virtual machine}. It uses a
-    \alert{blockchain} to synchronize and store the system's \alert{singleton state} changes
+    \alert{blockchain} to synchronize and store the system's \alert{state} changes
     (key/value tuples), along
     with a cryptocurrency called \alert{ether} to \alert{meter and constrain}
     execution resource costs. It enables developers to build
@@ -908,7 +908,7 @@ byte[] signedMessage = TransactionEncoder.signMessage
 \begin{frame}\frametitle{The state of Ethereum}
 
   \begin{center}
-    The state of Ethereum is a global singleton map {\color{magenta}$\sigma:\mathit{key}\to\mathit{value}$}
+    The state of Ethereum is a global map {\color{magenta}$\sigma:\mathit{key}\to\mathit{value}$}
   \end{center}
 
   \bigskip
@@ -956,17 +956,17 @@ byte[] signedMessage = TransactionEncoder.signMessage
 
   \bigskip
 
-  \begin{greenbox}{A smart contract writes $v$ into its $n$th instance variable (field)}
+  \begin{greenbox}{Writing $v$ into the $n$th instance variable (field) of a smart contract}
     \begin{center}
-      \<put(>{\color{blue}$\underbrace{\<hash(address\_of\_smart\_contract, n)>}_{\mathit{address\ of\ the\ n-th\ field}}$}\<, v)>
+      \<put(>{\color{blue}$\underbrace{\<hash(address\_of\_smart\_contract, n)>}_{\mathit{address\ of\ the\ nth\ field}}$}\<, v)>
     \end{center}
   \end{greenbox}
 
   \bigskip
 
-  \begin{greenbox}{A smart contract reads from its $n$th instance variable (field)}
+  \begin{greenbox}{Reading from the $n$th instance variable (field) of a smart contract}
     \begin{center}
-      \<get(>{\color{blue}$\underbrace{\<hash(address\_of\_smart\_contract, n)>}_{\mathit{address\ of\ the\ n-th\ field}}$}\<)>
+      \<get(>{\color{blue}$\underbrace{\<hash(address\_of\_smart\_contract, n)>}_{\mathit{address\ of\ the\ nth\ field}}$}\<)>
     \end{center}
   \end{greenbox}
 
@@ -1499,31 +1499,11 @@ require(withdraw_amount <= 0.1 ether);
 
 \end{frame}
 
-\begin{frame}\frametitle{Self destruction example}
-
-  Only needed to free state data in clients!
-
-  \begin{center}
-    \includegraphics[scale=0.5,clip=false]{pictures/selfdestruct.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Self destruction example from 0.6.0}
-
-  \begin{center}
-    \includegraphics[scale=0.5,clip=false]{pictures/selfdestruct_6_0.png}
-  \end{center}
-
-\end{frame}
-
 \begin{frame}\frametitle{\<address payable>}
 
   \begin{greenbox}{Starting from 0.5.0, an \<address> can be \<payable>}
     \begin{itemize}
     \item required for calling \<send()>, \<transfer()> and \<call()>
-    \item all of \<msg.sender>, \<tx.origin> and \<block.coinbase> are
-      \<payable>
     \item you can cast between \<address> and \<address payable> and casts never fail
     \end{itemize}
   \end{greenbox}
@@ -1576,7 +1556,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{greenbox}{}
     \begin{center}
-      \includegraphics[scale=0.38,clip=false]{pictures/subcontracts.png}
+      \includegraphics[scale=0.33,clip=false]{pictures/subcontracts.png}
     \end{center}
   \end{greenbox}
 
@@ -1604,7 +1584,7 @@ require(withdraw_amount <= 0.1 ether);
   \begin{greenbox}{\<assert(condition[,msg])>}
     Evaluates the condition, \alert{that is expected to hold}.
     If false, an exception is thrown and the
-    transaction is reverted. Typically used to verify internal runtime conditions
+    transaction is reverted. Typically used to verify internal run-time conditions
     for debugging
   \end{greenbox}
 
@@ -1666,14 +1646,14 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{greenbox}{}
     \begin{center}
-      \includegraphics[scale=0.55,clip=false]{pictures/new-contract.png}
+      \includegraphics[scale=0.43,clip=false]{pictures/new-contract.png}
     \end{center}
   \end{greenbox}
 
   \bigskip
 
   \begin{center}
-    In this case, we know what gets called with \<faucet.destroy()>
+    In this case, we know what gets called with \<faucet.withdraw(withdraw\_amount)>
   \end{center}
 
 \end{frame}
