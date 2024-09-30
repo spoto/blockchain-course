@@ -1831,14 +1831,12 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Exercise}
   \begin{enumerate}
   \item create an account with MetaMask
-  \item charge it from the Ropsten faucet with 1 ETH
+  \item charge it from the Sepolia faucet
   \item write the \<SimplePonzi.sol> contract in Remix
   \item compile the contract in Remix
-  \item deploy the contract in Ropsten with Remix
-  \item connect to the contract in Ropsten by somebody else
-  \item start calling the fallback function with increasing value
-    (with Remix of with MetaMask; for the latter, remember to increase
-    to gas limit for sending ETH)
+  \item deploy the contract in Sepolia with Remix
+  \item connect to the contract in Sepolia by somebody else
+  \item start calling \<invest> in Remix, with increasing value
   \end{enumerate}
 
   \bigskip
@@ -1849,7 +1847,7 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{A gradual Ponzi scheme}
 
   \begin{center}
-    \includegraphics[scale=0.4,clip=false]{pictures/gradual-ponzi.png}
+    \includegraphics[scale=0.5,clip=false]{pictures/gradual-ponzi.png}
   \end{center}
 
 \end{frame}
