@@ -1816,7 +1816,7 @@ require(withdraw_amount <= 0.1 ether);
   \end{greenbox}
 \end{frame}
 
-\begin{frame}\frametitle{A simple Ponzi scheme}
+\begin{frame}\frametitle{A simple Ponzi scheme (\<SimplePonzi.sol>)}
 
   \begin{center}
     \includegraphics[width=\textwidth,clip=false]{pictures/simple-ponzi.png}
@@ -1844,7 +1844,7 @@ require(withdraw_amount <= 0.1 ether);
 
 \end{frame}
 
-\begin{frame}\frametitle{A gradual Ponzi scheme}
+\begin{frame}\frametitle{A gradual Ponzi scheme (\<GradualPonzi.sol>)}
 
   \begin{center}
     \includegraphics[scale=0.5,clip=false]{pictures/gradual-ponzi.png}
@@ -1852,14 +1852,14 @@ require(withdraw_amount <= 0.1 ether);
 
 \end{frame}
 
-\begin{frame}\frametitle{A simple lottery (1)}
+\begin{frame}\frametitle{A simple lottery (\<SimpleLottery.sol>) (1)}
 
   \begin{center}
-    \includegraphics[scale=0.4,clip=false]{pictures/simple-lottery-1.png}
+    \includegraphics[scale=0.43,clip=false]{pictures/simple-lottery-1.png}
   \end{center}
 
   \begin{center}
-    \<now> is the timestamp of the block where the transaction is mined
+    \<block.timestamp> is the timestamp of the block where the transaction is mined
   \end{center}
 
 \end{frame}
@@ -1867,23 +1867,7 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{A simple lottery (2)}
 
   \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/simple-lottery-2.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{A simple lottery (3)}
-
-  \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/simple-lottery-3.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{A simple lottery (4)}
-
-  \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/simple-lottery-4.png}
+    \includegraphics[scale=0.5,clip=false]{pictures/simple-lottery-2.png}
   \end{center}
 
 \end{frame}
@@ -1891,14 +1875,12 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Exercise}
   \begin{enumerate}
   \item create an account with MetaMask
-  \item charge it from the Ropsten faucet with 1 ETH
+  \item charge it from the Sepolia faucet with 1 ETH
   \item write the \<SimpleLottery.sol> contract in Remix
   \item compile the contract in Remix
-  \item deploy the contract in Ropsten with Remix, with 3 minutes for buying tickets
-  \item connect to the contract in Ropsten by somebody else
-  \item buy some tickets before the 3 minutes expire
-    (with Remix or with MetaMask; for the latter, remember to increase
-    to gas limit for sending ETH)
+  \item deploy the contract in Sepolia with Remix, with 5 minutes for buying tickets
+  \item connect to the contract in Sepolia by somebody else
+  \item buy some tickets before the 5 minutes expire
   \item the owner of the lottery contract draws the winner
   \item try to withdraw your price (if any!)
   \end{enumerate}
@@ -1908,10 +1890,10 @@ require(withdraw_amount <= 0.1 ether);
 
 \end{frame}
 
-\begin{frame}\frametitle{A simple auction (1)}
+\begin{frame}\frametitle{A simple auction (\<SimpleAuction-sol>) (1)}
 
   \begin{center}
-    \includegraphics[scale=0.55,clip=false]{pictures/simple-auction-1.png}
+    \includegraphics[scale=0.46,clip=false]{pictures/simple-auction-1.png}
   \end{center}
 
 \end{frame}
@@ -1919,31 +1901,15 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{A simple auction (2)}
 
   \begin{center}
-    \includegraphics[scale=0.48,clip=false]{pictures/simple-auction-2.png}
+    \includegraphics[scale=0.5,clip=false]{pictures/simple-auction-2.png}
   \end{center}
 
 \end{frame}
 
-\begin{frame}\frametitle{A simple auction (3)}
+\begin{frame}\frametitle{Why this complicated withdrawal pattern?}
 
   \begin{center}
-    \includegraphics[scale=0.45,clip=false]{pictures/simple-auction-3.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{A simple auction (4)}
-
-  \begin{center}
-    \includegraphics[scale=0.52,clip=false]{pictures/simple-auction-4.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{Why this complicated withdraw pattern?}
-
-  \begin{center}
-    \includegraphics[scale=0.5,clip=false]{pictures/simple-auction-withdraw.png}
+    \includegraphics[scale=0.46,clip=false]{pictures/simple-auction-withdraw.png}
   \end{center}
 
 \end{frame}
@@ -1966,18 +1932,18 @@ require(withdraw_amount <= 0.1 ether);
 
   \only<1>{
   \begin{center}
-    \includegraphics[scale=0.50,clip=false]{pictures/simple-auction-withdraw-only.png}
+    \includegraphics[scale=0.5,clip=false]{pictures/simple-auction-withdraw-only.png}
   \end{center}
   }
   \only<2>{
     \begin{center}
       Beware: code vulnerable to reentrancy:\\
-    \includegraphics[scale=0.50,clip=false]{pictures/simple-auction-withdraw-only-wrong.png}
+    \includegraphics[scale=0.45,clip=false]{pictures/simple-auction-withdraw-only-wrong.png}
   \end{center}
   }
 
   \only<1>{
-    Why this complication of setting \<pendingReturns[msg.sender]=0>
+    Why this complication of setting \<pendingReturns[msg.sender] = 0>
     so early?
   }
     
@@ -2036,7 +2002,6 @@ require(withdraw_amount <= 0.1 ether);
         with $2300$ units of gas
       \item the programmer might decide to forward more gas explicitly in order to deal
         with contracts with complex fallback functions
-      \item \<send()> and \<transfer()> risk to be deprecated soon\ldots
       \end{itemize}
     \item in conclusion, it's good practice to
       set \<pendingReturns[msg.sender] = 0>
@@ -2103,11 +2068,11 @@ require(withdraw_amount <= 0.1 ether);
   \begin{greenbox}{Write a \<TicTacToe.sol> smart contract}
     \begin{itemize}
     \item the first EOA that calls the payable function \<play(x,y)> becomes player~1:
-      she must pay at least $0.01$ ETH
+      she must pay at least $1000$ Wei
     \item the second EOA that calls the payable function \<play(x,y)> becomes player~2:
       he must be different from player~1;
-      he must pay at least what player~1 payed
-    \item subsequent calls to \<play> do not require any payed amount
+      he must pay at least what player~1 paid
+    \item subsequent calls to \<play> do not require any paid amount
     \item if one player wins, the balance of the game goes
       \begin{itemize}
       \item $90\%$ to the winner
@@ -2149,8 +2114,8 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{redbox}{}
     Considering the importance of security for smart contracts,
-    it is questionable to have invented Solidity (hard, new, with complex
-    semantics) for writing such delicate pieces of software
+    it is questionable to have invented Solidity (hard, new, low-level,
+    with complex semantics) for writing such delicate pieces of software
   \end{redbox}
 
   \bigskip
