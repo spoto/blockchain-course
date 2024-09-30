@@ -2140,15 +2140,13 @@ require(withdraw_amount <= 0.1 ether);
   \begin{greenbox}{Three ways of sending ETH}
     \begin{description}
     \item[\<c.send(amount)>] forwards $2300$ units of gas,
-      \alert{currently not enough for reentrancy}; possibly
-      deprecated in the future
+      \alert{currently not enough for reentrancy};
     \item[\<c.transfer(amount)>] forwards $2300$ units of gas,
-      \alert{currently not enough for reentrancy}; possibly
-      deprecated in the future
+      \alert{currently not enough for reentrancy};
     \item[\<c.call.value(amount)("")>] forwards all remaining units of gas,
       typically \alert{enough for reentrancy}; programmers like it since
-      it allows one to activate the complex fallback function of any
-      contract, not just the default fallback function
+      it allows one to activate the complex \<receive> function of any
+      contract, not just the default \<receive> function
     \end{description}
   \end{greenbox}
   
@@ -2158,7 +2156,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{greenbox}{Use the checks/effects/interactions pattern}
     \begin{center}
-      \includegraphics[scale=0.4,clip=false]{pictures/simple-auction-withdraw-only.png}
+      \includegraphics[scale=0.33,clip=false]{pictures/simple-auction-withdraw-only.png}
     \end{center}
   \end{greenbox}
 
@@ -2228,7 +2226,7 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Issue \#3: Unexpected ether}
 
   \begin{redbox}{}
-    Code correctness depends on invariants about \<this.balance>,
+    Code correctness depends on invariants about \<address(this).balance>,
     that actually do not hold
   \end{redbox}
 
@@ -2247,7 +2245,7 @@ require(withdraw_amount <= 0.1 ether);
 
   \begin{redbox}{}
     It is possible to send ether to a contract, without calling any \<payable> function
-    nor its fallback function (if any)!
+    nor its \<receive>/\<fallback> functions (if any)!
   \end{redbox}
 
   \bigskip
@@ -2270,7 +2268,7 @@ require(withdraw_amount <= 0.1 ether);
 
 \begin{frame}\frametitle{Unexpected ether: prevention}
 
-  \begin{greenbox}{Do not rely on \<this.balance>}
+  \begin{greenbox}{Do not rely on \<address(this).balance>}
     Use your own counter instead
   \end{greenbox}
 
@@ -2372,7 +2370,7 @@ require(withdraw_amount <= 0.1 ether);
 \begin{frame}\frametitle{Weak encapsulation: prevention}
 
   \begin{itemize}
-  \item be the stricter you can about visibility
+  \item be as strict as you can about visibility
     \begin{itemize}
     \item even \<internal> can be dangerous, because it is callable from
       subcontracts
@@ -2612,7 +2610,6 @@ require(withdraw_amount <= 0.1 ether);
 
 \begin{frame}\frametitle{Prevention: denial of service}
   \begin{itemize}
-  \item use the withdrawal pattern
   \item perform very cheap operations inside loops (no inner transactions, such as \<send>)
   \item impose an upper bound to the size of dynamic structures
   \end{itemize}
@@ -2660,7 +2657,7 @@ require(withdraw_amount <= 0.1 ether);
   \begin{enumerate}
   \item an \<attacker> identifies a \<phishable> in blockchain
   \item creates \<phisher = new Phisher(phishable, attacker)>
-  \item convinces \<phishable.owner> to send ETH to \<phisher> and caches all the money
+  \item convinces \<phishable.owner> to send ETH to \<phisher> and receives all the money
     of the \<phishable>!
   \end{enumerate}
 
