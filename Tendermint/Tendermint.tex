@@ -35,7 +35,7 @@
 \subtitle{Blockchain Course}
 \title{Tendermint}
 \institute{Universit\`a di Verona, Italy}
-\date{February 2021}
+\date{October 2024}
 
 \setbeamercovered{invisible}
 
@@ -60,8 +60,8 @@
 
   \begin{greenbox}{Proof-of-work [PoW] is expensive and leads to forks}
     \begin{itemize}
-    \item proof-of-stake [PoS] (who owns the most)
-    \item proof-of-space (who consumed more memory)
+    \item proof-of-stake [PoS] (who stakes the most)
+    \item proof-of-space (who consumes more memory)
     \item proof-of-authority (who has more authority)
     \item \ldots
     \end{itemize}
@@ -77,7 +77,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Tendermint}
+\begin{frame}\frametitle{Tendermint (\url{https://tendermint.com/})}
 
   \begin{greenbox}{Jae Kwon. \emph{Tendermint: Consensus without Mining}, 2014.\\
     \url{https://tendermint.com/static/docs/tendermint.pdf}}
@@ -89,13 +89,13 @@
       \end{itemize}
     \item at each height $H$, each validator $v\in V$:
       \begin{enumerate}
-      \item identifies (deterministically) a validator $p\in V$ that
+      \item identifies (deterministically) a validator $m\in V$ that
         is expected to aggregate some transactions and \alert{propose} a next block $b$
       \item if it considers $b$ valid, it \alert{pre-votes} $b$
       \item counts how many validators pre-vote $b$
-      \item if it counted at least $\frac{2}{3}$ pre-votes, it \alert{pre-commits} $b$
+      \item if it counts at least $\frac{2}{3}$ pre-votes, it \alert{pre-commits} $b$
       \item counts how many validators pre-commit $b$
-      \item if it counted at least $\frac{2}{3}$ pre-commits, it \alert{commits} $b$ and increases $H$
+      \item if it counts at least $\frac{2}{3}$ pre-commits, it \alert{commits} $b$ and increases $H$
       \item goes back to step~1
       \end{enumerate}
     \end{itemize}
@@ -136,7 +136,7 @@
   \end{center}
 
   \begin{center}
-    \<checkTx(tx)> again to check if the transactions in the block are valid
+    \<checkTx(tx)> again + \<deliverTx(tx)> to check if the block is valid
   \end{center}
 
 \end{frame}
@@ -156,7 +156,7 @@
   \end{center}
 
   \begin{center}
-    \<deliverTx(tx)> executes the transaction \<tx>, hence modifies the state
+    \<commit()> stores the state at the end of the block
   \end{center}
 
 \end{frame}
@@ -233,8 +233,7 @@
     the transaction by modifying the state of the application
   \item[] \alert{\<endBlock>}: called at the end of a block; provides information
     about the validator set for the next block
-  \item[] \alert{\<commit>}: called when a block is being committed; provides the hash of
-    the state of the application
+  \item[] \alert{\<commit>}: called when a block is being committed; it stores the state of the application in the database and provides its hash
     \hrule
   \item[] \alert{\<query>}: called when the user wants to read data from the blockchain
   \end{itemize}
