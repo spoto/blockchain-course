@@ -1463,7 +1463,7 @@ tx = \{
   \bigskip
 
   \begin{itemize}
-  \item the nonec in the header of the resulting block is the PoW
+  \item the nonce in the header of the resulting block is the PoW
   \item the time to solve this puzzle is inversely proportional to $\mathit{difficulty}$
   \item the algorithm can be easily run in parallel
   \end{itemize}
@@ -1485,7 +1485,7 @@ tx = \{
   \end{itemize}
 
   \[
-  \mathit{power}(\mathit{chain})=\sum_{\mathit{block}\in\mathit{chain}}\frac{2^{8\cdot 32}}{\mathit{block}.\mathit{nonce}+1}
+  \mathit{power}(\mathit{chain})=\sum_{\mathit{block}\in\mathit{chain}}\frac{2^{8\cdot 32}}{\mathit{hash}(\mathit{block})+1}
   \]
 \end{frame}
 
