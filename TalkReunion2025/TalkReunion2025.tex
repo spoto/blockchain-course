@@ -449,7 +449,7 @@
 \begin{frame}\frametitle{Tendermint (now Ignite): \url{ignite.com}}
 
   \begin{greenbox}{Jae Kwon. \emph{Tendermint: Consensus without Mining}, 2014.\\
-    \url{https://tendermint.com/static/docs/tendermint.pdf}}
+    \url{https://www.weusecoins.com/assets/pdf/library/Tendermint\ Consensus\ without\ Mining.pdf}}
     \begin{itemize}
     \item only a set $V$ of \emph{validators} decides the next block
     \item to become validator, one must stake a large amount of money
@@ -555,36 +555,104 @@
   \item proof of stake is rather centralized and hard to maintain
   \end{itemize}
 
-  \medskip
+  \bigskip
 
   \begin{greenbox}{Proof of space}
-    In 2014, Burstcoin (later Signum) implemented a mining algorithm
-    where miners must solve a puzzle to gain the right to mine a new block:
     \begin{itemize}
-    \item the puzzle is too hard to be computed for each new block
-    \item the puzzle becomes very simple if some information is precomputed and stored on disk
-    \item the CPU of the miners remains largely idle: no electricity cost
-    \item the more precomputation, the more disk is committed, the higher the probability of solving the puzzle with a smaller \emph{deadline} and mining a new block
+    \item Ateniese, Bonacina, Faonio, Galesi: \emph{Proofs of Space: When Space Is of the Essence}, 2014 (DAG pebbling)
+    \item Dziembowski, Faust, Kolmogorov, Pietrzak: \emph{Proofs of Space}, 2015 (DAG pebbling) $\Rightarrow$
+      {\color{red}SpaceMint}: \url{https://github.com/kwonalbert/spacemint}
+    \item Abusalah, Alwen, Cohen, Khilko, Pietrzak, Reyzin: \emph{Beyond Hellman's Time-Memory Trade-Offs with Applications to Proofs of Space}, 2017 (proof of sequential work + proof of space) $\Rightarrow$ {\color{red}Chia}: \url{https://www.chia.net/wp-content/uploads/2022/07/ChiaGreenPaper.pdf}
+    \item \emph{Signum Community Website and Documentation Project} (plot files) $\Rightarrow$ {\color{red}Signum}: \url{https://wiki.signum.network/signum-plotting-technical-information/index.htm}
     \end{itemize}
   \end{greenbox}
   
 \end{frame}
 
-\begin{frame}{Mokamint (\url{www.mokamint.io})}
+\begin{frame}\frametitle{Proof of space: the general idea}
+
+  \begin{itemize}
+  \item each block must report an answer to a \emph{challenge}
+  \item the computation of the answer is cheap in time but requires to allocate a large amount of disk space
+  \item the quality of the answer determines which block will determine the main chain
+  \item the quality of the answer cannot be significantly improved by extra computational work (no time-memory trade-offs)
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Proof of space: Implementations}
+
+  \begin{center}
+    {\small\begin{tabular}{c|c|c|c|c|c|c|c}
+      name & PoSp? & cons.\ & netw.\ & generic & formalized & since & status \\\hline\hline
+      SpaceMint & yes & no & no & no & yes & 2015 & discontinued\\\hline
+      Chia & mixed & yes & yes & no & yes & 2017 & active\\\hline
+      Signum & yes & yes & yes & no & no & 2014 & active\\\hline
+    \end{tabular}}
+  \end{center}
+  
+\end{frame}
+
+\begin{frame}\frametitle{Why Signum?}
+
+  \begin{greenbox}{Pros}
+    \begin{itemize}
+    \item very simple protocol and algorithm
+    \item running since 2014
+    \end{itemize}
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{greenbox}{Cons}
+    \begin{itemize}
+    \item in principle, it could be mined by PoW (but never occurred up to now because it would be too expensive
+      against its PoSp version: this might change with ASICs)
+    \item no formalization, no proofs $\Rightarrow$ suspected attacks (block grinding, time-memory trade-offs)
+    \item monolithic, uncommented, chaotic source code
+    \end{itemize}
+  \end{greenbox}
+    
+\end{frame}
+
+\begin{frame}\frametitle{A formalization of Signum}
+
+  \begin{greenbox}{}
+    Spoto: \emph{A Formalization of Signum's Consensus},
+    9th Workshop on Trusted Smart Contracts, 2025, to appear
+  \end{greenbox}
+
+  \bigskip
+
+  \begin{itemize}
+  \item it clarifies how Signum works
+  \item it proves that the suspected block-grinding attack cannot occur
+  \item it proves that the suspected time-memory trade-off does not exist (but others might exist! A general proof is still missing)
+  \item it proves that Signum does not suffer from challenge-grinding attacks
+  \item it introduces a new protection for Signum, against newborn attacks
+  \end{itemize}
+  
+\end{frame}
+
+\begin{frame}{Mokamint}
 
   Signum is monolithic, uncommented, Java 5, undocumented code
 
   \bigskip
   \bigskip
 
-  \begin{greenbox}{The idea of Mokamint (Fausto Spoto 2023\ldots today, work in progress)}
+  \begin{greenbox}{The idea of Mokamint (Fausto Spoto, March 2023 -- December 2024)}
     \begin{itemize}
-    \item Tendermint: a generic blockchain engine based on proof of stake
     \item Mokamint: a generic blockchain engine based on proof of space
-      \begin{center}
-        \includegraphics[scale=0.1,clip=false]{pictures/mokamint_colors.jpg}
-      \end{center}
+    \item strove for the cleanest architecture
+    \item Java 21, modular architecture
+    \item open-source, Apache 2.0
+    \item integrates with the Takamaka runtime for smart contracts
+    \item first network will be published by September 2025
     \item \url{https://github.com/Mokamint-chain/mokamint}
+      \begin{center}
+        \includegraphics[scale=0.08,clip=false]{pictures/mokamint_colors.jpg}
+      \end{center}
     \end{itemize}
   \end{greenbox}
 
@@ -594,24 +662,12 @@
 
   \begin{center}
     \begin{tabular}{c||c|c}
-      proof of work & decentralized, energy intensive & direct democracy \\\hline
-      proof of stake & centralized, low energy consumption & oligarchy \\\hline
-      proof of space & decentralized, low energy consumption & direct democracy
+      PoW & decentralized, energy intensive & direct democracy \\\hline
+      PoS & centralized, low energy consumption & (benevolent?) oligarchy \\\hline
+      PoSp & decentralized, low energy consumption & direct democracy
     \end{tabular}
   \end{center}
   
-\end{frame}
-
-\begin{frame}\frametitle{The best reference}
-
-  \begin{center}
-    \includegraphics[scale=.35,clip=false]{pictures/mastering-bitcoin.jpg}
-  \end{center}
-
-  \begin{center}
-    \url{https://github.com/bitcoinbook/bitcoinbook}
-  \end{center}
-
 \end{frame}
 
 \end{document}
