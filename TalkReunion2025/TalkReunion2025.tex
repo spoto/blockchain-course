@@ -389,7 +389,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Blockhains are used for ransoms}
+\begin{frame}\frametitle{Blockhains are used for ransom}
 
   \begin{center}
     \includegraphics[scale=0.7, clip=false]{pictures/ransom.jpg}
@@ -428,10 +428,10 @@
 
   \begin{greenbox}{}
     \begin{itemize}
-    \item proof of work [PoW] (who works harder and is lucky)
+    \item proof of work [PoW] (who works harder)
     \item proof of stake [PoS] (who commits more money)
-    \item proof of space (who commits more disk space)
-    \item proof of authority (who has more authority)
+    \item proof of space [PoSp] (who commits more disk space)
+    \item proof of authority [PoA] (who has more authority)
     \item \ldots
     \end{itemize}
   \end{greenbox}
@@ -451,9 +451,9 @@
   \begin{greenbox}{Jae Kwon. \emph{Tendermint: Consensus without Mining}, 2014.\\
     \url{https://tendermint.com/static/docs/tendermint.pdf}}
     \begin{itemize}
-    \item only a dynamic set $V$ of validators decides the next block
-    \item to become validator, one must block a big amount of money
-    \item if a validator produces illegal blocks or misbehaves, its money will be reduced
+    \item only a set $V$ of \emph{validators} decides the next block
+    \item to become validator, one must stake a large amount of money
+    \item if a validator produces illegal blocks or misbehaves, the forzen money will be reduced
     \end{itemize}
   \end{greenbox}
 
@@ -467,6 +467,45 @@
 
   \begin{center}
     Low energy consumption, but this is not really decentralized!
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Tendermint's protocol}
+
+  \begin{greenbox}{}
+    \begin{itemize}
+    \item a dynamic set $V$ of validators decides the next block
+    \item $V$ might be different for each block
+      \begin{itemize}
+      \item but deterministically computed from the previous history
+      \end{itemize}
+    \item at each height $H$, each validator $v\in V$:
+      \begin{enumerate}
+      \item identifies (deterministically) a validator $m\in V$ that
+        is expected to aggregate some transactions and \alert{propose} a next block $b$
+      \item if it considers $b$ valid, it \alert{pre-votes} $b$
+      \item counts how many validators pre-vote $b$
+      \item if it counts at least $\frac{2}{3}$ pre-votes, it \alert{pre-commits} $b$
+      \item counts how many validators pre-commit $b$
+      \item if it counts at least $\frac{2}{3}$ pre-commits, it \alert{commits} $b$ and increases $H$
+      \item goes back to step~1
+      \end{enumerate}
+    \end{itemize}
+  \end{greenbox}
+
+  \smallskip
+
+  \begin{center}
+    Tendermint is BFT. If step~1 is based on stakes, then it is PoS
+  \end{center}
+
+\end{frame}
+
+\begin{frame}\frametitle{Tendermint's polka}
+
+  \begin{center}
+    \includegraphics[scale=.15,clip=false]{pictures/polka.png}
   \end{center}
 
 \end{frame}
@@ -491,6 +530,22 @@
     \end{itemize}
   \end{redbox}
 
+\end{frame}
+
+\begin{frame}\frametitle{A layered implementation in Golang}
+
+  \begin{center}
+    \includegraphics[scale=.38,clip=false]{pictures/tendermint-core.jpg}
+  \end{center}
+
+  \smallskip
+
+  ABCI: Application BlockChain Interface
+
+  \smallskip
+
+  This could be done for PoW as well but... nobody did it yet!
+  
 \end{frame}
 
 \begin{frame}\frametitle{Proof of space}
