@@ -34,7 +34,7 @@
 }
 
 \subtitle{Saint-Denis, R\'eunion, 13/3/2025}
-\title{Blockchain and its Energy Cost}
+\title{Taming the Energy Cost of Blockchain Mining}
 \institute{Universit\`a di Verona, Italy}
 \date{March 2025}
 
@@ -79,7 +79,7 @@
 
   \begin{greenbox}{It's all about trust}
     \begin{itemize}
-    \item if a centralized computer crashes, data might get lost
+    \item if the system crashes, data and money might get lost
     \item if data gets modified in a central computer, money could be stolen
     \end{itemize}
   \end{greenbox}
@@ -118,6 +118,25 @@
 
 \end{frame}
 
+\begin{frame}\frametitle{Git: A distributed network}
+
+  \begin{center}
+    \includegraphics[scale=0.26,clip=false]{pictures/git_distributed.png}
+  \end{center}
+
+  \begin{greenbox}{An approximation of what we want}
+    \begin{itemize}
+    \item no central, special computer
+    \item all computers are equal
+    \item if some (not all) computers fail, the repository survives
+    \item each computer contains all data, it does not need the others
+    \item {\color{red}if a computer corrupts the data, there is not way to understand it}
+    \item {\color{red}the system allows diverging evolutions (double spending)}
+    \end{itemize}
+  \end{greenbox}
+  
+\end{frame}
+
 \begin{frame}\frametitle{Distributed network}
 
   \begin{center}
@@ -126,7 +145,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{A Bit of History}
+\begin{frame}\frametitle{A bit of history}
 
   \begin{itemize}
   \item[1991] a cryptographically secure chain of blocks (Haber \& Stornetta)
@@ -145,7 +164,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{A Secure Chain of Blocks}
+\begin{frame}\frametitle{A secure chain of blocks}
 
   \begin{center}
     \includegraphics[scale=0.26,clip=false]{pictures/blocks.png}
@@ -163,7 +182,7 @@
   
 \end{frame}
 
-\begin{frame}\frametitle{Proof of Work}
+\begin{frame}\frametitle{Proof of work}
 
   \begin{redbox}{}
     Cynthia Dwork and Noni Naor (1992). “Pricing via Processing, Or, Combatting Junk Mail, Advances in Cryptology”. CRYPTO’92: Lecture Notes in Computer Science No. 740. Springer: 139–147.
@@ -173,7 +192,7 @@
 
   \begin{tabular}{ccc}
     text of email & hashing & \\
-    recipient address & $\Rightarrow$ & $\mathtt{\underbrace{0000000}43f5e6bc00d56984\ldots5974edf}$\\
+    recipient address & $\Rightarrow$ & $\mathtt{\underbrace{0000000}_{7\text{ bits}}43f5e6bc00d56984\ldots5974edf}$\\
     date of the email && \\
     numerical nonce &&
   \end{tabular}
@@ -219,8 +238,8 @@
   \item remuneration for block creation is computed according to the right formula
   \item the (ordered) execution of the transactions in the blocks do not fail
   \item starting from the state whose Merkle root is in block $n$ and executing
-    the transactions in block $n+1$ (in their order), one obtain a state whose Merkle root is
-    in block $n+1$
+    the transactions in block $n+1$ (in their order), one obtains a state whose Merkle root is
+    the one in block $n+1$
   \item \ldots
   \end{itemize}
 \end{frame}
@@ -264,7 +283,7 @@
     \item whose parent is another block of the blockchain (fork), or
     \item whose parent is unknown to the miner (orphan block)
     \end{itemize}
-  \item in case of fork, the main history is the longest one (actually: the most powerful one), but miners keep all histories,
+  \item in case of fork, the main history is the longest one (actually: the most powerful one), but miners keep all/some histories,
     in case they might become the new main history in the future
   \item the blockchain is actually a tree, not a list
   \end{itemize}
@@ -401,7 +420,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Blockhains are used to circumvent international rules or bans}
+\begin{frame}\frametitle{Blockhains circumvent international rules and political bans}
 
   \begin{center}
     \includegraphics[scale=1, clip=false]{pictures/send-money.jpg}
@@ -428,7 +447,7 @@
 
   \begin{greenbox}{}
     \begin{itemize}
-    \item proof of work [PoW] (who works harder)
+    \item proof of work [PoW] (who commits more work)
     \item proof of stake [PoS] (who commits more money)
     \item proof of space [PoSp] (who commits more disk space)
     \item proof of authority [PoA] (who has more authority)
@@ -451,9 +470,9 @@
   \begin{greenbox}{Jae Kwon. \emph{Tendermint: Consensus without Mining}, 2014.\\
     \url{https://www.weusecoins.com/assets/pdf/library/Tendermint\ Consensus\ without\ Mining.pdf}}
     \begin{itemize}
-    \item only a set $V$ of \emph{validators} decides the next block
+    \item only a set $V$ of nodes, called \emph{validators}, decides the next block
     \item to become validator, one must stake a large amount of money
-    \item if a validator produces illegal blocks or misbehaves, the forzen money will be reduced
+    \item if a validator produces illegal blocks or misbehaves, the staked money will be reduced
     \end{itemize}
   \end{greenbox}
 
@@ -525,7 +544,7 @@
     \item validators initially have no interest in being validators (the coin has no value)
     \item validators are afraid of having a machine always connected and open to the internet
     \item validators find it expensive to maintain and update their machine
-    \item validators lose cryptocurrency if a blackout or network failure isolate their machine
+    \item validators lose cryptocurrency if a blackout or network failure isolates their machine
     \item please ask this question: ``How many validators your blockchain project has, where are they and who maintains such machines'' (spoiler: very few, in the same room, all maintained by one person)
     \end{itemize}
   \end{redbox}
@@ -575,7 +594,8 @@
   \item each block must report an answer to a \emph{challenge}
   \item the computation of the answer is cheap in time but requires to allocate a large amount of disk space
   \item the quality of the answer determines which block will determine the main chain
-  \item the quality of the answer cannot be significantly improved by extra computational work (no time-memory trade-offs)
+  \item the quality of the answer increases with the amount of allocated disk space
+  \item the quality of the answer cannot be significantly improved with extra computational work (no time-memory trade-offs)
   \end{itemize}
   
 \end{frame}
@@ -631,7 +651,13 @@
   \item it proves that Signum does not suffer from challenge-grinding attacks
   \item it introduces a new protection for Signum, against newborn attacks
   \end{itemize}
-  
+
+  \bigskip
+
+  \begin{greenbox}{Want to know more?}
+    Come to my next seminar in two weeks time!
+  \end{greenbox}
+
 \end{frame}
 
 \begin{frame}{Mokamint}
@@ -639,12 +665,11 @@
   Signum is monolithic, uncommented, Java 5, undocumented code
 
   \bigskip
-  \bigskip
 
   \begin{greenbox}{The idea of Mokamint (Fausto Spoto, March 2023 -- December 2024)}
     \begin{itemize}
-    \item Mokamint: a generic blockchain engine based on proof of space
-    \item strove for the cleanest architecture
+    \item Mokamint: a generic blockchain engine based on Signum's proof of space
+    \item developed with a clean architecture
     \item Java 21, modular architecture
     \item open-source, Apache 2.0
     \item integrates with the Takamaka runtime for smart contracts
