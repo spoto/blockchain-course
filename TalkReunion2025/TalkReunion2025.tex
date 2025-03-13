@@ -130,7 +130,7 @@
     \item all computers are equal
     \item if some (not all) computers fail, the repository survives
     \item each computer contains all data, it does not need the others
-    \item {\color{red}if a computer corrupts the data, there is not way to understand it}
+    \item if a computer holds corrupted data, we see an inconsistent hash
     \item {\color{red}the system allows diverging evolutions (double spending)}
     \end{itemize}
   \end{greenbox}
@@ -185,7 +185,7 @@
 \begin{frame}\frametitle{Proof of work}
 
   \begin{redbox}{}
-    Cynthia Dwork and Noni Naor (1992). “Pricing via Processing, Or, Combatting Junk Mail, Advances in Cryptology”. CRYPTO’92: Lecture Notes in Computer Science No. 740. Springer: 139–147.
+    Cynthia Dwork and Noni Naor (1992). \emph{Pricing via Processing, Or, Combatting Junk Mail}. Advances in Cryptology (CRYPTO’92): Lecture Notes in Computer Science No. 740. Springer: 139–147.
   \end{redbox}
 
   \bigskip
@@ -227,7 +227,7 @@
   \smallskip
 
   \begin{redbox}{}
-    Recomputation could take centuries even on very fast computer
+    Recomputation could take centuries even on a very fast computer
   \end{redbox}
 \end{frame}
 
@@ -468,7 +468,7 @@
 \begin{frame}\frametitle{Tendermint (now Ignite): \url{ignite.com}}
 
   \begin{greenbox}{Jae Kwon. \emph{Tendermint: Consensus without Mining}, 2014.\\
-    \url{https://www.weusecoins.com/assets/pdf/library/Tendermint\ Consensus\ without\ Mining.pdf}}
+    \url{https://www.scribd.com/document/325905620/tendermint-1}}
     \begin{itemize}
     \item only a set $V$ of nodes, called \emph{validators}, decides the next block
     \item to become validator, one must stake a large amount of money
@@ -593,7 +593,7 @@
   \begin{itemize}
   \item each block must report an answer to a \emph{challenge}
   \item the computation of the answer is cheap in time but requires to allocate a large amount of disk space
-  \item the quality of the answer determines which block will determine the main chain
+  \item the quality of the answer determines which block will be selected for the main chain
   \item the quality of the answer increases with the amount of allocated disk space
   \item the quality of the answer cannot be significantly improved with extra computational work (no time-memory trade-offs)
   \end{itemize}
