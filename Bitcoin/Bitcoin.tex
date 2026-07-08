@@ -238,7 +238,7 @@
 
   \medskip
   See it online:
-  {\scriptsize\url{https://explorer.btc.com/btc/transaction/0627052b6f28912f2703066a912ea577f2ce4da4caa5a5fbd8a57286c345c2f2}}
+  {\scriptsize\url{https://blockchair.com/en/bitcoin/transaction/0627052b6f28912f2703066a912ea577f2ce4da4caa5a5fbd8a57286c345c2f2}}
 
 \end{frame}
 
@@ -341,7 +341,7 @@
     \item or it can store it on a removable memory support and another device
       will send it
     \end{itemize}
-  \item the transaction gets forwarded among all peers (flooding)
+  \item the transaction gets forwarded among some peers (flooding)
   \item the wallet of the destination will very soon see a transaction
     for its address and can assume that it will eventually be processed
     (\alert{unconfirmed transaction})
@@ -412,7 +412,7 @@
       \item it tags the block with a reference to the previous block
       \item it tags the block with its own miner's address $\mu$
       \item it tags the block with a nonce computed by solving an expensive puzzle
-      \item if no other miner has been faster, it forwards the new block to all its peers
+      \item it forwards the new block to all its peers
       \end{itemize}
   \end{enumerate}
 \end{frame}
@@ -426,19 +426,19 @@
   \bigskip
   \begin{greenbox}{For example}
     \begin{itemize}
-    \item if I want a transaction processed in one hour at most, I must offer $5.41$ Satoshis per virtual byte
-    \item a simple transaction is in average $140$ virtual bytes long
-    \item a BTC is $60000$ euros worth (as of today)
+    \item if I want a transaction processed in one hour at most, I must offer $0.44$ Satoshis per virtual byte
+    \item a simple transaction is in average $230$ virtual bytes long
+    \item a BTC is $55000$ euros worth (as of today)
     \end{itemize}
     \begin{center}
-      $\Rightarrow$ I must offer $\frac{5.41 \cdot 140 \cdot 60000}{10^7}=0.45$ euros as fee
+      $\Rightarrow$ I must offer $\frac{0.44 \cdot 230 \cdot 55000}{10^7}=0.056$ euros as fee
     \end{center}
   \end{greenbox}
 
   \bigskip
   \begin{redbox}{}
     \begin{center}
-      The size, not the value of the transaction is relevant!
+      The byte size, not the value of the transaction is relevant!
     \end{center}
   \end{redbox}
 
@@ -494,7 +494,7 @@
     \item deterministic
     \item verifiable (in linear time)
     \item non-correlated (small change of input $\Rightarrow$ extensive change of hash)
-    \item irreversible (\emph{one-way})
+    \item practically irreversible (\emph{one-way})
     \item collision-protected: difficult to compute two inputs with same hash
     \end{enumerate}
   \end{greenbox}
@@ -1213,7 +1213,7 @@ The bitcoin \<address> is often referred to as \<PublicKHash>
   \uncover<7>{
     \begin{greenbox}{}
       \<CHECKSIG> verifies that \<sig> is a signature of the transaction
-      by using the private key corresponsing to \<pubK>
+      by using the private key corresponding to \<pubK>
     \end{greenbox}
   }
 
@@ -1480,7 +1480,7 @@ tx = \{
     \item whose parent is another block of the blockchain (fork), or
     \item whose parent is unknown to the miner (orphan block)
     \end{itemize}
-  \item in case of fork, the main history is the longest one (actually: the most powerful one), but the miner keeps all histories,
+  \item in case of fork, the main history is the longest one (actually: the most powerful one), but the miner may keep more histories,
     in case they might become the new main history in the future
   \end{itemize}
 
