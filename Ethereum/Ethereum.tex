@@ -215,18 +215,6 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Remix: deploy an instance of the contract}
-
-  \begin{greenbox}{}
-    Remix will create for us a transaction with the \<0x0> address as destination.
-  \end{greenbox}
-
-  \begin{center}
-    \includegraphics[scale=0.4,clip=false]{pictures/deploy-faucet.png}
-  \end{center}
-
-\end{frame}
-
 \begin{frame}\frametitle{Remix: an instance of \<Faucet> has been deployed}
 
   \begin{center}
@@ -247,7 +235,7 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Send one Ether to the \<Faucet> through MetaMask}
+\begin{frame}\frametitle{Send some money to the \<Faucet> through MetaMask}
 
   This corresponds to calling the default payable function.
   
@@ -380,6 +368,8 @@ $ \alert{curl https://mainnet.infura.io/v3/05550caa054f4fec80ff...
     
 \end{greenbox}
 
+You can replace \texttt{mainnet} with \texttt{sepolia} to contact the testnet.
+
 \end{frame}
 
 \begin{frame}[fragile]\frametitle{Infura: ask for gas price}
@@ -419,24 +409,26 @@ $ \alert{echo $(({\color{black}0x16c597762}))}
   <modelVersion>4.0.0</modelVersion>
   {\color{violet}{<groupId>it.univr</groupId>
   <artifactId>it.univr.ethereumclient</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <name>Ethereum Client</name>}}
   {\color{red}{<properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>17</maven.compiler.release>
+    <maven.compiler.release>21</maven.compiler.release>
   </properties>
   <build>
-    <plugins><plugin>
+    <plugins>
+      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.11.0</version>
-    </plugin></plugins>
+        <version>3.15.0</version>
+      </plugin>
+    </plugins>
   </build>}}
   {\color{blue}{<dependencies>
     <dependency>
       <groupId>org.web3j</groupId>
       <artifactId>core</artifactId>
-      <version>5.0.0</version>
+      <version>6.0.0</version>
     </dependency>
   </dependencies>}}
 </project>
@@ -696,9 +688,9 @@ Result:    001d3{\color{red}F}1ef827552{\color{red}A}e1114027{\color{red}BD}3{\c
 
   \medskip
 
-  \begin{redbox}{Example: a small transaction requires 21000 units of gas}
+  \begin{redbox}{Example: a very small transaction requires 21000 units of gas}
     \begin{center}
-      $\mathit{fees} = 7.892\times 21000\times 0.000002378$€$=0.39$€
+      $\mathit{fees} = 0.082\times 10^{-9}\times 21000\times 1522$€$=0.00262$€
     \end{center}
   \end{redbox}
   

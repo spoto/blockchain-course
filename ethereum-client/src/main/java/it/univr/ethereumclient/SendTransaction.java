@@ -31,8 +31,11 @@ public abstract class SendTransaction {
 	public final String send(RawTransaction transaction) throws InterruptedException, ExecutionException {
 		byte[] signedMessage = TransactionEncoder.signMessage(transaction, credentials);
 		String hexValue = Numeric.toHexString(signedMessage);
+		System.out.println("signed transaction: " + hexValue);
 		EthSendTransaction tr = web3.ethSendRawTransaction(hexValue).sendAsync().get();
 		System.out.println("errors: " + tr.hasError());
+		if (tr.hasError())
+			System.out.println(tr.getError().getMessage());
 		return tr.getTransactionHash();
 	}
 
