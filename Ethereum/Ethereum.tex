@@ -115,8 +115,8 @@
   \begin{greenbox}{A very abstract view of blockchain}
     A blockchain is a distributed ledger of transaction requests, aggregated in blocks
     \begin{itemize}
-    \item[] \hspace*{-3ex}\alert{Bitcoin:} transaction requests require a change of the set of UTXOs
-    \item[] \hspace*{-3ex}\alert{Ethereum:} transaction requests require a change of a
+    \item[] \hspace*{-3ex}\alert{Bitcoin:} transactions change the set of UTXOs
+    \item[] \hspace*{-3ex}\alert{Ethereum:} transactions change a
       map $\mathit{key}\to\mathit{value}$
     \end{itemize}
     The change must be \alert{deterministic} otherwise consensus cannot be reached!
@@ -148,10 +148,10 @@
 
 \end{frame}
 
-\begin{frame}\frametitle{Ethereum forks}
+\begin{frame}\frametitle{Ethereum history}
 
   \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/ethereum-forks.jpg}
+    \includegraphics[width=\textwidth,clip=false]{pictures/ethereum-history.jpg}
   \end{center}
 
 \end{frame}
@@ -163,7 +163,7 @@
     software application that helps you manage your Ethereum account(s),
     by keeping your keys, creating and broadcasting transactions:
     \begin{itemize}
-    \item mobile (Jaxx)
+    \item mobile (MetaMask, Jaxx)
     \item desktop (Jaxx, Emerald Wallet)
     \item web-based (MetaMask, MyEtherWallet)
     \end{itemize}
@@ -188,21 +188,9 @@
     \includegraphics[scale=0.4,clip=false]{pictures/sepolia-faucet.png}
   \end{center}
 
-\end{frame}
+  Check a transaction:
 
-\begin{frame}\frametitle{Metamask: Detail of the transaction}
-
-  \begin{center}
-    \includegraphics[scale=0.4,clip=false]{pictures/metamask-faucet-transaction-details.png}
-  \end{center}
-
-\end{frame}
-
-\begin{frame}\frametitle{MetaMask: transactions of our account}
-
-  \begin{center}
-    \includegraphics[width=\textwidth,clip=false]{pictures/metamask-faucet-transactions.png}
-  \end{center}
+  {\small\url{https://sepolia.etherscan.io/tx/0xf54b6d6cd72c4294d1e4d38d5c96db350a1d829160a319c1a73bff3229bf26d4}}
 
 \end{frame}
 
