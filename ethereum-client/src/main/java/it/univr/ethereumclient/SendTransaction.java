@@ -16,8 +16,8 @@ import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Numeric;
 
 public abstract class SendTransaction {
-	protected final static String ME = "0xb2B68C5E29C4267A24BB92daC5579D93f9A74812";
-	private final static String ME_PRIVATE_KEY = "E2426EF4CE6F5E19B275082D29CC77EFD0D78B8396834FED395AD3879221ACCF";
+	protected final static String ME = "0x4f1CF0e04eb777Ede3Bb3460e4b20082A77d646F";
+	private final static String ME_PRIVATE_KEY = "31ac46239c94e15105f9399f4b02bd76d0ccea75832c55cc5532a762bb44a57a";
 	private final static Credentials credentials = Credentials.create(ME_PRIVATE_KEY);
 	protected final Web3j web3 = Web3j.build
 		(new HttpService("https://sepolia.infura.io/v3/05550caa054f4fec80ff94136edf2944"));
