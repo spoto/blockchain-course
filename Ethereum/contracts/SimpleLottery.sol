@@ -5,8 +5,8 @@ pragma solidity >=0.7.0 <0.9.0;
 contract SimpleLottery {
     uint public constant TICKET_PRICE = 1000;
     address public owner;
-    address[] public players;
-    address public winner;
+    address payable[] public players;
+    address payable public winner;
     uint public ticketingCloses;
 
     constructor (uint duration) {
@@ -17,7 +17,7 @@ contract SimpleLottery {
     function buy() public payable {
         require(msg.value == TICKET_PRICE);
         require(block.timestamp < ticketingCloses);
-        players.push(msg.sender);
+        players.push(payable(msg.sender));
     }
 
     receive() external payable {
@@ -36,8 +36,6 @@ contract SimpleLottery {
 
     function withdraw() public {
         require(msg.sender == winner);
-        payable(msg.sender).transfer(address(this).balance);
+        winner.transfer(address(this).balance);
     }
 }
-
-

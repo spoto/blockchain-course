@@ -7,27 +7,25 @@ import java.util.concurrent.ExecutionException;
 import org.web3j.crypto.RawTransaction;
 import org.web3j.protocol.core.methods.response.EthGasPrice;
 
-public class SendToFaucet extends SendTransaction {
-	// the Sepolia faucet
-	private final static String FAUCET = "0x15095Ec8FB1Fc9C664b3223459dFF43158ACe7aD";
+public class SendFromAccount1ToAccount2 extends SendTransaction {
 
-	public String sendToFaucet() throws InterruptedException, ExecutionException, IOException {
+	public String sentFromAccount1ToAccount2() throws InterruptedException, ExecutionException, IOException {
 		EthGasPrice gasPrice =  web3.ethGasPrice().send();
 		System.out.println("gas price: " + gasPrice.getGasPrice());
 		RawTransaction transaction = RawTransaction.createEtherTransaction
-			(transactionCount(ACCOUNT_1),             // nonce
+			(transactionCount(ACCOUNT_1),    // nonce
 			gasPrice.getGasPrice(),          // gas price,
 			BigInteger.valueOf(21_000L),     // gas limit,
-			FAUCET,                          // to
-			BigInteger.valueOf(5L)); // value
+			ACCOUNT_2,                       // to
+			BigInteger.valueOf(15L));        // value
 
 		return send(transaction);
 	}
 
 	public static void main(String[] args) throws InterruptedException, ExecutionException, IOException {
-		var stf = new SendToFaucet();
-		String txHash = stf.sendToFaucet();
+		var send = new SendFromAccount1ToAccount2();
+		String txHash = send.sentFromAccount1ToAccount2();
 		System.out.println("transaction hash: " + txHash);
-		System.out.println(stf.waitForReceipt(txHash));
+		System.out.println(send.waitForReceipt(txHash));
 	}
 }

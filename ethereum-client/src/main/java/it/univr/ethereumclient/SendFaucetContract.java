@@ -16,7 +16,7 @@ public class SendFaucetContract extends SendTransaction {
 	public String sendContract() throws InterruptedException, ExecutionException, IOException {
 		EthGasPrice gasPrice =  web3.ethGasPrice().send();
 		RawTransaction transaction = RawTransaction.createContractTransaction
-			(transactionCount(),            // nonce
+			(transactionCount(ACCOUNT_1),            // nonce
 			gasPrice.getGasPrice(),         // gas price,
 			BigInteger.valueOf(125_000L),   // gas limit,
 			BigInteger.ZERO,                // value
