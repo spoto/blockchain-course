@@ -2204,6 +2204,23 @@ require(withdraw_amount <= 0.1 ether);
   
 \end{frame}
 
+\begin{frame}\frametitle{Over/underflows: prevention}
+
+  \begin{greenbox}{}
+    Starting from Solidity $0.8.0$, arithmetic operations throw an
+    exception in case of overflow or underflow. This costs more gas.
+  \end{greenbox}
+
+  \medskip
+
+  \begin{greenbox}{}
+    If you do not want to pay for such extra gas and you are sure that
+    some operation cannot oveflow or underflow, you can wrap the
+    arithmetic operations inside an \texttt{unchecked} code block.
+  \end{greenbox}
+
+\end{frame}
+
 \begin{frame}\frametitle{Issue \#3: Unexpected ether}
 
   \begin{redbox}{}
