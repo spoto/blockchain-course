@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
-
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity >=0.8.0 <0.9.0;
 
 contract Owned {
     address payable private owner;
@@ -32,4 +31,3 @@ contract Faucet3 is Stoppable {
         payable(msg.sender).transfer(withdraw_amount);
     }
 }
-

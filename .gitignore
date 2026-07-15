@@ -8,3 +8,5 @@
 *.out
 *.pdf
 *~
+Ethereum/contracts/artifacts/
+Ethereum/contracts/.deps/

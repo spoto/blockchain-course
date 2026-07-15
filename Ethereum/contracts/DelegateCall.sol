@@ -27,4 +27,3 @@ contract C {
         _d.callSetN(address(_e), _n);
     }
 }
-

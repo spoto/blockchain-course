@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
-
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity >=0.8.0 <0.9.0;
 
 import "./Faucet3.sol"; // this defines Stoppable
 import "./Faucet.sol"; // this defines Faucet
@@ -21,4 +20,3 @@ contract Faucet4 is Stoppable {
         faucet.withdraw(withdraw_amount);
     }
 }
-

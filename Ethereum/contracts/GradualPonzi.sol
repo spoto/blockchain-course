@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
-
-pragma solidity >=0.7.0 <0.9.0;
+pragma solidity >=0.8.0 <0.9.0;
 
 contract GradualPonzi {
     address[] public investors; // dynamic array
@@ -23,5 +22,3 @@ contract GradualPonzi {
         payable(msg.sender).transfer(payout);
     }
 }
-
-
