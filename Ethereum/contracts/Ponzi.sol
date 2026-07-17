@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 pragma solidity >=0.8.0 <0.9.0;
 
-contract SimplePonzi {
+contract Ponzi {
     address payable public currentInvestor;
     uint public currentInvestment = 0;
 
-    function invest() payable external {
+    function invest() payable public {
         uint minimumInvestment = currentInvestment * 11 / 10;
-        require(msg.value >= minimumInvestment);
+        require(msg.value >= minimumInvestment, "investment too low");
         address payable previousInvestor = currentInvestor;
         currentInvestor = payable(msg.sender);
         currentInvestment = msg.value;

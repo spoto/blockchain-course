@@ -5,12 +5,15 @@ contract PonziGradual {
     address[] public investors; // dynamic array
     mapping (address => uint) public balances; // map
     uint constant public MINIMUM_INVESTMENT = 1000;
+    enum State { Active, Suspended }
+    State public state;
 
     constructor () {
         investors.push(msg.sender);
+        state = State.Active;
     }
 
-    function invest() payable public {
+    function invest() onlyIfActive payable public {
         require(msg.value >= MINIMUM_INVESTMENT, "too small investment");
         // innvestors.length is never zero because the constructor
         // populates it with at least a first investor
@@ -24,7 +27,7 @@ contract PonziGradual {
         investors.push(msg.sender);
     }
 
-    function withdraw() public returns (bool done) {
+    function withdraw() onlyIfActive public returns (bool success) {
         uint payout = balances[msg.sender];
         balances[msg.sender] = 0;
         // transfer() would also be fine here since it is the last instruction of the function
@@ -33,6 +36,25 @@ contract PonziGradual {
         // to an investor that already withdrew its balance; therefore reentrancy would be prevented
         // in this specific case
         //payable(msg.sender).transfer(payout);
-        (done, ) = payable(msg.sender).call{value:payout}("");
+        (success, ) = payable(msg.sender).call{value:payout}("");
+    }
+
+    function suspend() onlyDeployer("only the deployer can suspend the contract") public {
+        state = State.Suspended;
+    }
+
+    function activate() onlyDeployer("only the deployer can activate the contract") public {
+        state = State.Active;
+    }
+
+    modifier onlyIfActive() {
+        require(state == State.Active, "currently suspended");
+        _;
+    }
+
+    modifier onlyDeployer(string memory error) {
+        require(msg.sender == investors[0], error);
+        _;
     }
 }
+

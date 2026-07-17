@@ -5,8 +5,8 @@ contract TrustFund {
     address payable[3] public _recipients;
     uint[3] public withdrawn;
 
-    constructor(address payable[3] memory children) {
-        _recipients = children;
+    constructor(address payable[3] memory recipients) {
+        _recipients = recipients;
     }
 
     function updateChild(address payable newRecipient) public {
