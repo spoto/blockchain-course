@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 pragma solidity >=0.8.0 <0.9.0;
 
-contract SimpleLottery {
+contract Lottery {
     uint constant public TICKET_PRICE = 1000 wei;
     address public owner;
     uint public ticketingCloses;
@@ -39,12 +39,13 @@ contract SimpleLottery {
         return uint(keccak256(bytes.concat(bytes32(seed), blockhash(block.number - 1)))) % max;
     }
 
-    function withdraw() public returns (bool done) {
+    function withdraw() public returns (bool success) {
         require(msg.sender == winner, "you are not the winner");
         // transfer() would also be fine here since it is the last instruction of the function
         // and it forwards too little gas for reentrancy; in any case, it sends the whole balance,
-        // therefore reentrancy would be useless in this specific example
+        // therefore reentrancy would be prevented in this specific example
         //winner.transfer(address(this).balance);
-        (done, ) = payable(msg.sender).call{value: address(this).balance}("");
+        (success, ) = payable(msg.sender).call{value: address(this).balance}("");
     }
 }
+
