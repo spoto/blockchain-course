@@ -26,7 +26,10 @@ contract Lottery {
     function drawWinner() public {
         require(msg.sender == owner, "only the owner can call this");
         require(players.length > 0, "no players");
-        require(block.timestamp > ticketingCloses + 20 seconds, "too early");
+        // we wait enough time for the creation of three blocks;
+        // in this way, the block hash used in random() was unknown
+        // when the players bought the tickets
+        require(block.timestamp > ticketingCloses + 60 seconds, "too early");
         require(winner == address(0), "already called");
         winner = players[random(players.length, 13542345)];
     }
@@ -35,7 +38,7 @@ contract Lottery {
         Yields a "random" number between 0 and max-1; the seed makes manipulations
         by miners slightly more difficult.
     */
-    function random(uint max, uint seed) view public returns (uint) {
+    function random(uint max, uint seed) view private returns (uint) {
         return uint(keccak256(bytes.concat(bytes32(seed), blockhash(block.number - 1)))) % max;
     }
 
