@@ -2112,6 +2112,30 @@ require(withdraw_amount <= 0.1 ether);
 
 \end{frame}
 
+\begin{frame}\frametitle{ERC20 tokens}
+
+  They represent transferrable ownership of fungible items. The ERC20
+  standard requires to implement the following functions:
+
+  \begin{itemize}
+  \item\<totalSupply()>: returns the number of tokens in circulation
+  \item\<balanceOf(address owner)>: returns the balance for the provided address
+  \item\<transfer(address to, uint value)>: returns true or false based
+    on the success or failure of the transfer
+  \item\<transferFrom(address from, address to, uint value)>:
+    returns true or false based on the success or failure of the transfer;
+    in this case the transfer is initiated by another address that is not
+    the owner, and must have been previously approved to spend these funds
+    on the owner's behalf
+  \item\<approve(address spender, uint value)>: returns true or false
+    if successful; this method is used to set an amount that
+    another address can spend on the owner's behalf
+  \item\<allowance(address owner, address spender)>:
+    returns the amount still available for the spender to withdraw
+  \end{itemize}
+
+\end{frame}
+
 \begin{frame}\frametitle{Exercise}
 
   \begin{greenbox}{Write a \<TicTacToe.sol> smart contract}
