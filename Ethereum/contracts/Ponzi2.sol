@@ -12,9 +12,8 @@ contract Ponzi2 {
         currentInvestor = payable(msg.sender);
         currentInvestment = msg.value;
         // for malicious investors it will return false but not fail;
-        // however, in that case ETH will remain locked in the contract,
-        // without any possible way of pulling it out; moreover, the first
-        // investor finds previousInvestor unset and burns its money for nothing
+        // however, complex receive functions might drain all gas
+	// and make it impossible to replace a previous investor
         previousInvestor.call{value: msg.value}("");
     }
 }

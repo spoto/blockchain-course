@@ -6,12 +6,12 @@ contract SlotMachine {
   address private owner;
 
   constructor() payable {
-    require(msg.value == PRICE * 10, string.concat("You must buy 10 tickets at deployment")); // 10 finneys
+    require(msg.value == PRICE * 10, "You must buy 10 tickets at deployment"); // 10 finneys
     owner = msg.sender;
   }
 
   function play() payable public {
-    require(msg.value == PRICE, string.concat("You must pay for exactly one ticket")); // 1 finney
+    require(msg.value == PRICE, "You must pay for exactly one ticket"); // 1 finney
     uint winner = random(4, msg.sender);
     if (winner == 0) { // 25% of the times
       // in case of victory, the player earns 3 times the price

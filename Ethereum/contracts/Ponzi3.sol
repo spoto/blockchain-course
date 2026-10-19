@@ -16,7 +16,8 @@ contract Ponzi3 {
         if (previousInvestor != address(0))
             // for malicious investors it will return false but not fail;
             // moreover, it forwards the whole balance of the contract to
-            // previousInvestor, so that nothing remains in the contract
+            // previousInvestor, so that nothing remains in the contract;
+	    // still problematic for complex receive functions 
             previousInvestor.call{value: address(this).balance}("");
     }
 }

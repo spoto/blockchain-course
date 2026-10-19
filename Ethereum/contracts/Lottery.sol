@@ -26,29 +26,28 @@ contract Lottery {
     function drawWinner() public {
         require(msg.sender == owner, "only the owner can call this");
         require(players.length > 0, "no players");
-        // we wait enough time for the creation of three blocks;
-        // in this way, the block hash used in random() was unknown
-        // when the players bought the tickets
-        require(block.timestamp > ticketingCloses + 60 seconds, "too early");
+        require(block.timestamp > ticketingCloses, "too early");
         require(winner == address(0), "already called");
-        winner = players[random(players.length, 13542345)];
-    }
-
-    /*
-        Yields a "random" number between 0 and max-1; the seed makes manipulations
-        by miners slightly more difficult.
-    */
-    function random(uint max, uint seed) view private returns (uint) {
-        return uint(keccak256(bytes.concat(bytes32(seed), blockhash(block.number - 1)))) % max;
+        winner = players[random(players.length, owner)];
     }
 
     function withdraw() public returns (bool success) {
         require(msg.sender == winner, "you are not the winner");
-        // transfer() would also be fine here since it is the last instruction of the function
-        // and it forwards too little gas for reentrancy; in any case, it sends the whole balance,
-        // therefore reentrancy would be prevented in this specific example
-        //winner.transfer(address(this).balance);
         (success, ) = payable(msg.sender).call{value: address(this).balance}("");
+    }
+
+    bytes32 private randomValue;
+
+    // Yields a "random" number between 0 and max-1;
+    // the number is different for different addresses
+    function random(uint max, address addr) private returns (uint) {
+      randomValue = keccak256(bytes.concat(
+        randomValue, // we embed the previous value
+        bytes32(block.difficulty),
+        blockhash(block.number - 1),
+        bytes32(bytes20(addr))
+      ));
+      return uint(randomValue) % max;
     }
 }
 

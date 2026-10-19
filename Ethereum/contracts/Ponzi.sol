@@ -12,6 +12,7 @@ contract Ponzi {
         currentInvestor = payable(msg.sender);
         currentInvestment = msg.value;
         // for malicious investors it will return false but not fail
+	// problematic for investors with complex receive functions
         previousInvestor.send(msg.value);
     }
 }

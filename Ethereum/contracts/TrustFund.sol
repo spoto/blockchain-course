@@ -2,24 +2,23 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 contract TrustFund {
-    address payable[3] public _recipients;
+    address payable[3] public _children;
     uint[3] public withdrawn;
 
     constructor(address payable[3] memory recipients) {
-        _recipients = recipients;
+        _children = children;
     }
 
     function updateChild(address payable newRecipient) public {
-        if (msg.sender == _recipients[0])
-            _recipients[0] = newRecipient;
-        else if (msg.sender == _recipients[1])
-            _recipients[1] = newRecipient;
-        else if (msg.sender == _recipients[2])
-            _recipients[2] = newRecipient;
+        if (msg.sender == _children[0])
+            _children[0] = newRecipient;
+        else if (msg.sender == _children[1])
+            _children[1] = newRecipient;
+        else if (msg.sender == _children[2])
+            _children[2] = newRecipient;
         else
             revert("Unknown recipient");
     }
-
     receive() external payable { }
 
     function withdraw() public returns (bool success) {
@@ -28,12 +27,12 @@ contract TrustFund {
         uint diff;
         uint num;
 
-        if (msg.sender == _recipients[0])
+        if (msg.sender == _children[0])
             // we send the total part for the first child, minus what it already withdrew
             diff = balance / 2 - withdrawn[num = 0];
-        else if (msg.sender == _recipients[1])
+        else if (msg.sender == _children[1])
             diff = balance / 4 - withdrawn[num = 1];
-        else if (msg.sender == _recipients[2])
+        else if (msg.sender == _children[2])
             diff = balance / 4 - withdrawn[num = 2];
         else
             revert("Unknown recipient");
