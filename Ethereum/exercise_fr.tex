@@ -1,0 +1,246 @@
+\documentclass{article}
+\usepackage{babel}[french]
+
+\pagestyle{empty}
+
+%\usepackage{showkeys}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{listings, framed}
+\usepackage[dvipsnames]{xcolor}
+
+% \|name| or \mathid{name} denotes identifiers and slots in formulas
+\def\|#1|{\mathid{#1}}
+\newcommand{\mathid}[1]{\ensuremath{\mathit{#1}}}
+% \<name> or \codeid{name} denotes computer code identifiers
+\def\codesize{\small}
+\def\<#1>{\codeid{#1}}
+\newcommand{\codeid}[1]{\ifmmode{\mbox{\codesize\ttfamily{#1}}}\else{\codesize\ttfamily #1}\fi}
+
+% The following language definitoin is Copyright 2017 Sergei Tikhomirov, MIT License
+% https://github.com/s-tikhomirov/solidity-latex-highlighting/
+\lstdefinelanguage{Solidity}{
+        keywords=[1]{anonymous, assembly, assert, balance, break, call, callcode, case, catch, class, constant, continue, constructor, contract, debugger, default, delegatecall, delete, do, else, emit, event, experimental, export, external, false, finally, for, function, gas, if, implements, import, in, indexed, instanceof, interface, internal, is, length, library, log0, log1, log2, log3, log4, memory, modifier, new, payable, pragma, private, protected, public, pure, push, require, return, returns, revert, selfdestruct, send, solidity, storage, struct, suicide, super, switch, then, this, throw, transfer, true, try, typeof, using, value, view, while, with, addmod, ecrecover, keccak256, mulmod, ripemd160, sha256, sha3}, % generic keywords including crypto operations
+        keywordstyle=[1]\color{blue}\bfseries,
+        keywords=[2]{address, bool, byte, bytes, bytes1, bytes2, bytes3, bytes4, bytes5, bytes6, bytes7, bytes8, bytes9, bytes10, bytes11, bytes12, bytes13, bytes14, bytes15, bytes16, bytes17, bytes18, bytes19, bytes20, bytes21, bytes22, bytes23, bytes24, bytes25, bytes26, bytes27, bytes28, bytes29, bytes30, bytes31, bytes32, enum, int, int8, int16, int24, int32, int40, int48, int56, int64, int72, int80, int88, int96, int104, int112, int120, int128, int136, int144, int152, int160, int168, int176, int184, int192, int200, int208, int216, int224, int232, int240, int248, int256, mapping, string, uint, uint8, uint16, uint24, uint32, uint40, uint48, uint56, uint64, uint72, uint80, uint88, uint96, uint104, uint112, uint120, uint128, uint136, uint144, uint152, uint160, uint168, uint176, uint184, uint192, uint200, uint208, uint216, uint224, uint232, uint240, uint248, uint256, var, void, ether, finney, szabo, wei, days, hours, minutes, seconds, weeks, years},   % types; money and time units
+        keywordstyle=[2]\color{teal}\bfseries,
+        keywords=[3]{block, blockhash, coinbase, difficulty, gaslimit, number, timestamp, msg, data, gas, sender, sig, value, now, tx, gasprice, origin},       % environment variables
+        keywordstyle=[3]\color{violet}\bfseries,
+        keywords=[4]{TODO},
+        keywordstyle=[4]\color{red}\bfseries,
+        identifierstyle=\color{black},
+        sensitive=true,
+        comment=[l]{//},
+        morecomment=[s]{/*}{*/},
+        commentstyle=\color{gray}\ttfamily,
+        stringstyle=\color{red}\ttfamily,
+        morestring=[b]',
+        morestring=[b]"
+}
+
+\lstset{ % define general preferences
+        language=Solidity,
+        %backgroundcolor=\color{verylightgray},
+        extendedchars=true,
+        basicstyle=\footnotesize\ttfamily,
+        showstringspaces=false,
+        showspaces=false,
+        numbers=left,
+        numberstyle=\footnotesize,
+        numbersep=9pt,
+        tabsize=2,
+        breaklines=true,
+        showtabs=false,
+        captionpos=b,
+        escapeinside={||},
+}
+
+\begin{document}
+
+Le jeu du morpion est un jeu traditionnel dans lequel deux joueurs jouent à tour de rôle sur un plateau de $3\times 3$ cases. Le premier joueur remplit les cases du plateau avec des croix et joue en premier ; l’autre joueur remplit les cases du plateau avec des cercles.
+Un joueur gagne dès qu'il remplit trois cases du plateau avec son propre symbole, soit horizontalement, soit verticalement, soit en diagonale. Si les neuf cases du plateau sont remplies, mais qu'aucun joueur n'a gagné, la partie est déclarée nulle.
+
+Complétez le contrat intelligent Solidity suivant, qui est incomplet, aux endroits indiqués par \textbf{TODO}.
+Ce contrat exige que le joueur utilisant les croix envoie une certaine somme d'argent au contrat pour démarrer une nouvelle partie, et que le joueur utilisant les cercles envoie au moins la même somme pour accepter la partie.
+Après les deux premiers coups, les coups suivants ne nécessitent aucun paiement, mais les paiements restent néanmoins possibles.
+Si un joueur gagne, il reçoit 80\% du montant total envoyé pour la partie ; son adversaire reçoit 5\% du montant total ; le déployeur du contrat (le propriétaire) reçoit les 15\% restants du montant total.
+En cas de match nul, la totalité de l'argent collecté pour la partie revient au propriétaire du contrat.
+
+Par souci de simplicité, les paiements sont effectués immédiatement : n'implémentez pas le mécanisme de retrait (withdrawal pattern).
+
+\textbf{Téléchargez le contrat incomplet à l'adresse suivante: \url{https://github.com/spoto/blockchain-course/blob/master/Ethereum/contracts/TicTacToeDraft.sol}}
+
+\mbox{}\\
+\hrule
+\mbox{}\\
+
+\begin{lstlisting}[language=Solidity,numbers=none]
+// SPDX-License-Identifier: CC-BY-SA-4.0
+pragma solidity >= 0.8.0 <0.9.0;
+
+// A tic-tac-toe game between two players
+contract TicTacToe {
+  // the minimum payment for the initial move
+  uint constant public MINIMUM_BET = 0.01 ether;
+
+  // the board is a 3x3 array of tiles
+  enum Tile { EMPTY, CROSS, CIRCLE }
+  Tile[3][3] public board;
+
+  // the deployer or creator of the contract
+  address payable public owner;
+
+  // the cross player: it is the first who calls play()
+  address payable public crossPlayer;
+
+  // the circle player: it is the second who calls play()
+  address payable public circlePlayer;
+
+  // the total amount of payments to the contract
+  // since the start of the last game
+  uint public bet;
+
+  // the current turn: the corresponding player
+  // has right to the next move
+  Tile public turn;
+
+  constructor () {
+    TODO: takes note of the owner of the contract
+
+    // resets state variables to their initial value for a new game
+    initGame();
+  }
+
+  function initGame() private {
+    crossPlayer = payable(address(0));
+    circlePlayer = payable(address(0));
+    turn = Tile.CROSS; // CROSS starts playing
+    bet = 0; // no payments have been received for the game
+
+    TODO: resets all board elements to the empty tiles
+  }
+
+  // Yields the tile at the position (x,y);
+  // please observe that x and y are assumed between 1 and 3, while
+  // array positions in Solidity start at 0
+  function at(uint x, uint y) public view returns (Tile) {
+    TODO
+  }
+
+  // Writes the given tile into the position (x,y);
+  // please observe that x and y are assumed between 1 and 3, while
+  // array positions in Solidity start at 0
+  function set(uint x, uint y, Tile tile) private {
+    TODO
+  }
+
+  // Makes the next move at position (x,y), between 1 and 3
+  function play(uint x, uint y) payable public {
+    TODO: require that x and y are between 1 and 3 included
+    TODO: require that the board position (x,y) be empty
+
+    if (turn == Tile.CROSS)
+      playCross(x, y);
+    else
+      playCircle(x, y);
+  }
+
+  // Cross makes the next move at position (x,y), between 1 and 3
+  function playCross(uint x, uint y) private {
+    if (crossPlayer == address(0)) {
+      TODO: require that the sender sent at least MINIMUM_BET ether
+      TODO: assign the sender of the transaction to crossPlayer
+    }
+    else {
+      TODO: require that crossPlayer is the sender
+      of the transaction, since otherwise somebody else
+      is playing instead of him
+    }
+
+    // we take note that the position (x,y) has been played
+    set(x, y, turn);
+    TODO: add to bet the money sent with the transaction
+
+    if (isVictoryMove(x, y)) {
+      // send 80% of the bet to the winner
+      crossPlayer.call{value: bet * 80 / 100}("");
+      TODO: send 5% of the bet to the loser
+      TODO: send 15% of the bet to the deployer
+
+      // resets the state of the contract to start a new game
+      initGame();
+    }
+    else if (isFull()) { // a draw
+      TODO: send all the bet to the deployer
+
+      // resets the state of the contract to start a new game
+      initGame();
+    }
+    else
+      // next player will be the circle
+      turn = Tile.CIRCLE;
+  }
+
+  // Circle makes the next move at positions (x,y), between 1 and 3
+  function playCircle(uint x, uint y) private {
+    if (circlePlayer == address(0)) {
+      TODO: require that the sender of the transaction
+      is different from crossPlayer, since we do not allow
+      crossPlayer to play against himself
+
+      TODO: require that the sender sent at least bet money
+      TODO: assign the sender of the transaction to circlePlayer
+    }
+    else {
+      TODO: require that circlePlayer is the sender
+      of the transaction, since otherwise somebody else
+      is playing instead of him
+    }
+
+    // we take note that the position (x,y) has been played
+    set(x, y, turn);
+    TODO: add to bet the money sent with the transaction
+
+    if (isVictoryMove(x, y)) {
+      // send 80% of the bet to the winner
+      circlePlayer.call{value: bet * 80 / 100}("");
+      TODO: send 5% of the bet to the loser
+      TODO: send 15% of the bet to the deployer
+
+      // resets the state of the contract to start a new game
+      initGame();
+    }
+    else if (isFull()) { // a draw
+      TODO: send all the bet to the deployer
+
+      // resets the state of the contract to start a new game
+      initGame();
+    }
+    else
+      // next player will be the cross
+      turn = Tile.CROSS;
+  }
+
+  // Checks if the move at (x,y) leads to victory: either column x
+  // contains the same tile, or row y contains the same tile, or
+  // (x,y) is on one of the two diagonals and that diagonal
+  // contains the same tile
+  function isVictoryMove(uint x, uint y) private view returns (bool) {
+    TODO
+  }
+
+  // Checks if the game is full, that is, all board positions are
+  // occupied, none of them is empty
+  function isFull() private view returns (bool) {
+    TODO
+  }
+}
+\end{lstlisting}
+
+\end{document}
