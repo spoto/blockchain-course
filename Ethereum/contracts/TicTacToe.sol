@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 pragma solidity >= 0.8.0 <0.9.0;
 
+// ex: complete this contract
+
 // A tic-tac-toe game between two players
 contract TicTacToe {
     // the minimum payment for the initial move
@@ -38,7 +40,7 @@ contract TicTacToe {
         turn = Tile.CROSS; // CROSS starts playing
         bet = 0; // no payments have been received for the game up to now
 
-        // TODO: resets all board elements to the empty tiles
+        // TODO: resets all board elements to the empty tile
     }
 
     // Yields the tile at the position (x,y);

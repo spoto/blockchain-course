@@ -1,51 +1,29 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 pragma solidity >=0.8.0 <0.9.0;
 
+// ex: introduce the withdrawal pattern in this contract
+
 contract TrustFund {
     address payable[3] public _children;
-    uint[3] public withdrawn;
 
-    constructor(address payable[3] memory recipients) {
+    constructor(address payable[3] memory children) {
         _children = children;
     }
 
-    function updateChild(address payable newRecipient) public {
+    function updateChild(address payable newChild) public {
         if (msg.sender == _children[0])
-            _children[0] = newRecipient;
+            _children[0] = newChild;
         else if (msg.sender == _children[1])
-            _children[1] = newRecipient;
+            _children[1] = newChild;
         else if (msg.sender == _children[2])
-            _children[2] = newRecipient;
+            _children[2] = newChild;
         else
-            revert("Unknown recipient");
+            revert("Unknown child");
     }
-    receive() external payable { }
 
-    function withdraw() public returns (bool success) {
-        // we reconstruct the total balance, including what has been already withdrawn
-        uint balance = address(this).balance + withdrawn[0] + withdrawn[1] + withdrawn[2];
-        uint diff;
-        uint num;
-
-        if (msg.sender == _children[0])
-            // we send the total part for the first child, minus what it already withdrew
-            diff = balance / 2 - withdrawn[num = 0];
-        else if (msg.sender == _children[1])
-            diff = balance / 4 - withdrawn[num = 1];
-        else if (msg.sender == _children[2])
-            diff = balance / 4 - withdrawn[num = 2];
-        else
-            revert("Unknown recipient");
-
-        if (diff > 0) {
-            // makes reentrancy useless
-            withdrawn[num] += diff;
-            (success, ) = msg.sender.call{value: diff}("");
-            if (!success)
-                // revert to previous withdrawn value
-                withdrawn[num] -= diff;
-        }
-        else
-            success = true;
+    receive() external payable {
+        _children[0].send(msg.value / 2);
+        _children[1].send(msg.value / 4);
+        _children[2].send(msg.value / 4);
     }
 }

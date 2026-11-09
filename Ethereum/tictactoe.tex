@@ -1,0 +1,193 @@
+\documentclass{article}
+\usepackage{a4wide}
+\usepackage[top=20pt,bottom=20pt,left=25pt,right=23pt]{geometry}
+
+\pagestyle{empty}
+
+%\usepackage{showkeys}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{relsize}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{listings, framed}
+\usepackage[dvipsnames]{xcolor}
+
+% \|name| or \mathid{name} denotes identifiers and slots in formulas
+\def\|#1|{\mathid{#1}}
+\newcommand{\mathid}[1]{\ensuremath{\mathit{#1}}}
+% \<name> or \codeid{name} denotes computer code identifiers
+\def\codesize{\small}
+\def\<#1>{\codeid{#1}}
+\newcommand{\codeid}[1]{\ifmmode{\mbox{\codesize\ttfamily{#1}}}\else{\codesize\ttfamily #1}\fi}
+
+% The following language definitoin is Copyright 2017 Sergei Tikhomirov, MIT License
+% https://github.com/s-tikhomirov/solidity-latex-highlighting/
+\lstdefinelanguage{Solidity}{
+        keywords=[1]{anonymous, assembly, assert, balance, break, call, callcode, case, catch, class, constant, continue, constructor, contract, debugger, default, delegatecall, delete, do, else, emit, event, experimental, export, external, false, finally, for, function, gas, if, implements, import, in, indexed, instanceof, interface, internal, is, length, library, log0, log1, log2, log3, log4, memory, modifier, new, payable, pragma, private, protected, public, pure, push, require, return, returns, revert, selfdestruct, send, solidity, storage, struct, suicide, super, switch, then, this, throw, transfer, true, try, typeof, using, value, view, while, with, addmod, ecrecover, keccak256, mulmod, ripemd160, sha256, sha3}, % generic keywords including crypto operations
+        keywordstyle=[1]\color{blue}\bfseries,
+        keywords=[2]{address, bool, byte, bytes, bytes1, bytes2, bytes3, bytes4, bytes5, bytes6, bytes7, bytes8, bytes9, bytes10, bytes11, bytes12, bytes13, bytes14, bytes15, bytes16, bytes17, bytes18, bytes19, bytes20, bytes21, bytes22, bytes23, bytes24, bytes25, bytes26, bytes27, bytes28, bytes29, bytes30, bytes31, bytes32, enum, int, int8, int16, int24, int32, int40, int48, int56, int64, int72, int80, int88, int96, int104, int112, int120, int128, int136, int144, int152, int160, int168, int176, int184, int192, int200, int208, int216, int224, int232, int240, int248, int256, mapping, string, uint, uint8, uint16, uint24, uint32, uint40, uint48, uint56, uint64, uint72, uint80, uint88, uint96, uint104, uint112, uint120, uint128, uint136, uint144, uint152, uint160, uint168, uint176, uint184, uint192, uint200, uint208, uint216, uint224, uint232, uint240, uint248, uint256, var, void, ether, finney, szabo, wei, days, hours, minutes, seconds, weeks, years},   % types; money and time units
+        keywordstyle=[2]\color{teal}\bfseries,
+        keywords=[3]{block, blockhash, coinbase, difficulty, gaslimit, number, timestamp, msg, data, gas, sender, sig, value, now, tx, gasprice, origin},       % environment variables
+        keywordstyle=[3]\color{violet}\bfseries,
+        keywords=[4]{TODO},
+        keywordstyle=[4]\color{red}\bfseries,
+        identifierstyle=\color{black},
+        sensitive=true,
+        comment=[l]{//},
+        morecomment=[s]{/*}{*/},
+        commentstyle=\color{gray}\ttfamily,
+        stringstyle=\color{red}\ttfamily,
+        morestring=[b]',
+        morestring=[b]"
+}
+
+\lstset{ % define general preferences
+        language=Solidity,
+        %backgroundcolor=\color{verylightgray},
+        extendedchars=true,
+        basicstyle=\ttfamily,
+        showstringspaces=false,
+        showspaces=false,
+        numbers=left,
+        numberstyle=\footnotesize,
+        numbersep=9pt,
+        tabsize=2,
+        breaklines=true,
+        showtabs=false,
+        captionpos=b,
+        escapeinside={||},
+}
+
+\begin{document}
+
+\begin{lstlisting}[language=Solidity,numbers=none]
+contract TicTacToe {
+  uint constant public MINIMUM_BET = 0.01 ether;
+
+  enum Tile { EMPTY, CROSS, CIRCLE }
+  Tile[3][3] public board;
+
+  address payable public owner;
+
+  address payable public crossPlayer;
+
+  address payable public circlePlayer;
+
+  uint public bet;
+
+  Tile public turn;
+
+  constructor () {
+    owner = payable(msg.sender);
+    initGame();
+  }
+
+  function initGame() private {
+    crossPlayer = payable(address(0));
+    circlePlayer = payable(address(0));
+    turn = Tile.CROSS;
+    bet = 0;
+
+    for (uint x = 1; x <= 3; x++)
+      for (uint y = 1; y <= 3; y++)
+        set(x, y, Tile.EMPTY);
+  }
+
+  function at(uint x, uint y) public view returns (Tile) {
+    return board[x - 1][y - 1];
+  }
+
+  function set(uint x, uint y, Tile tile) private {
+    board[x - 1][y - 1] = tile;
+  }
+
+  function play(uint x, uint y) payable public {
+    require(1 <= x && x <= 3 && 1 <= y && y <= 3, "coordinates must be between 1 and 3");
+    require(at(x, y) == Tile.EMPTY, "the selected tile is not empty");
+
+    if (turn == Tile.CROSS)
+      playCross(x, y);
+    else
+      playCircle(x, y);
+  }
+
+  function playCross(uint x, uint y) private {
+    if (crossPlayer == address(0)) {
+      require(msg.value >= MINIMUM_BET, "you must bet at least 0.01 ETH");
+      crossPlayer = payable(msg.sender);
+    }
+    else
+      require(msg.sender == crossPlayer, "it's not your turn");
+
+    set(x, y, turn);
+    bet += msg.value;
+
+    if (isVictoryMove(x, y)) {
+      crossPlayer.call{value: bet * 80 / 100}("");
+      circlePlayer.call{value: bet * 5 / 100}("");
+      owner.call{value: bet * 15 / 100}("");
+      initGame();
+    }
+    else if (isFull()) {
+      owner.call{value: bet}("");
+      initGame();
+    }
+    else
+      turn = Tile.CIRCLE;
+  }
+
+  function playCircle(uint x, uint y) private {
+    if (circlePlayer == address(0)) {
+      require(msg.sender != crossPlayer, "you cannot play against yourself");
+      require(msg.value >= bet, "you must bet at least as much as the cross player");
+      circlePlayer = payable(msg.sender);
+    }
+    else
+      require(msg.sender == circlePlayer, "it's not your turn");
+
+    set(x, y, turn);
+    bet += msg.value;
+
+    if (isVictoryMove(x, y)) {
+      circlePlayer.call{value: bet * 80 / 100}("");
+      crossPlayer.call{value: bet * 5 / 100}("");
+      owner.call{value: bet * 15 / 100}("");
+      initGame();
+    }
+    else if (isFull()) {
+      owner.call{value: bet}("");
+      initGame();
+    }
+    else
+      turn = Tile.CROSS;
+  }
+
+  function isVictoryMove(uint x, uint y) private view returns (bool) {
+    if (at(x, 1) == at(x, 2) && at(x, 2) == at(x, 3)) // column x
+      return true;
+    else if (at(1, y) == at(2, y) && at(2, y) == at(3, y)) // row y
+      return true;
+    else if (x == y && at(1, 1) == at(2, 2) && at(2, 2) == at(3, 3))
+      return true;
+    else if (x + y == 4 && at(1, 3) == at(2, 2) && at(2, 2) == at(3, 1))
+      return true;
+    else
+      return false;
+  }
+
+  function isFull() private view returns (bool) {
+    for (uint x = 1; x <= 3; x++)
+      for (uint y = 1; y <= 3; y++)
+        if (at(x, y) == Tile.EMPTY)
+          return false;
+
+    return true;
+  }
+}
+\end{lstlisting}
+
+\end{document}

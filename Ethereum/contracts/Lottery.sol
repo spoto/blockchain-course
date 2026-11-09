@@ -1,6 +1,13 @@
 // SPDX-License-Identifier: CC-BY-SA-4.0
 pragma solidity >=0.8.0 <0.9.0;
 
+// ex1: add uint howMany to buy more tickets with buy()
+// ex2: allow the extraction of a second winning ticket after the
+// first, that cannot be the same first winning ticket; the first winning
+// ticket gets 2/3 of the balance, the second gets 1/3 of the balance
+// ex3: implement the withdrawal pattern for this contract:
+// function withdraw() public returns (bool success)
+
 contract Lottery {
     uint constant public TICKET_PRICE = 1000 wei;
     address public owner;
@@ -29,11 +36,7 @@ contract Lottery {
         require(block.timestamp > ticketingCloses, "too early");
         require(winner == address(0), "already called");
         winner = players[random(players.length, owner)];
-    }
-
-    function withdraw() public returns (bool success) {
-        require(msg.sender == winner, "you are not the winner");
-        (success, ) = payable(msg.sender).call{value: address(this).balance}("");
+        payable(winner).call{value: address(this).balance}("");
     }
 
     bytes32 private randomValue;
@@ -50,4 +53,3 @@ contract Lottery {
       return uint(randomValue) % max;
     }
 }
-
